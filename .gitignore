@@ -1,0 +1,7 @@
+target/
+node_modules/
+data_cache/
+*.pbf
+*.tif
+cities/*/agents.parquet
+.DS_Store
