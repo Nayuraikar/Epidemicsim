@@ -85,3 +85,24 @@ fn simd_kernels_match() {
         );
     }
 }
+
+#[cfg(target_os = "macos")]
+#[test]
+fn metal_variants_match() {
+    if !epidemicsim_backends::mtl::available() {
+        eprintln!("no Metal device: skipping");
+        return;
+    }
+    for private in [false, true] {
+        for metal_tg in [32, 64, 128, 256] {
+            check(
+                "metal",
+                &BackendOpts {
+                    metal_tg,
+                    metal_private: private,
+                    ..Default::default()
+                },
+            );
+        }
+    }
+}

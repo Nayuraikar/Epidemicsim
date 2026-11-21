@@ -1,0 +1,195 @@
+{
+  "machine": "Apple M1",
+  "backend": "sequential",
+  "agents": 50000,
+  "days": 90,
+  "runs_per_scenario": 6,
+  "scenarios": 8,
+  "tasks": 48,
+  "reps": 3,
+  "note": "wall_s = rank-0 time from first dispatch until all results are gathered (excludes aggregation and file output). dynamic uses rank 0 as a pure master, so it has procs-1 workers.",
+  "points": [
+    {
+      "mode": "static",
+      "procs": 1,
+      "wall_s": {
+        "median": 30.275218625,
+        "min": 30.03286225,
+        "max": 32.364865583
+      },
+      "speedup": 1.0,
+      "efficiency": 1.0,
+      "utilisation": 0.9999958093118478,
+      "comm_fraction": 0.0,
+      "comm_s_total": 0.0,
+      "idle_s_total": 0.0,
+      "bytes_sent_total": 0,
+      "compute_imbalance": 1.0,
+      "tasks_per_rank": [
+        48
+      ]
+    },
+    {
+      "mode": "static",
+      "procs": 2,
+      "wall_s": {
+        "median": 15.959723791,
+        "min": 15.162218875,
+        "max": 19.787191
+      },
+      "speedup": 1.8969763525652485,
+      "efficiency": 0.9484881762826243,
+      "utilisation": 0.9800574138896134,
+      "comm_fraction": 0.000029086248990209732,
+      "comm_s_total": 0.000928417,
+      "idle_s_total": 0.6352244579999999,
+      "bytes_sent_total": 693504,
+      "compute_imbalance": 1.0202972953786682,
+      "tasks_per_rank": [
+        24,
+        24
+      ]
+    },
+    {
+      "mode": "static",
+      "procs": 4,
+      "wall_s": {
+        "median": 10.526223833,
+        "min": 10.523291125,
+        "max": 10.763361333
+      },
+      "speedup": 2.8761708952156577,
+      "efficiency": 0.7190427238039144,
+      "utilisation": 0.91561470441895,
+      "comm_fraction": 0.00013538606271436675,
+      "comm_s_total": 0.005700416,
+      "idle_s_total": 3.544155043,
+      "bytes_sent_total": 1040256,
+      "compute_imbalance": 1.0919242830579374,
+      "tasks_per_rank": [
+        12,
+        12,
+        12,
+        12
+      ]
+    },
+    {
+      "mode": "static",
+      "procs": 8,
+      "wall_s": {
+        "median": 7.10333075,
+        "min": 6.940092875,
+        "max": 7.105247
+      },
+      "speedup": 4.262115856705673,
+      "efficiency": 0.5327644820882091,
+      "utilisation": 0.9138834352286075,
+      "comm_fraction": 0.000667076251517642,
+      "comm_s_total": 0.037907706,
+      "idle_s_total": 4.863762498999999,
+      "bytes_sent_total": 1213632,
+      "compute_imbalance": 1.0942104651086968,
+      "tasks_per_rank": [
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "mode": "dynamic",
+      "procs": 1,
+      "wall_s": {
+        "median": 28.20762875,
+        "min": 27.8810985,
+        "max": 29.304108916
+      },
+      "speedup": 1.0,
+      "efficiency": 1.0,
+      "utilisation": 0.9999990900688521,
+      "comm_fraction": 0.0,
+      "comm_s_total": 0.0,
+      "idle_s_total": 0.0,
+      "bytes_sent_total": 0,
+      "compute_imbalance": 1.0,
+      "tasks_per_rank": [
+        48
+      ]
+    },
+    {
+      "mode": "dynamic",
+      "procs": 2,
+      "wall_s": {
+        "median": 28.859799583,
+        "min": 27.968998125,
+        "max": 30.040788041
+      },
+      "speedup": 0.9774021011086936,
+      "efficiency": 0.4887010505543468,
+      "utilisation": 0.4999482101219831,
+      "comm_fraction": 0.5000492178400586,
+      "comm_s_total": 28.862640417,
+      "idle_s_total": 0.0,
+      "bytes_sent_total": 1386632,
+      "compute_imbalance": 2.0,
+      "tasks_per_rank": [
+        0,
+        48
+      ]
+    },
+    {
+      "mode": "dynamic",
+      "procs": 4,
+      "wall_s": {
+        "median": 15.288835708,
+        "min": 14.739508333,
+        "max": 17.723588292
+      },
+      "speedup": 1.8449821352478883,
+      "efficiency": 0.4612455338119721,
+      "utilisation": 0.748015866997372,
+      "comm_fraction": 0.2500905371263342,
+      "comm_s_total": 15.294372536999996,
+      "idle_s_total": 0.0,
+      "bytes_sent_total": 1386648,
+      "compute_imbalance": 1.3367142793622329,
+      "tasks_per_rank": [
+        0,
+        16,
+        16,
+        16
+      ]
+    },
+    {
+      "mode": "dynamic",
+      "procs": 8,
+      "wall_s": {
+        "median": 8.250047291,
+        "min": 8.160351542,
+        "max": 9.15969125
+      },
+      "speedup": 3.4190869161164428,
+      "efficiency": 0.42738586451455535,
+      "utilisation": 0.8395124364990746,
+      "comm_fraction": 0.12545304287274536,
+      "comm_s_total": 8.279948291999997,
+      "idle_s_total": 0.0,
+      "bytes_sent_total": 1386680,
+      "compute_imbalance": 1.1910472400960335,
+      "tasks_per_rank": [
+        0,
+        7,
+        7,
+        7,
+        7,
+        6,
+        7,
+        7
+      ]
+    }
+  ]
+}

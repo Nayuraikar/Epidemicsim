@@ -23,7 +23,10 @@
   - OpenMP (C, FFI) @1M: 8 threads 3.10x static, 3.32x dynamic, 3.34x guided vs own 1 thread (its 1-thread time is 2.0 s vs rayon 1.6 s).
   - SIMD NEON vs scalar (same backend, 1 thread): 1.26x @100k (0.193->0.153 s), 1.05x @1M (1.613->1.535 s); kernels alone: timer 6.5x, Philox stream 2.3x; 64B alignment made no difference (<=3%). AVX2 compile-checked only (x86_64 target), untested.
   - Race: unsynchronised counting wrong in 200/200 (rayon) and 108/200 (OpenMP) runs; atomics fastest correct, used in production. Imbalance small (<=1.15); see results/tlp/analysis.md.
-- [ ] Phase 5: Phase 5 (TODO: define)
+- [x] Phase 5: Metal (M1) + MPI. Golden: Metal (shared/private, tg 32-256), all scenario files, and MPI (static/dynamic, 3-4 ranks, byte-identical outputs) PASS.
+  - Metal: `backends/src/mtl` (MSL Philox, atomics counts, simdgroup reduction). f64 tests become integer thresholds; vaccinated lambda*(1-ve) emulated exactly in u64; lambda's f64 `exp` runs on the CPU for active locations only.
+  - Backend trait got `sync_to_host`/`host_changed` (scenario vaccination edits agents on the host).
+  - MPI: `crates/mpi` (rsmpi 0.8 + Homebrew OpenMPI 5, builds fine); `compare --mpi auto|static|dynamic`; `bench --suite mpi|metal` regenerate results.
 - [ ] Phase 6: Phase 6 (TODO: define)
 - [ ] Phase 7: Phase 7 (TODO: define)
 - [ ] Phase 8: Phase 8 (TODO: define)
@@ -31,4 +34,8 @@
 ## Findings
 
 - Phase 4: load imbalance is small on both cities (max/mean <= 1.15) and Mumbai/Chennai gave no measurable dense-vs-sparse difference; speedup is limited by cores (4P+4E) and memory, not scheduling.
-
+- Phase 5 Metal vs best CPU (rayon guided 8t, same session, 80 steps): 100k 0.079 s vs 0.071 s (0.90x, Metal slower); 1M 0.233 vs 0.636 s (2.73x); 10M 1.666 vs 6.743 s (4.05x). results/gpu/metal_vs_cpu.json.
+- Phase 5 Metal breakdown @1M shared tg64: kernels 0.141 s, dispatch/commit/wait overhead 0.072 s, CPU lambda 0.004 s, readback 0.0001 s of 0.218 s; @100k overhead (0.055 s) exceeds kernels (0.021 s). Two command buffers per step cost ~0.7 ms each step.
+- Phase 5 shared vs private and tg 32/64/128/256 differ by <=13% at 1M (best: shared tg64 0.218 s; others 0.227-0.247 s), close to run-to-run noise; unified memory makes private no faster.
+- Phase 5 MPI (50k agents, 8 scenarios x 6 runs, sequential backend, 1 core per rank): static 1/2/4/8 procs speedup 1.00/1.90/2.88/4.26 (30.3 s -> 7.1 s); dynamic 1.00/0.98/1.84/3.42 (pure master => procs-1 workers). Comm <0.1% of run time for static; dynamic comm figures include the master waiting on requests.
+- Phase 5 caveats: 10M Metal/CPU results are not checked against sequential (too slow); 100k and 1M are (identical per-step stats).

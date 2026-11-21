@@ -53,6 +53,22 @@ impl RunMetrics {
         ]
     }
 
+    /// Inverse of [`values`](Self::values) (used to rebuild metrics received over MPI).
+    pub fn from_values(v: [f64; 10]) -> Self {
+        Self {
+            peak_infections: v[0],
+            peak_day: v[1],
+            attack_rate: v[2],
+            deaths: v[3],
+            peak_hospital_load: v[4],
+            peak_hospital_ratio: v[5],
+            days_over_capacity: v[6],
+            r_initial: v[7],
+            r_max: v[8],
+            vaccine_doses: v[9],
+        }
+    }
+
     pub fn from_stats(stats: &[StepStats], agents: usize, capacity: u32, doses: u64) -> Self {
         let spd = STEPS_PER_DAY as usize;
         let (mut peak, mut peak_step, mut peak_h) = (0u32, 0u32, 0u32);

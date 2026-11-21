@@ -1,0 +1,117 @@
+{
+  "backend": "openmp_guided_c64",
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.199692209,
+        "min": 0.199284875,
+        "max": 0.200088708
+      },
+      "agents_per_sec": 40061653.08131776,
+      "contacts_per_sec": 40061653.08131776,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 100000,
+      "threads": 8,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.085822625,
+        "min": 0.084866292,
+        "max": 0.089350291
+      },
+      "agents_per_sec": 93215512.80912231,
+      "contacts_per_sec": 93215512.80912231,
+      "speedup": 2.326801458240179,
+      "efficiency": 0.29085018228002235
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 2.029810459,
+        "min": 2.006684667,
+        "max": 2.210782833
+      },
+      "agents_per_sec": 39412546.94264042,
+      "contacts_per_sec": 39412516.39791654,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 8,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.849028791,
+        "min": 0.678853875,
+        "max": 1.017971583
+      },
+      "agents_per_sec": 94225308.78578888,
+      "contacts_per_sec": 94225235.76117456,
+      "speedup": 2.3907439659487357,
+      "efficiency": 0.29884299574359197
+    },
+    {
+      "agents": 10000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 21.105899042,
+        "min": 20.484072459,
+        "max": 21.243432792
+      },
+      "agents_per_sec": 37904094.88873362,
+      "contacts_per_sec": 37904057.12677909,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 10000000,
+      "threads": 8,
+      "steps": 80,
+      "wall_s": {
+        "median": 6.90513425,
+        "min": 6.0205885,
+        "max": 7.422824959
+      },
+      "agents_per_sec": 115855821.34047575,
+      "contacts_per_sec": 115855705.91911374,
+      "speedup": 3.0565515858000882,
+      "efficiency": 0.38206894822501103
+    }
+  ],
+  "amdahl": [
+    {
+      "agents": 100000,
+      "serial_fraction": 0.34831374703971835,
+      "max_speedup": 2.8709748280074905
+    },
+    {
+      "agents": 1000000,
+      "serial_fraction": 0.33517695829915345,
+      "max_speedup": 2.983498642252956
+    },
+    {
+      "agents": 10000000,
+      "serial_fraction": 0.23104694833063488,
+      "max_speedup": 4.328124682992874
+    }
+  ]
+}

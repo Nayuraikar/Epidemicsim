@@ -14,3 +14,4 @@ epidemicsim-data = { version = "0.1.0", path = "../data" }
 epidemicsim-scenarios = { version = "0.1.0", path = "../scenarios" }
 epidemicsim-backends = { version = "0.1.0", path = "../backends" }
 epidemicsim-bench = { version = "0.1.0", path = "../bench" }
+epidemicsim-mpi = { version = "0.1.0", path = "../mpi" }

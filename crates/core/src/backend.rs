@@ -43,6 +43,10 @@ pub struct StepStats {
 pub trait Backend {
     fn name(&self) -> &'static str;
     fn step(&mut self, world: &mut World, iv: &InterventionState) -> StepStats;
+    /// Copy device-resident agent state back into `world` (no-op for host backends).
+    fn sync_to_host(&mut self, _world: &mut World) {}
+    /// The host edited `world.agents` (e.g. vaccination): re-upload before the next step.
+    fn host_changed(&mut self) {}
 }
 
 impl<B: Backend + ?Sized> Backend for Box<B> {
@@ -51,6 +55,12 @@ impl<B: Backend + ?Sized> Backend for Box<B> {
     }
     fn step(&mut self, world: &mut World, iv: &InterventionState) -> StepStats {
         (**self).step(world, iv)
+    }
+    fn sync_to_host(&mut self, world: &mut World) {
+        (**self).sync_to_host(world)
+    }
+    fn host_changed(&mut self) {
+        (**self).host_changed()
     }
 }
 

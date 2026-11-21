@@ -1,0 +1,59 @@
+{
+  "backend": "metal",
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.078502916,
+        "min": 0.074418084,
+        "max": 0.085658375
+      },
+      "agents_per_sec": 101907042.53584668,
+      "contacts_per_sec": 101907042.53584668,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.233317708,
+        "min": 0.192767,
+        "max": 0.258744125
+      },
+      "agents_per_sec": 342880104.0682261,
+      "contacts_per_sec": 342879838.33614546,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 10000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.66621425,
+        "min": 1.5330715000000001,
+        "max": 1.8891782080000001
+      },
+      "agents_per_sec": 480130331.3784527,
+      "contacts_per_sec": 480129853.0486101,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

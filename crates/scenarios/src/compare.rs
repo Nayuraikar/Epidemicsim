@@ -82,15 +82,35 @@ where
     B: Backend,
     F: Fn() -> B + Sync,
 {
-    let city_dir = out_root.join(&opts.city);
-    let eo = &opts.ensemble;
     let mut ensembles = Vec::new();
     for sc in scenarios {
         let t = std::time::Instant::now();
-        let e = run_ensemble(src, sc, eo, &make_backend);
+        let e = run_ensemble(src, sc, &opts.ensemble, &make_backend);
+        eprintln!(
+            "{:<14} {} runs in {:.1}s",
+            sc.name,
+            opts.ensemble.runs,
+            t.elapsed().as_secs_f64()
+        );
+        ensembles.push(e);
+    }
+    write_all(src, scenarios, opts, out_root, &ensembles)
+}
+
+/// Write bands, summaries and comparison for already-computed ensembles (one per scenario).
+pub fn write_all(
+    src: &WorldSource,
+    scenarios: &[Scenario],
+    opts: &CompareOpts,
+    out_root: &Path,
+    ensembles: &[Ensemble],
+) -> Result<(), Box<dyn Error>> {
+    let city_dir = out_root.join(&opts.city);
+    let eo = &opts.ensemble;
+    for (sc, e) in scenarios.iter().zip(ensembles) {
         let dir = city_dir.join(&sc.name);
         std::fs::create_dir_all(&dir)?;
-        write_bands(&dir.join("bands.parquet"), &e)?;
+        write_bands(&dir.join("bands.parquet"), e)?;
         let summary = Summary {
             city: &opts.city,
             scenario: &sc.name,
@@ -110,15 +130,12 @@ where
             serde_json::to_string_pretty(&summary)? + "\n",
         )?;
         eprintln!(
-            "{:<14} {} runs in {:.1}s  peak={:.0} attack={:.1}% deaths={:.0}",
+            "{:<14} peak={:.0} attack={:.1}% deaths={:.0}",
             sc.name,
-            eo.runs,
-            t.elapsed().as_secs_f64(),
             e.metrics["peak_infections"].mean,
             e.metrics["attack_rate"].mean * 100.0,
             e.metrics["deaths"].mean
         );
-        ensembles.push(e);
     }
 
     let base = scenarios

@@ -20,6 +20,7 @@ pub fn run_world(cfg: &Config, mut world: World, backend: &mut dyn Backend) -> R
     let iv = InterventionState::default();
     let steps = cfg.days * STEPS_PER_DAY;
     let stats: Vec<StepStats> = (0..steps).map(|_| backend.step(&mut world, &iv)).collect();
+    backend.sync_to_host(&mut world);
     let summary = Summary::from_stats(cfg, backend.name(), &stats);
     RunOutput { stats, summary }
 }

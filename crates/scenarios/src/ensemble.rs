@@ -1,7 +1,7 @@
 //! Monte Carlo ensembles: many seeded runs of one scenario, parallel over runs with rayon.
 use crate::engine::Controller;
 use crate::metrics::{quantile, Dist, RunMetrics};
-use crate::spec::Scenario;
+use crate::spec::{Intervention, Scenario};
 use epidemicsim_core::world::STEPS_PER_DAY;
 use epidemicsim_core::{synth, Backend, Config, StepStats, World};
 use rayon::prelude::*;
@@ -103,9 +103,21 @@ pub fn run_once(
     let mut world = src.make(seed);
     let n = world.agents.len();
     let mut ctl = Controller::new(scenario, n, opts.hospital_capacity);
+    let has_vax = scenario
+        .interventions
+        .iter()
+        .any(|i| matches!(i, Intervention::Vaccination { .. }));
     let mut stats: Vec<StepStats> = Vec::with_capacity((opts.days * STEPS_PER_DAY) as usize);
     for _ in 0..opts.days * STEPS_PER_DAY {
+        // Vaccination edits agents on the host: device-resident backends sync around it.
+        let edits = has_vax && world.step.is_multiple_of(STEPS_PER_DAY);
+        if edits {
+            backend.sync_to_host(&mut world);
+        }
         let iv = ctl.update(&mut world, stats.last()).clone();
+        if edits {
+            backend.host_changed();
+        }
         let s = backend.step(&mut world, &iv);
         stats.push(s);
     }
@@ -135,6 +147,16 @@ where
         })
         .collect();
 
+    ensemble_from_results(scenario, opts, results)
+}
+
+/// Aggregate per-run results (ordered by run index) into bands, metric distributions and hashes.
+/// Pure and deterministic, so any way of producing `results` (rayon, MPI) gives identical output.
+pub fn ensemble_from_results(
+    scenario: &Scenario,
+    opts: &EnsembleOpts,
+    results: Vec<(Vec<StepStats>, RunMetrics)>,
+) -> Ensemble {
     let steps = results.first().map_or(0, |r| r.0.len());
     let bands = (0..SERIES.len())
         .map(|k| {

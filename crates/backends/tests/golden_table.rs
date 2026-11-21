@@ -54,6 +54,21 @@ fn golden_table() {
             ..Default::default()
         },
     ));
+    #[cfg(target_os = "macos")]
+    if epidemicsim_backends::mtl::available() {
+        for (private, tg) in [(false, 64), (true, 64), (false, 32), (false, 256)] {
+            let m = if private { "private" } else { "shared" };
+            rows.push((
+                format!("metal {m} tg{tg}"),
+                "metal",
+                BackendOpts {
+                    metal_tg: tg,
+                    metal_private: private,
+                    ..Default::default()
+                },
+            ));
+        }
+    }
     println!("\n{:<22} {:<6} {:<6}", "variant", "novax", "vax");
     let mut all = true;
     for (label, name, o) in rows {

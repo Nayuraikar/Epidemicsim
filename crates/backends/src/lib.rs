@@ -3,6 +3,8 @@
 #![allow(clippy::needless_range_loop)]
 pub mod engine;
 pub mod kernels;
+#[cfg(target_os = "macos")]
+pub mod mtl;
 pub mod openmp;
 pub mod par;
 pub mod simd;
@@ -14,7 +16,7 @@ pub use par::Schedule;
 use par::{RayonPar, Serial};
 pub use simd::SimdKind;
 
-pub const NAMES: [&str; 5] = ["sequential", "ilp", "rayon", "openmp", "simd"];
+pub const NAMES: [&str; 6] = ["sequential", "ilp", "rayon", "openmp", "simd", "metal"];
 
 /// Backend selection flags (each backend uses the ones that apply to it).
 #[derive(Clone, Debug)]
@@ -25,6 +27,10 @@ pub struct BackendOpts {
     /// Chunk size; 0 = the schedule's default.
     pub chunk: usize,
     pub simd: SimdKind,
+    /// Metal threads per threadgroup (32, 64, 128, 256).
+    pub metal_tg: usize,
+    /// Metal: private (GPU-only) agent buffers instead of shared.
+    pub metal_private: bool,
 }
 
 impl Default for BackendOpts {
@@ -35,6 +41,8 @@ impl Default for BackendOpts {
             schedule: Schedule::Static,
             chunk: 0,
             simd: SimdKind::Scalar,
+            metal_tg: 64,
+            metal_private: false,
         }
     }
 }
@@ -73,6 +81,15 @@ pub fn label(name: &str, o: &BackendOpts) -> String {
             format!("{name}_{}_c{c}", o.schedule.name())
         }
         "simd" => format!("simd_{}", o.simd.name()),
+        "metal" => {
+            let d = BackendOpts::default();
+            if o.metal_tg == d.metal_tg && o.metal_private == d.metal_private {
+                "metal".to_string()
+            } else {
+                let m = if o.metal_private { "private" } else { "shared" };
+                format!("metal_{m}_tg{}", o.metal_tg)
+            }
+        }
         _ => name.to_string(),
     }
 }
@@ -115,6 +132,11 @@ pub fn make_with(name: &str, o: &BackendOpts) -> Result<Box<dyn Backend + Send>,
             o.simd.check()?;
             Ok(Box::new(Engine::new(Serial, Variant::Simd(o.simd), "simd")))
         }
+        #[cfg(target_os = "macos")]
+        "metal" => Ok(Box::new(mtl::MetalBackend::new(mtl::MetalOpts {
+            threadgroup: o.metal_tg,
+            private: o.metal_private,
+        })?)),
         _ => Err(format!(
             "unknown or not-yet-implemented backend '{name}' (available: {})",
             NAMES.join(", ")

@@ -24,6 +24,12 @@ struct BackendFlags {
     /// SIMD kernel for the simd backend: scalar | neon | avx2
     #[arg(long, default_value = "scalar")]
     simd: String,
+    /// Metal threads per threadgroup: 32 | 64 | 128 | 256
+    #[arg(long, default_value_t = 64)]
+    metal_tg: usize,
+    /// Metal: use private (GPU-only) agent buffers instead of shared
+    #[arg(long)]
+    metal_private: bool,
 }
 
 impl BackendFlags {
@@ -34,6 +40,8 @@ impl BackendFlags {
             schedule: self.schedule.parse()?,
             chunk: self.chunk,
             simd: epidemicsim_backends::parse_simd(&self.simd)?,
+            metal_tg: self.metal_tg,
+            metal_private: self.metal_private,
         })
     }
 }
@@ -138,6 +146,13 @@ fn pipeline(a: PipelineArgs) -> Result<(), Box<dyn std::error::Error>> {
 
 #[derive(Args)]
 struct CompareArgs {
+    /// MPI distribution of (scenario x run) tasks: auto | off | static | dynamic.
+    /// auto = static when started by mpirun, otherwise single process.
+    #[arg(long, default_value = "auto")]
+    mpi: String,
+    /// Write the MPI timing report (JSON) here
+    #[arg(long)]
+    mpi_timing: Option<PathBuf>,
     /// City folder under --cities-dir; omit for a synthetic city
     #[arg(long)]
     city: Option<String>,
@@ -234,6 +249,39 @@ fn compare(a: CompareArgs) -> Result<(), Box<dyn std::error::Error>> {
         },
     };
     let backend = a.backend.clone();
+    let launched = epidemicsim_mpi::launched_by_mpirun();
+    let mode = match a.mpi.as_str() {
+        "auto" => launched.then_some(epidemicsim_mpi::Mode::Static),
+        "off" => None,
+        m => Some(m.parse::<epidemicsim_mpi::Mode>()?),
+    };
+    if launched && mode.is_none() {
+        return Err("started by mpirun but --mpi off: every rank would repeat the work".into());
+    }
+    if let Some(mode) = mode {
+        let rep = epidemicsim_mpi::compare_mpi(
+            &src,
+            &chosen,
+            &opts,
+            &a.out,
+            move || epidemicsim_backends::make_with(&backend, &bopts).expect("validated above"),
+            mode,
+        )?;
+        if rep.per_rank[0].rank == 0 {
+            if let Some(p) = &a.mpi_timing {
+                epidemicsim_mpi::scaling::write(p, &rep)?;
+            }
+            println!(
+                "wrote {}/{label}/comparison.json ({} scenarios x {} runs, {} ranks, {:?})",
+                a.out.display(),
+                chosen.len(),
+                a.runs,
+                rep.ranks,
+                mode
+            );
+        }
+        return Ok(());
+    }
     epidemicsim_scenarios::compare(&src, &chosen, &opts, &a.out, move || {
         epidemicsim_backends::make_with(&backend, &bopts).expect("validated above")
     })?;
@@ -272,7 +320,7 @@ struct BenchArgs {
     seed: u64,
     #[arg(long, default_value = "results/bench")]
     out: PathBuf,
-    /// scaling (default) | race | imbalance | simd-align
+    /// scaling (default) | race | imbalance | simd-align | metal | mpi
     #[arg(long, default_value = "scaling")]
     suite: String,
     /// City for --suite imbalance (loaded from --cities-dir)
@@ -317,6 +365,104 @@ fn bench_suite(a: &BenchArgs) -> Result<bool, Box<dyn std::error::Error>> {
             let r = tlp::imbalance(&world, &o)?;
             let path = a.tlp_out.join(format!("imbalance_{}.json", a.city));
             tlp::write_json(&path, &r)?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        "mpi" => {
+            let procs = if a.threads == [1] {
+                vec![1, 2, 4, 8]
+            } else {
+                a.threads.clone()
+            };
+            let (agents, runs) = (50_000, 6);
+            let o = epidemicsim_mpi::scaling::Opts {
+                exe: std::env::current_exe()?,
+                procs,
+                reps: a.reps.max(1),
+                agents,
+                days: 90,
+                runs,
+                scenarios_dir: "scenarios".into(),
+                backend: "sequential".into(),
+                work_dir: std::env::temp_dir().join("epidemicsim_mpi_scaling"),
+            };
+            let n_scen = epidemicsim_scenarios::load_all(std::path::Path::new("scenarios"))?.len();
+            let machine = epidemicsim_bench::machine_info();
+            let sc = epidemicsim_mpi::scaling::run(&o, &machine.cpu, n_scen)?;
+            epidemicsim_mpi::scaling::write(std::path::Path::new("results/mpi/scaling.json"), &sc)?;
+            // Same JSON layout as the other backends: `threads` = MPI processes.
+            for (mode, name) in [("static", "mpi"), ("dynamic", "mpi_dynamic")] {
+                let steps = o.days * 4;
+                let points = sc
+                    .points
+                    .iter()
+                    .filter(|p| p.mode == mode)
+                    .map(|p| {
+                        let work = (sc.tasks * agents) as f64 * f64::from(steps);
+                        epidemicsim_bench::Point {
+                            agents,
+                            threads: p.procs,
+                            steps,
+                            wall_s: epidemicsim_bench::Timing {
+                                median: p.wall_s.median,
+                                min: p.wall_s.min,
+                                max: p.wall_s.max,
+                            },
+                            agents_per_sec: work / p.wall_s.median,
+                            contacts_per_sec: work / p.wall_s.median,
+                            speedup: p.speedup,
+                            efficiency: p.efficiency,
+                        }
+                    })
+                    .collect::<Vec<_>>();
+                let pairs: Vec<(f64, f64)> = points
+                    .iter()
+                    .map(|p| (p.threads as f64, p.speedup))
+                    .collect();
+                let amdahl = epidemicsim_bench::amdahl_fit(&pairs)
+                    .map(|s| {
+                        vec![epidemicsim_bench::Amdahl {
+                            agents,
+                            serial_fraction: s,
+                            max_speedup: if s > 0.0 { 1.0 / s } else { f64::INFINITY },
+                        }]
+                    })
+                    .unwrap_or_default();
+                let rep = epidemicsim_bench::Report {
+                    backend: name.into(),
+                    machine: machine.clone(),
+                    days: o.days,
+                    warmup: 1,
+                    reps: o.reps,
+                    seed: 42,
+                    points,
+                    amdahl,
+                };
+                println!(
+                    "wrote {}",
+                    epidemicsim_bench::write_report(&a.out, &rep)?.display()
+                );
+            }
+            println!("wrote results/mpi/scaling.json");
+            Ok(true)
+        }
+        #[cfg(target_os = "macos")]
+        "metal" => {
+            let agents = if a.agents == [10_000, 100_000, 1_000_000] {
+                vec![100_000, 1_000_000]
+            } else {
+                a.agents.clone()
+            };
+            let b = epidemicsim_backends::mtl::measure::breakdown(
+                &agents,
+                &[32, 64, 128, 256],
+                a.days,
+                a.warmup,
+                a.reps.max(1),
+                a.seed,
+            )?;
+            let path = std::path::Path::new("results/gpu/metal_breakdown.json");
+            b.write(path)?;
             println!("wrote {}", path.display());
             Ok(true)
         }

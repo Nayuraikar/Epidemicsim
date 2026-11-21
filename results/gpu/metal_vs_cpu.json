@@ -1,0 +1,41 @@
+{
+  "note": "same session, 80 steps, median of 5 reps (1 warmup); CPU = 8 threads guided c64; speedup = best_cpu_s / metal_s (<1 means Metal slower)",
+  "rows": [
+    {
+      "agents": 100000,
+      "metal_s": 0.078502916,
+      "best_cpu": "rayon_guided_c64_8t",
+      "best_cpu_s": 0.070721791,
+      "cpu_s": {
+        "rayon_guided_c64_8t": 0.070721791,
+        "openmp_guided_c64_8t": 0.085822625
+      },
+      "speedup_vs_best_cpu": 0.9008810704560325,
+      "steps": 80
+    },
+    {
+      "agents": 1000000,
+      "metal_s": 0.233317708,
+      "best_cpu": "rayon_guided_c64_8t",
+      "best_cpu_s": 0.63627825,
+      "cpu_s": {
+        "rayon_guided_c64_8t": 0.63627825,
+        "openmp_guided_c64_8t": 0.849028791
+      },
+      "speedup_vs_best_cpu": 2.7270894072043603,
+      "steps": 80
+    },
+    {
+      "agents": 10000000,
+      "metal_s": 1.66621425,
+      "best_cpu": "rayon_guided_c64_8t",
+      "best_cpu_s": 6.742594,
+      "cpu_s": {
+        "rayon_guided_c64_8t": 6.742594,
+        "openmp_guided_c64_8t": 6.90513425
+      },
+      "speedup_vs_best_cpu": 4.046654864462959,
+      "steps": 80
+    }
+  ]
+}
