@@ -1,0 +1,24 @@
+{
+  "backend": "sequential",
+  "agents": 1000000,
+  "days": 60,
+  "seed": 42,
+  "steps": 240,
+  "peak_infectious": 22157,
+  "peak_infectious_day": 59,
+  "peak_hospital_load": 896,
+  "peak_hospital_day": 59,
+  "attack_rate": 0.09805900000000001,
+  "total_deaths": 144,
+  "max_r_t": 3.7030836233009703,
+  "final_counts": {
+    "S": 901941,
+    "E": 18842,
+    "A": 9178,
+    "I": 12979,
+    "H": 896,
+    "R": 56020,
+    "D": 144
+  },
+  "hash": "0e615877071afc06"
+}

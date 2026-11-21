@@ -1,0 +1,8 @@
+name = "masks"
+description = "Masks adopted once 0.5% of the population is infectious: 60% compliance, 35% transmission reduction."
+
+[[interventions]]
+kind = "masks"
+trigger = { metric = "infectious", above = 0.005 }
+compliance = 0.6
+efficacy = 0.35

@@ -1,0 +1,12 @@
+name = "closures"
+description = "Colleges and markets close once 0.5% of the population is infectious, for 30 days."
+
+[[interventions]]
+kind = "college_closure"
+trigger = { metric = "infectious", above = 0.005 }
+duration_days = 30
+
+[[interventions]]
+kind = "market_closure"
+trigger = { metric = "infectious", above = 0.005 }
+duration_days = 30

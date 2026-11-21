@@ -1,0 +1,124 @@
+{
+  "city": "synthetic",
+  "scenario": "isolation",
+  "description": "From day 7, 60% of symptomatic agents stay home.",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 100000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 200,
+  "interventions": [
+    {
+      "kind": "isolation",
+      "start_day": 7,
+      "trigger": null,
+      "duration_days": null,
+      "compliance": 0.6
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.0118916,
+      "p05": 0.003383999999999976,
+      "p95": 0.02353649999999997
+    },
+    "days_over_capacity": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    },
+    "deaths": {
+      "mean": 8.24,
+      "p05": 3.0,
+      "p95": 15.549999999999997
+    },
+    "peak_day": {
+      "mean": 57.2,
+      "p05": 4.45,
+      "p95": 119.0
+    },
+    "peak_hospital_load": {
+      "mean": 8.48,
+      "p05": 5.0,
+      "p95": 14.549999999999997
+    },
+    "peak_hospital_ratio": {
+      "mean": 0.042400000000000014,
+      "p05": 0.025,
+      "p95": 0.07274999999999998
+    },
+    "peak_infections": {
+      "mean": 86.38,
+      "p05": 47.45,
+      "p95": 146.1
+    },
+    "r_initial": {
+      "mean": 1.6299202299619944,
+      "p05": 1.2678592477037707,
+      "p95": 2.299068176867397
+    },
+    "r_max": {
+      "mean": 3.2674707146915223,
+      "p05": 1.983081185610736,
+      "p95": 8.149821875
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "32bd9c1c85e9cc5f",
+    "9d6023c31e9e918e",
+    "606406a52cd042f3",
+    "f5d6c5f08310f4aa",
+    "a5de44e92f317758",
+    "b482fde12262f708",
+    "48389573ae929d9e",
+    "e51dce28a232c874",
+    "4dfa09fd2ffc8f88",
+    "a132770b41f21254",
+    "b89aca2c1d40ec84",
+    "5c927f951ba0d7a3",
+    "03dab70e21bd9d52",
+    "f1b61ed7bf1e9e7a",
+    "891d605769e72fea",
+    "ba33ac1fd3110ac9",
+    "dddc9f066686250c",
+    "4b9b0fea5b892be9",
+    "64b45bea598d630e",
+    "4208461ca6a68f22",
+    "203c45492776577c",
+    "f506cbfd4471635c",
+    "5edeb7adf1fc8998",
+    "be06e6f57196ccb0",
+    "07cac59db2e65f48",
+    "0abd1140946219f6",
+    "ad58d64c739d159e",
+    "162069e2f800f361",
+    "4170cd25b6954b0e",
+    "96fc1de9e5b37fb4",
+    "1bda482ed7b18e6b",
+    "50199029c23a7e9c",
+    "7fc84a8dd05d81c8",
+    "7993547d642d2467",
+    "3ce19b3d75bdf804",
+    "b9fb378e47969acf",
+    "88f7038d0ef3c441",
+    "a14d0da214620c51",
+    "341226d7f3e35b80",
+    "73c6bac87ea3d68e",
+    "0e9e4cd26ab5ebf5",
+    "5ac1a44c13b00aca",
+    "ac0e89a7b144e249",
+    "e20e0dc277bf9955",
+    "d054f7e23e126e5d",
+    "25cb4ab3fecec126",
+    "f1b69145d0602c11",
+    "f9c70f583bf3048c",
+    "5db3f9b32e038905",
+    "85cc50fca2261aa5"
+  ]
+}

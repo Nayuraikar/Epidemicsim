@@ -1,0 +1,45 @@
+{
+  "backend": "simd_scalar",
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.192705708,
+        "min": 0.15776825,
+        "max": 0.212385417
+      },
+      "agents_per_sec": 41514079.07439877,
+      "contacts_per_sec": 41514079.07439877,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.612527917,
+        "min": 1.586753667,
+        "max": 1.71376825
+      },
+      "agents_per_sec": 49611544.18264872,
+      "contacts_per_sec": 49611505.733701974,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

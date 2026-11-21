@@ -1,0 +1,71 @@
+{
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "elements": 1048576,
+  "passes_per_sample": 20,
+  "reps": 5,
+  "note": "aligned: slices start on a 64-byte boundary; misaligned: start +1 element (+1 byte for u8 states, +2 for u16 timers, +4 for u32). Single thread.",
+  "rows": [
+    {
+      "kernel": "timer_recovery",
+      "variant": "scalar",
+      "alignment": "aligned_64B",
+      "elements": 1048576,
+      "ns_per_element": 1.328978967666626
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "scalar",
+      "alignment": "aligned_64B",
+      "elements": 1048576,
+      "ns_per_element": 15.039416122436524
+    },
+    {
+      "kernel": "timer_recovery",
+      "variant": "neon",
+      "alignment": "aligned_64B",
+      "elements": 1048576,
+      "ns_per_element": 0.20464658737182617
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "neon",
+      "alignment": "aligned_64B",
+      "elements": 1048576,
+      "ns_per_element": 6.4007659435272215
+    },
+    {
+      "kernel": "timer_recovery",
+      "variant": "scalar",
+      "alignment": "misaligned_+1_element",
+      "elements": 1048576,
+      "ns_per_element": 1.3420641422271729
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "scalar",
+      "alignment": "misaligned_+1_element",
+      "elements": 1048576,
+      "ns_per_element": 14.974371576309204
+    },
+    {
+      "kernel": "timer_recovery",
+      "variant": "neon",
+      "alignment": "misaligned_+1_element",
+      "elements": 1048576,
+      "ns_per_element": 0.2122739791870117
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "neon",
+      "alignment": "misaligned_+1_element",
+      "elements": 1048576,
+      "ns_per_element": 6.4281463623046875
+    }
+  ]
+}

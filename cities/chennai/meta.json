@@ -1,0 +1,32 @@
+{
+  "name": "chennai",
+  "source_url": "https://download.geofabrik.de/asia/india/southern-zone/southern-zone-latest.osm.pbf",
+  "bbox": [
+    80.1,
+    12.85,
+    80.35,
+    13.25
+  ],
+  "seed": 42,
+  "target_agents": 1000000,
+  "agents": 1000000,
+  "pop_weight": "building_density",
+  "hospital_beds_per_1000": 1.4,
+  "total_beds": 1400.0,
+  "counts": {
+    "homes": 300473,
+    "schools": 1081,
+    "colleges": 184,
+    "offices": 15894,
+    "markets": 2000,
+    "hospitals": 851
+  },
+  "synthetic": {
+    "homes": 0,
+    "schools": 419,
+    "colleges": 0,
+    "offices": 14861,
+    "markets": 1659,
+    "hospitals": 0
+  }
+}

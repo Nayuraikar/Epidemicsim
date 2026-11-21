@@ -1,0 +1,10 @@
+# chennai city definition. Run: epidemicsim pipeline chennai
+name = "chennai"
+geofabrik_url = "https://download.geofabrik.de/asia/india/southern-zone/southern-zone-latest.osm.pbf"
+# [min_lon, min_lat, max_lon, max_lat]
+bbox = [80.10, 12.85, 80.35, 13.25]
+target_agents = 1000000   # max 1M
+# Approximate, verify before drawing conclusions.
+hospital_beds_per_1000 = 1.4
+# Optional WorldPop GeoTIFF clipped to the city (default: data_cache/chennai_worldpop.tif if present)
+# worldpop_tif = "data_cache/chennai_worldpop.tif"

@@ -1,0 +1,135 @@
+{
+  "city": "synthetic",
+  "scenario": "closures",
+  "description": "Colleges and markets close once 0.5% of the population is infectious, for 30 days.",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 100000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 200,
+  "interventions": [
+    {
+      "kind": "college_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    },
+    {
+      "kind": "market_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.2946918,
+      "p05": 0.2648435,
+      "p95": 0.3199485
+    },
+    "days_over_capacity": {
+      "mean": 10.75,
+      "p05": 0.2250000000000001,
+      "p95": 21.0
+    },
+    "deaths": {
+      "mean": 150.4,
+      "p05": 113.85000000000001,
+      "p95": 186.1
+    },
+    "peak_day": {
+      "mean": 101.18,
+      "p05": 91.0,
+      "p95": 111.0
+    },
+    "peak_hospital_load": {
+      "mean": 224.98,
+      "p05": 200.35,
+      "p95": 247.1
+    },
+    "peak_hospital_ratio": {
+      "mean": 1.1249000000000002,
+      "p05": 1.00175,
+      "p95": 1.2355
+    },
+    "peak_infections": {
+      "mean": 2716.36,
+      "p05": 2563.75,
+      "p95": 2891.25
+    },
+    "r_initial": {
+      "mean": 1.6299202299619944,
+      "p05": 1.2678592477037707,
+      "p95": 2.299068176867397
+    },
+    "r_max": {
+      "mean": 2.5586389259555857,
+      "p05": 2.1202971779825517,
+      "p95": 3.240599367241379
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "ef95b2af20384819",
+    "09c7a8bce0b3d7cf",
+    "4aa39abc55f907be",
+    "148bed28fc75929f",
+    "edc95ec808fc07b4",
+    "ecffd8bb73cac5b2",
+    "5baea22c3221ad86",
+    "d13bb74ebe13084d",
+    "8d62b9f046e36e18",
+    "a776b520a2ee0186",
+    "43a77839760ea0bb",
+    "9882b6528b323b72",
+    "f7fb17bc7b68eb3e",
+    "9997a42b00ccbfd8",
+    "ec84d23ac990f6e1",
+    "3f7002d2d7f6d23a",
+    "73231bc57231dca9",
+    "b8cea53b0395517b",
+    "46a0f70cb8720fe4",
+    "28ff4b16b201f201",
+    "193a5f8771b30ea5",
+    "eadbda02f021b583",
+    "2ac66f6e3abeffb9",
+    "4c725762b5662ceb",
+    "80bf296f89cb027f",
+    "abb4944f758249a7",
+    "37647dde152df139",
+    "a10237db3c714f12",
+    "335581eaf2d30087",
+    "ff856fc0e269d5af",
+    "83d44c1bc1075fb1",
+    "e1fb707f9a0fa689",
+    "8da4fd5a83859087",
+    "1c741f47e78653a1",
+    "1cb225342a5c44dd",
+    "aeebb4061202ed0d",
+    "b93f5f3166108a86",
+    "81a52e4035d3cb8f",
+    "221ff978335af524",
+    "0eb0425eb4ccfa5c",
+    "524c05e3939deee1",
+    "35aef5266f5d2658",
+    "fb51833f2a4ba102",
+    "8ac9635b3dbfa791",
+    "8b00a3398a49cae0",
+    "e27138e9a158990d",
+    "d4f1f3851fa2cfe4",
+    "713dcd35f352a214",
+    "3cf3ad4c83801b04",
+    "b1c80a7cec458b3b"
+  ]
+}

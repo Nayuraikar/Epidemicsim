@@ -1,0 +1,10 @@
+# mumbai city definition. Run: epidemicsim pipeline mumbai
+name = "mumbai"
+geofabrik_url = "https://download.geofabrik.de/asia/india/western-zone/western-zone-latest.osm.pbf"
+# [min_lon, min_lat, max_lon, max_lat]
+bbox = [72.76, 18.89, 73.05, 19.30]
+target_agents = 1000000   # max 1M
+# Approximate, verify before drawing conclusions.
+hospital_beds_per_1000 = 1.5
+# Optional WorldPop GeoTIFF clipped to the city (default: data_cache/mumbai_worldpop.tif if present)
+# worldpop_tif = "data_cache/mumbai_worldpop.tif"

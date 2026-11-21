@@ -1,0 +1,10 @@
+# delhi city definition. Run: epidemicsim pipeline delhi
+name = "delhi"
+geofabrik_url = "https://download.geofabrik.de/asia/india/northern-zone/northern-zone-latest.osm.pbf"
+# [min_lon, min_lat, max_lon, max_lat]
+bbox = [76.84, 28.40, 77.35, 28.88]
+target_agents = 1000000   # max 1M
+# Approximate, verify before drawing conclusions.
+hospital_beds_per_1000 = 2.0
+# Optional WorldPop GeoTIFF clipped to the city (default: data_cache/delhi_worldpop.tif if present)
+# worldpop_tif = "data_cache/delhi_worldpop.tif"

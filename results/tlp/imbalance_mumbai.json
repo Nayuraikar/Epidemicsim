@@ -1,0 +1,2250 @@
+{
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "city": "mumbai",
+  "agents": 1000000,
+  "locations": 320892,
+  "days": 30,
+  "steps": 120,
+  "reps": 3,
+  "note": "work_s: rayon = time inside kernel calls; openmp = from loop start to the thread's last iteration (includes scheduling overhead). Stats are the repetition with median wall time.",
+  "points": [
+    {
+      "backend": "rayon",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 1,
+      "wall_s": 2.440893042,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.916943657,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.072285875,
+              "items": 38507040
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.44547641600000004,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        2.434705948
+      ],
+      "total_time_imbalance": 1.0
+    },
+    {
+      "backend": "rayon",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 2,
+      "wall_s": 1.435611292,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.1356292510000001,
+              "items": 60000000
+            },
+            {
+              "thread": 1,
+              "work_s": 1.129318542,
+              "items": 60000000
+            }
+          ],
+          "time_imbalance": 1.002786249210469,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.038728756,
+              "items": 19253520
+            },
+            {
+              "thread": 1,
+              "work_s": 0.039185713000000004,
+              "items": 19253520
+            }
+          ],
+          "time_imbalance": 1.0058648541903044,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.243149252,
+              "items": 60000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.25006062500000004,
+              "items": 60000000
+            }
+          ],
+          "time_imbalance": 1.0140130466203132,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        1.4175072590000002,
+        1.41856488
+      ],
+      "total_time_imbalance": 1.0003729175240135
+    },
+    {
+      "backend": "rayon",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 4,
+      "wall_s": 1.225171667,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.9405156670000001,
+              "items": 30000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.964268797,
+              "items": 30000000
+            },
+            {
+              "thread": 2,
+              "work_s": 0.9548183790000001,
+              "items": 30000000
+            },
+            {
+              "thread": 3,
+              "work_s": 0.93811579,
+              "items": 30000000
+            }
+          ],
+          "time_imbalance": 1.0156295293927848,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.02860421,
+              "items": 9626760
+            },
+            {
+              "thread": 1,
+              "work_s": 0.028870461000000004,
+              "items": 9626760
+            },
+            {
+              "thread": 2,
+              "work_s": 0.028643921000000003,
+              "items": 9626760
+            },
+            {
+              "thread": 3,
+              "work_s": 0.029892500000000002,
+              "items": 9626760
+            }
+          ],
+          "time_imbalance": 1.0306773079939633,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.17137433700000002,
+              "items": 30000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.18422891500000002,
+              "items": 30000000
+            },
+            {
+              "thread": 2,
+              "work_s": 0.183650211,
+              "items": 30000000
+            },
+            {
+              "thread": 3,
+              "work_s": 0.18179975,
+              "items": 30000000
+            }
+          ],
+          "time_imbalance": 1.0219989963486924,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        1.140494214,
+        1.177368173,
+        1.167112511,
+        1.14980804
+      ],
+      "total_time_imbalance": 1.0161150489675856
+    },
+    {
+      "backend": "rayon",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 8,
+      "wall_s": 1.012348125,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.5999476690000001,
+              "items": 15000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.605911873,
+              "items": 15000000
+            },
+            {
+              "thread": 2,
+              "work_s": 0.621906006,
+              "items": 15000000
+            },
+            {
+              "thread": 3,
+              "work_s": 0.6253390080000001,
+              "items": 15000000
+            },
+            {
+              "thread": 4,
+              "work_s": 0.639420415,
+              "items": 15000000
+            },
+            {
+              "thread": 5,
+              "work_s": 0.608868705,
+              "items": 15000000
+            },
+            {
+              "thread": 6,
+              "work_s": 0.6192250460000001,
+              "items": 15000000
+            },
+            {
+              "thread": 7,
+              "work_s": 0.645326162,
+              "items": 15000000
+            }
+          ],
+          "time_imbalance": 1.0396026167414063,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.016155502000000002,
+              "items": 4813320
+            },
+            {
+              "thread": 1,
+              "work_s": 0.015978996000000002,
+              "items": 4813440
+            },
+            {
+              "thread": 2,
+              "work_s": 0.01625721,
+              "items": 4813320
+            },
+            {
+              "thread": 3,
+              "work_s": 0.016461113,
+              "items": 4813440
+            },
+            {
+              "thread": 4,
+              "work_s": 0.016341421000000002,
+              "items": 4813320
+            },
+            {
+              "thread": 5,
+              "work_s": 0.016519118,
+              "items": 4813440
+            },
+            {
+              "thread": 6,
+              "work_s": 0.016533084,
+              "items": 4813320
+            },
+            {
+              "thread": 7,
+              "work_s": 0.016779786,
+              "items": 4813440
+            }
+          ],
+          "time_imbalance": 1.0245146181798868,
+          "items_imbalance": 1.000012465253107
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.08868804100000001,
+              "items": 15000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.090090615,
+              "items": 15000000
+            },
+            {
+              "thread": 2,
+              "work_s": 0.096952827,
+              "items": 15000000
+            },
+            {
+              "thread": 3,
+              "work_s": 0.09991166700000001,
+              "items": 15000000
+            },
+            {
+              "thread": 4,
+              "work_s": 0.09697087800000001,
+              "items": 15000000
+            },
+            {
+              "thread": 5,
+              "work_s": 0.097288708,
+              "items": 15000000
+            },
+            {
+              "thread": 6,
+              "work_s": 0.097955129,
+              "items": 15000000
+            },
+            {
+              "thread": 7,
+              "work_s": 0.09360246200000001,
+              "items": 15000000
+            }
+          ],
+          "time_imbalance": 1.049684806494193,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        0.7047912120000002,
+        0.711981484,
+        0.735116043,
+        0.741711788,
+        0.7527327140000001,
+        0.7226765310000001,
+        0.7337132590000001,
+        0.75570841
+      ],
+      "total_time_imbalance": 1.031960063181697
+    },
+    {
+      "backend": "rayon",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 1,
+      "wall_s": 2.453813334,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.9095663820000002,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.07143811900000001,
+              "items": 38507040
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.45293979900000003,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        2.4339443000000003
+      ],
+      "total_time_imbalance": 1.0
+    },
+    {
+      "backend": "rayon",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 2,
+      "wall_s": 1.6292131250000002,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.3320916660000002,
+              "items": 60015744
+            },
+            {
+              "thread": 1,
+              "work_s": 1.3320458670000002,
+              "items": 59984256
+            }
+          ],
+          "time_imbalance": 1.0000171909293092,
+          "items_imbalance": 1.0002624
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.039219488000000004,
+              "items": 19296908
+            },
+            {
+              "thread": 1,
+              "work_s": 0.039180612000000004,
+              "items": 19210132
+            }
+          ],
+          "time_imbalance": 1.000495866714456,
+          "items_imbalance": 1.0022535100075207
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.241597114,
+              "items": 60008960
+            },
+            {
+              "thread": 1,
+              "work_s": 0.24162839500000002,
+              "items": 59991040
+            }
+          ],
+          "time_imbalance": 1.0000647337514625,
+          "items_imbalance": 1.0001493333333333
+        }
+      ],
+      "total_work_s": [
+        1.6129082680000002,
+        1.6128548740000002
+      ],
+      "total_time_imbalance": 1.0000165523622317
+    },
+    {
+      "backend": "rayon",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 4,
+      "wall_s": 1.369300458,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.15566896,
+              "items": 29803200
+            },
+            {
+              "thread": 1,
+              "work_s": 1.157013558,
+              "items": 30119232
+            },
+            {
+              "thread": 2,
+              "work_s": 1.1556165040000002,
+              "items": 29845568
+            },
+            {
+              "thread": 3,
+              "work_s": 1.15722816,
+              "items": 30232000
+            }
+          ],
+          "time_imbalance": 1.0007319074922258,
+          "items_imbalance": 1.0077333333333334
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.027755073,
+              "items": 9694988
+            },
+            {
+              "thread": 1,
+              "work_s": 0.027900385000000003,
+              "items": 9664120
+            },
+            {
+              "thread": 2,
+              "work_s": 0.027832195,
+              "items": 9596008
+            },
+            {
+              "thread": 3,
+              "work_s": 0.027883642,
+              "items": 9551924
+            }
+          ],
+          "time_imbalance": 1.0020673639468771,
+          "items_imbalance": 1.007087327408183
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.164402173,
+              "items": 30042624
+            },
+            {
+              "thread": 1,
+              "work_s": 0.164503181,
+              "items": 30141248
+            },
+            {
+              "thread": 2,
+              "work_s": 0.164237674,
+              "items": 29783744
+            },
+            {
+              "thread": 3,
+              "work_s": 0.164247035,
+              "items": 30032384
+            }
+          ],
+          "time_imbalance": 1.0009471712991196,
+          "items_imbalance": 1.0047082666666667
+        }
+      ],
+      "total_work_s": [
+        1.3478262060000001,
+        1.349417124,
+        1.3476863730000002,
+        1.349358837
+      ],
+      "total_time_imbalance": 1.0006265804980465
+    },
+    {
+      "backend": "rayon",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 8,
+      "wall_s": 1.2497505,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.099058986,
+              "items": 15141120
+            },
+            {
+              "thread": 1,
+              "work_s": 1.0994463170000002,
+              "items": 14920128
+            },
+            {
+              "thread": 2,
+              "work_s": 1.099108722,
+              "items": 15145536
+            },
+            {
+              "thread": 3,
+              "work_s": 1.0916625420000001,
+              "items": 15071872
+            },
+            {
+              "thread": 4,
+              "work_s": 1.0945892750000001,
+              "items": 14949696
+            },
+            {
+              "thread": 5,
+              "work_s": 1.099028413,
+              "items": 14537280
+            },
+            {
+              "thread": 6,
+              "work_s": 1.088896278,
+              "items": 14958464
+            },
+            {
+              "thread": 7,
+              "work_s": 1.100066419,
+              "items": 15275904
+            }
+          ],
+          "time_imbalance": 1.003268908756368,
+          "items_imbalance": 1.0183936
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.018974802000000002,
+              "items": 4988220
+            },
+            {
+              "thread": 1,
+              "work_s": 0.018925356,
+              "items": 5191500
+            },
+            {
+              "thread": 2,
+              "work_s": 0.019390867000000003,
+              "items": 4940620
+            },
+            {
+              "thread": 3,
+              "work_s": 0.018996274,
+              "items": 4704720
+            },
+            {
+              "thread": 4,
+              "work_s": 0.018452009000000002,
+              "items": 4704688
+            },
+            {
+              "thread": 5,
+              "work_s": 0.018641868000000002,
+              "items": 4656328
+            },
+            {
+              "thread": 6,
+              "work_s": 0.019772255000000002,
+              "items": 4766656
+            },
+            {
+              "thread": 7,
+              "work_s": 0.018664235,
+              "items": 4554308
+            }
+          ],
+          "time_imbalance": 1.041894821383962,
+          "items_imbalance": 1.0785560250800892
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.097301881,
+              "items": 15074752
+            },
+            {
+              "thread": 1,
+              "work_s": 0.095493796,
+              "items": 15308800
+            },
+            {
+              "thread": 2,
+              "work_s": 0.09544168800000001,
+              "items": 14331904
+            },
+            {
+              "thread": 3,
+              "work_s": 0.09942693200000001,
+              "items": 15153600
+            },
+            {
+              "thread": 4,
+              "work_s": 0.09866546500000001,
+              "items": 14877376
+            },
+            {
+              "thread": 5,
+              "work_s": 0.10173193400000001,
+              "items": 16354624
+            },
+            {
+              "thread": 6,
+              "work_s": 0.09722673300000001,
+              "items": 13635456
+            },
+            {
+              "thread": 7,
+              "work_s": 0.10004114800000001,
+              "items": 15263488
+            }
+          ],
+          "time_imbalance": 1.0363234695794477,
+          "items_imbalance": 1.0903082666666666
+        }
+      ],
+      "total_work_s": [
+        1.215335669,
+        1.2138654690000001,
+        1.213941277,
+        1.2100857480000002,
+        1.2117067490000002,
+        1.2194022150000001,
+        1.205895266,
+        1.218771802
+      ],
+      "total_time_imbalance": 1.004759862502047
+    },
+    {
+      "backend": "rayon",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 1,
+      "wall_s": 2.448982084,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.9238975820000002,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.07185013,
+              "items": 38507040
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.446987458,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        2.44273517
+      ],
+      "total_time_imbalance": 1.0
+    },
+    {
+      "backend": "rayon",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 2,
+      "wall_s": 1.303654584,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.033741657,
+              "items": 60020523
+            },
+            {
+              "thread": 1,
+              "work_s": 1.0367542440000002,
+              "items": 59979477
+            }
+          ],
+          "time_imbalance": 1.001455007468764,
+          "items_imbalance": 1.00034205
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.036007812,
+              "items": 19260153
+            },
+            {
+              "thread": 1,
+              "work_s": 0.036014206,
+              "items": 19246887
+            }
+          ],
+          "time_imbalance": 1.0000887784066257,
+          "items_imbalance": 1.0003445084327438
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.222634673,
+              "items": 59975168
+            },
+            {
+              "thread": 1,
+              "work_s": 0.222596979,
+              "items": 60024832
+            }
+          ],
+          "time_imbalance": 1.0000846615460304,
+          "items_imbalance": 1.0004138666666667
+        }
+      ],
+      "total_work_s": [
+        1.292384142,
+        1.295365429
+      ],
+      "total_time_imbalance": 1.0011520770917752
+    },
+    {
+      "backend": "rayon",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 4,
+      "wall_s": 1.365943208,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.115464837,
+              "items": 30160950
+            },
+            {
+              "thread": 1,
+              "work_s": 1.111749083,
+              "items": 30110890
+            },
+            {
+              "thread": 2,
+              "work_s": 1.114518979,
+              "items": 29862862
+            },
+            {
+              "thread": 3,
+              "work_s": 1.1113667120000001,
+              "items": 29865298
+            }
+          ],
+          "time_imbalance": 1.001967110050348,
+          "items_imbalance": 1.005365
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.032736994000000005,
+              "items": 9766470
+            },
+            {
+              "thread": 1,
+              "work_s": 0.032333739,
+              "items": 9619667
+            },
+            {
+              "thread": 2,
+              "work_s": 0.031910379,
+              "items": 9611276
+            },
+            {
+              "thread": 3,
+              "work_s": 0.032223662,
+              "items": 9509627
+            }
+          ],
+          "time_imbalance": 1.0134917770143694,
+          "items_imbalance": 1.0145126709297831
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.190827559,
+              "items": 30238747
+            },
+            {
+              "thread": 1,
+              "work_s": 0.19171991000000002,
+              "items": 30241326
+            },
+            {
+              "thread": 2,
+              "work_s": 0.19132791500000002,
+              "items": 29801021
+            },
+            {
+              "thread": 3,
+              "work_s": 0.191833632,
+              "items": 29718906
+            }
+          ],
+          "time_imbalance": 1.0021228847591366,
+          "items_imbalance": 1.0080442
+        }
+      ],
+      "total_work_s": [
+        1.3390293899999999,
+        1.335802732,
+        1.337757273,
+        1.3354240060000002
+      ],
+      "total_time_imbalance": 1.0015153587682641
+    },
+    {
+      "backend": "rayon",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 8,
+      "wall_s": 1.058161958,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.80283382,
+              "items": 15067199
+            },
+            {
+              "thread": 1,
+              "work_s": 0.8091786270000001,
+              "items": 15580594
+            },
+            {
+              "thread": 2,
+              "work_s": 0.7841102900000001,
+              "items": 15314829
+            },
+            {
+              "thread": 3,
+              "work_s": 0.808997469,
+              "items": 14886783
+            },
+            {
+              "thread": 4,
+              "work_s": 0.809310717,
+              "items": 14530564
+            },
+            {
+              "thread": 5,
+              "work_s": 0.8005157900000001,
+              "items": 14711137
+            },
+            {
+              "thread": 6,
+              "work_s": 0.8113844010000001,
+              "items": 15138848
+            },
+            {
+              "thread": 7,
+              "work_s": 0.783296069,
+              "items": 14770046
+            }
+          ],
+          "time_imbalance": 1.012707139225823,
+          "items_imbalance": 1.0387062666666667
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.019716417,
+              "items": 5205897
+            },
+            {
+              "thread": 1,
+              "work_s": 0.017837174,
+              "items": 4584225
+            },
+            {
+              "thread": 2,
+              "work_s": 0.018053792000000003,
+              "items": 4626698
+            },
+            {
+              "thread": 3,
+              "work_s": 0.018921329,
+              "items": 4991421
+            },
+            {
+              "thread": 4,
+              "work_s": 0.018290603000000002,
+              "items": 4685407
+            },
+            {
+              "thread": 5,
+              "work_s": 0.018936287,
+              "items": 4868857
+            },
+            {
+              "thread": 6,
+              "work_s": 0.019403085,
+              "items": 5023702
+            },
+            {
+              "thread": 7,
+              "work_s": 0.017435382000000003,
+              "items": 4520833
+            }
+          ],
+          "time_imbalance": 1.0614914650462934,
+          "items_imbalance": 1.0815470625631054
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.11882144500000001,
+              "items": 15316624
+            },
+            {
+              "thread": 1,
+              "work_s": 0.11947592900000001,
+              "items": 15412716
+            },
+            {
+              "thread": 2,
+              "work_s": 0.11280883600000001,
+              "items": 14979282
+            },
+            {
+              "thread": 3,
+              "work_s": 0.112754086,
+              "items": 14793683
+            },
+            {
+              "thread": 4,
+              "work_s": 0.10648170800000001,
+              "items": 14699324
+            },
+            {
+              "thread": 5,
+              "work_s": 0.11100251100000001,
+              "items": 15154203
+            },
+            {
+              "thread": 6,
+              "work_s": 0.11261317800000001,
+              "items": 14859441
+            },
+            {
+              "thread": 7,
+              "work_s": 0.10688726500000001,
+              "items": 14784727
+            }
+          ],
+          "time_imbalance": 1.0610121347873493,
+          "items_imbalance": 1.0275144
+        }
+      ],
+      "total_work_s": [
+        0.9413716820000001,
+        0.9464917300000001,
+        0.9149729180000001,
+        0.940672884,
+        0.934083028,
+        0.9304545880000001,
+        0.9434006640000001,
+        0.9076187160000001
+      ],
+      "total_time_imbalance": 1.0151316031822701
+    },
+    {
+      "backend": "openmp",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 1,
+      "wall_s": 3.142014375,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 2.2681190967559814,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.07774806022644043,
+              "items": 38507040
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.7949566841125488,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        3.1408238410949707
+      ],
+      "total_time_imbalance": 1.0
+    },
+    {
+      "backend": "openmp",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 2,
+      "wall_s": 1.831639166,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.3221421241760254,
+              "items": 60000000
+            },
+            {
+              "thread": 1,
+              "work_s": 1.3195977210998535,
+              "items": 60000000
+            }
+          ],
+          "time_imbalance": 1.0009631542942132,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.0442962646484375,
+              "items": 19253520
+            },
+            {
+              "thread": 1,
+              "work_s": 0.044617652893066406,
+              "items": 19253520
+            }
+          ],
+          "time_imbalance": 1.0036145999806936,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.44423794746398926,
+              "items": 60000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.4480626583099365,
+              "items": 60000000
+            }
+          ],
+          "time_imbalance": 1.0042863479204185,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        1.8106763362884521,
+        1.8122780323028564
+      ],
+      "total_time_imbalance": 1.0004420966568859
+    },
+    {
+      "backend": "openmp",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 4,
+      "wall_s": 1.965778333,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.3511791229248047,
+              "items": 30000000
+            },
+            {
+              "thread": 1,
+              "work_s": 1.3627972602844238,
+              "items": 30000000
+            },
+            {
+              "thread": 2,
+              "work_s": 1.368758201599121,
+              "items": 30000000
+            },
+            {
+              "thread": 3,
+              "work_s": 1.3564352989196777,
+              "items": 30000000
+            }
+          ],
+          "time_imbalance": 1.0065934551475852,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.044747352600097656,
+              "items": 9626760
+            },
+            {
+              "thread": 1,
+              "work_s": 0.04030275344848633,
+              "items": 9626760
+            },
+            {
+              "thread": 2,
+              "work_s": 0.04247283935546875,
+              "items": 9626760
+            },
+            {
+              "thread": 3,
+              "work_s": 0.041375160217285156,
+              "items": 9626760
+            }
+          ],
+          "time_imbalance": 1.0597478861111502,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.38973546028137207,
+              "items": 30000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.39942502975463867,
+              "items": 30000000
+            },
+            {
+              "thread": 2,
+              "work_s": 0.3905346393585205,
+              "items": 30000000
+            },
+            {
+              "thread": 3,
+              "work_s": 0.3886408805847168,
+              "items": 30000000
+            }
+          ],
+          "time_imbalance": 1.0187230981450812,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        1.7856619358062744,
+        1.8025250434875488,
+        1.8017656803131104,
+        1.7864513397216797
+      ],
+      "total_time_imbalance": 1.004695412162517
+    },
+    {
+      "backend": "openmp",
+      "schedule": "static",
+      "chunk": 0,
+      "threads": 8,
+      "wall_s": 1.15700075,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.5847384929656982,
+              "items": 15000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.7099010944366455,
+              "items": 15000000
+            },
+            {
+              "thread": 2,
+              "work_s": 0.6095294952392578,
+              "items": 15000000
+            },
+            {
+              "thread": 3,
+              "work_s": 0.5961854457855225,
+              "items": 15000000
+            },
+            {
+              "thread": 4,
+              "work_s": 0.6130466461181641,
+              "items": 15000000
+            },
+            {
+              "thread": 5,
+              "work_s": 0.6754055023193359,
+              "items": 15000000
+            },
+            {
+              "thread": 6,
+              "work_s": 0.7189221382141113,
+              "items": 15000000
+            },
+            {
+              "thread": 7,
+              "work_s": 0.7123074531555176,
+              "items": 15000000
+            }
+          ],
+          "time_imbalance": 1.101788725245461,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.015199422836303711,
+              "items": 4813440
+            },
+            {
+              "thread": 1,
+              "work_s": 0.019413471221923828,
+              "items": 4813440
+            },
+            {
+              "thread": 2,
+              "work_s": 0.01645660400390625,
+              "items": 4813440
+            },
+            {
+              "thread": 3,
+              "work_s": 0.015584945678710938,
+              "items": 4813440
+            },
+            {
+              "thread": 4,
+              "work_s": 0.015185832977294922,
+              "items": 4813320
+            },
+            {
+              "thread": 5,
+              "work_s": 0.017073392868041992,
+              "items": 4813320
+            },
+            {
+              "thread": 6,
+              "work_s": 0.018333911895751953,
+              "items": 4813320
+            },
+            {
+              "thread": 7,
+              "work_s": 0.020064830780029297,
+              "items": 4813320
+            }
+          ],
+          "time_imbalance": 1.1690031774694842,
+          "items_imbalance": 1.000012465253107
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.1503899097442627,
+              "items": 15000000
+            },
+            {
+              "thread": 1,
+              "work_s": 0.17432427406311035,
+              "items": 15000000
+            },
+            {
+              "thread": 2,
+              "work_s": 0.16067934036254883,
+              "items": 15000000
+            },
+            {
+              "thread": 3,
+              "work_s": 0.1576242446899414,
+              "items": 15000000
+            },
+            {
+              "thread": 4,
+              "work_s": 0.1544666290283203,
+              "items": 15000000
+            },
+            {
+              "thread": 5,
+              "work_s": 0.16618013381958008,
+              "items": 15000000
+            },
+            {
+              "thread": 6,
+              "work_s": 0.17891335487365723,
+              "items": 15000000
+            },
+            {
+              "thread": 7,
+              "work_s": 0.18003368377685547,
+              "items": 15000000
+            }
+          ],
+          "time_imbalance": 1.0889587710356228,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        0.7503278255462646,
+        0.9036388397216797,
+        0.7866654396057129,
+        0.7693946361541748,
+        0.7826991081237793,
+        0.858659029006958,
+        0.9161694049835205,
+        0.9124059677124023
+      ],
+      "total_time_imbalance": 1.097215397192012
+    },
+    {
+      "backend": "openmp",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 1,
+      "wall_s": 3.362634792,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 2.4466307163238525,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.0783073902130127,
+              "items": 38507040
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.836188793182373,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        3.3611268997192383
+      ],
+      "total_time_imbalance": 1.0
+    },
+    {
+      "backend": "openmp",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 2,
+      "wall_s": 1.5776515,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.1427969932556152,
+              "items": 59940864
+            },
+            {
+              "thread": 1,
+              "work_s": 1.1417512893676758,
+              "items": 60059136
+            }
+          ],
+          "time_imbalance": 1.0004577289505734,
+          "items_imbalance": 1.0009856
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.038474321365356445,
+              "items": 19586656
+            },
+            {
+              "thread": 1,
+              "work_s": 0.03760528564453125,
+              "items": 18920384
+            }
+          ],
+          "time_imbalance": 1.011422715691897,
+          "items_imbalance": 1.0173026023293403
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.3891115188598633,
+              "items": 60331392
+            },
+            {
+              "thread": 1,
+              "work_s": 0.3884766101837158,
+              "items": 59668608
+            }
+          ],
+          "time_imbalance": 1.0008165102480775,
+          "items_imbalance": 1.0055232
+        }
+      ],
+      "total_work_s": [
+        1.570382833480835,
+        1.5678331851959229
+      ],
+      "total_time_imbalance": 1.0008124514914647
+    },
+    {
+      "backend": "openmp",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 4,
+      "wall_s": 1.156465583,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.8454732894897461,
+              "items": 30117248
+            },
+            {
+              "thread": 1,
+              "work_s": 0.8438417911529541,
+              "items": 29750784
+            },
+            {
+              "thread": 2,
+              "work_s": 0.8444128036499023,
+              "items": 29900544
+            },
+            {
+              "thread": 3,
+              "work_s": 0.8446493148803711,
+              "items": 30231424
+            }
+          ],
+          "time_imbalance": 1.0010407241639185,
+          "items_imbalance": 1.0077141333333333
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.02714371681213379,
+              "items": 9971268
+            },
+            {
+              "thread": 1,
+              "work_s": 0.025661468505859375,
+              "items": 9395664
+            },
+            {
+              "thread": 2,
+              "work_s": 0.026019573211669922,
+              "items": 9618072
+            },
+            {
+              "thread": 3,
+              "work_s": 0.02674579620361328,
+              "items": 9522036
+            }
+          ],
+          "time_imbalance": 1.028457864248693,
+          "items_imbalance": 1.035786495144784
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.26856136322021484,
+              "items": 30513216
+            },
+            {
+              "thread": 1,
+              "work_s": 0.2669334411621094,
+              "items": 29739904
+            },
+            {
+              "thread": 2,
+              "work_s": 0.26735997200012207,
+              "items": 29853632
+            },
+            {
+              "thread": 3,
+              "work_s": 0.2680850028991699,
+              "items": 29893248
+            }
+          ],
+          "time_imbalance": 1.003086703531977,
+          "items_imbalance": 1.0171072
+        }
+      ],
+      "total_work_s": [
+        1.1411783695220947,
+        1.1364367008209229,
+        1.1377923488616943,
+        1.1394801139831543
+      ],
+      "total_time_imbalance": 1.0021572310685871
+    },
+    {
+      "backend": "openmp",
+      "schedule": "dynamic",
+      "chunk": 1024,
+      "threads": 8,
+      "wall_s": 0.989751167,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.7379646301269531,
+              "items": 18047168
+            },
+            {
+              "thread": 1,
+              "work_s": 0.7121524810791016,
+              "items": 12521984
+            },
+            {
+              "thread": 2,
+              "work_s": 0.7352859973907471,
+              "items": 16825088
+            },
+            {
+              "thread": 3,
+              "work_s": 0.7362067699432373,
+              "items": 17402816
+            },
+            {
+              "thread": 4,
+              "work_s": 0.7365541458129883,
+              "items": 17486400
+            },
+            {
+              "thread": 5,
+              "work_s": 0.5956835746765137,
+              "items": 10851840
+            },
+            {
+              "thread": 6,
+              "work_s": 0.7107691764831543,
+              "items": 13013696
+            },
+            {
+              "thread": 7,
+              "work_s": 0.7249245643615723,
+              "items": 13851008
+            }
+          ],
+          "time_imbalance": 1.0376437551548032,
+          "items_imbalance": 1.2031445333333333
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.02176213264465332,
+              "items": 6348124
+            },
+            {
+              "thread": 1,
+              "work_s": 0.018479347229003906,
+              "items": 4374876
+            },
+            {
+              "thread": 2,
+              "work_s": 0.01986861228942871,
+              "items": 5477312
+            },
+            {
+              "thread": 3,
+              "work_s": 0.020931005477905273,
+              "items": 5942968
+            },
+            {
+              "thread": 4,
+              "work_s": 0.02020263671875,
+              "items": 5830212
+            },
+            {
+              "thread": 5,
+              "work_s": 0.009822845458984375,
+              "items": 2365260
+            },
+            {
+              "thread": 6,
+              "work_s": 0.016049623489379883,
+              "items": 3904828
+            },
+            {
+              "thread": 7,
+              "work_s": 0.018039226531982422,
+              "items": 4263460
+            }
+          ],
+          "time_imbalance": 1.1993837319693967,
+          "items_imbalance": 1.3188495402399145
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.18881964683532715,
+              "items": 16785472
+            },
+            {
+              "thread": 1,
+              "work_s": 0.1813812255859375,
+              "items": 14936128
+            },
+            {
+              "thread": 2,
+              "work_s": 0.1871495246887207,
+              "items": 16182336
+            },
+            {
+              "thread": 3,
+              "work_s": 0.18793368339538574,
+              "items": 16422272
+            },
+            {
+              "thread": 4,
+              "work_s": 0.18738579750061035,
+              "items": 16131712
+            },
+            {
+              "thread": 5,
+              "work_s": 0.12688231468200684,
+              "items": 10858944
+            },
+            {
+              "thread": 6,
+              "work_s": 0.170135498046875,
+              "items": 14234944
+            },
+            {
+              "thread": 7,
+              "work_s": 0.17356252670288086,
+              "items": 14448192
+            }
+          ],
+          "time_imbalance": 1.076470294400388,
+          "items_imbalance": 1.1190314666666668
+        }
+      ],
+      "total_work_s": [
+        0.9485464096069336,
+        0.912013053894043,
+        0.9423041343688965,
+        0.9450714588165283,
+        0.9441425800323486,
+        0.7323887348175049,
+        0.8969542980194092,
+        0.9165263175964355
+      ],
+      "total_time_imbalance": 1.0484148737653645
+    },
+    {
+      "backend": "openmp",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 1,
+      "wall_s": 3.068320084,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 2.2279136180877686,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.07297706604003906,
+              "items": 38507040
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.7664594650268555,
+              "items": 120000000
+            }
+          ],
+          "time_imbalance": 1.0,
+          "items_imbalance": 1.0
+        }
+      ],
+      "total_work_s": [
+        3.067350149154663
+      ],
+      "total_time_imbalance": 1.0
+    },
+    {
+      "backend": "openmp",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 2,
+      "wall_s": 1.714378583,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 1.2579576969146729,
+              "items": 60063723
+            },
+            {
+              "thread": 1,
+              "work_s": 1.257091760635376,
+              "items": 59936277
+            }
+          ],
+          "time_imbalance": 1.0003443018890532,
+          "items_imbalance": 1.00106205
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.03992176055908203,
+              "items": 19465722
+            },
+            {
+              "thread": 1,
+              "work_s": 0.03910064697265625,
+              "items": 19041318
+            }
+          ],
+          "time_imbalance": 1.0103908955962395,
+          "items_imbalance": 1.0110214651658502
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.40977048873901367,
+              "items": 60358814
+            },
+            {
+              "thread": 1,
+              "work_s": 0.40911149978637695,
+              "items": 59641186
+            }
+          ],
+          "time_imbalance": 1.0008047422728437,
+          "items_imbalance": 1.0059802333333334
+        }
+      ],
+      "total_work_s": [
+        1.7076499462127686,
+        1.7053039073944092
+      ],
+      "total_time_imbalance": 1.0006873924814073
+    },
+    {
+      "backend": "openmp",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 4,
+      "wall_s": 1.283385166,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.9503867626190186,
+              "items": 30187193
+            },
+            {
+              "thread": 1,
+              "work_s": 0.9487478733062744,
+              "items": 30233136
+            },
+            {
+              "thread": 2,
+              "work_s": 0.9490344524383545,
+              "items": 29765932
+            },
+            {
+              "thread": 3,
+              "work_s": 0.9497876167297363,
+              "items": 29813739
+            }
+          ],
+          "time_imbalance": 1.000945336048164,
+          "items_imbalance": 1.0077712
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.029648542404174805,
+              "items": 10048931
+            },
+            {
+              "thread": 1,
+              "work_s": 0.027494430541992188,
+              "items": 9168247
+            },
+            {
+              "thread": 2,
+              "work_s": 0.028116226196289062,
+              "items": 9467511
+            },
+            {
+              "thread": 3,
+              "work_s": 0.029120683670043945,
+              "items": 9822351
+            }
+          ],
+          "time_imbalance": 1.0368446504802562,
+          "items_imbalance": 1.043853903078502
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.2886779308319092,
+              "items": 30267777
+            },
+            {
+              "thread": 1,
+              "work_s": 0.28702497482299805,
+              "items": 29704047
+            },
+            {
+              "thread": 2,
+              "work_s": 0.28743648529052734,
+              "items": 29927369
+            },
+            {
+              "thread": 3,
+              "work_s": 0.2881169319152832,
+              "items": 30100807
+            }
+          ],
+          "time_imbalance": 1.0030014171460382,
+          "items_imbalance": 1.0089259
+        }
+      ],
+      "total_work_s": [
+        1.2687132358551025,
+        1.2632672786712646,
+        1.264587163925171,
+        1.2670252323150635
+      ],
+      "total_time_imbalance": 1.0022237239154568
+    },
+    {
+      "backend": "openmp",
+      "schedule": "guided",
+      "chunk": 64,
+      "threads": 8,
+      "wall_s": 1.085346833,
+      "phases": [
+        {
+          "phase": "place_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.8139779567718506,
+              "items": 18313859
+            },
+            {
+              "thread": 1,
+              "work_s": 0.8077020645141602,
+              "items": 12333572
+            },
+            {
+              "thread": 2,
+              "work_s": 0.8125514984130859,
+              "items": 18111530
+            },
+            {
+              "thread": 3,
+              "work_s": 0.8130905628204346,
+              "items": 18116268
+            },
+            {
+              "thread": 4,
+              "work_s": 0.8135976791381836,
+              "items": 18006770
+            },
+            {
+              "thread": 5,
+              "work_s": 0.7018303871154785,
+              "items": 10244454
+            },
+            {
+              "thread": 6,
+              "work_s": 0.7901492118835449,
+              "items": 12238813
+            },
+            {
+              "thread": 7,
+              "work_s": 0.8049697875976562,
+              "items": 12634734
+            }
+          ],
+          "time_imbalance": 1.024214796236044,
+          "items_imbalance": 1.2209239333333333
+        },
+        {
+          "phase": "location_contacts",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.023162364959716797,
+              "items": 6495260
+            },
+            {
+              "thread": 1,
+              "work_s": 0.019605398178100586,
+              "items": 4150838
+            },
+            {
+              "thread": 2,
+              "work_s": 0.02186441421508789,
+              "items": 5988111
+            },
+            {
+              "thread": 3,
+              "work_s": 0.022440671920776367,
+              "items": 6225394
+            },
+            {
+              "thread": 4,
+              "work_s": 0.021816253662109375,
+              "items": 6083164
+            },
+            {
+              "thread": 5,
+              "work_s": 0.008928537368774414,
+              "items": 1978096
+            },
+            {
+              "thread": 6,
+              "work_s": 0.015721797943115234,
+              "items": 3546894
+            },
+            {
+              "thread": 7,
+              "work_s": 0.018285751342773438,
+              "items": 4039283
+            }
+          ],
+          "time_imbalance": 1.2204754703588718,
+          "items_imbalance": 1.3494176649256864
+        },
+        {
+          "phase": "update_agents",
+          "per_thread": [
+            {
+              "thread": 0,
+              "work_s": 0.19374823570251465,
+              "items": 17350120
+            },
+            {
+              "thread": 1,
+              "work_s": 0.18723034858703613,
+              "items": 14139152
+            },
+            {
+              "thread": 2,
+              "work_s": 0.1928393840789795,
+              "items": 17080342
+            },
+            {
+              "thread": 3,
+              "work_s": 0.19288134574890137,
+              "items": 17212278
+            },
+            {
+              "thread": 4,
+              "work_s": 0.1925501823425293,
+              "items": 17063867
+            },
+            {
+              "thread": 5,
+              "work_s": 0.12819957733154297,
+              "items": 10052901
+            },
+            {
+              "thread": 6,
+              "work_s": 0.175520658493042,
+              "items": 13334829
+            },
+            {
+              "thread": 7,
+              "work_s": 0.1796402931213379,
+              "items": 13766511
+            }
+          ],
+          "time_imbalance": 1.0744316608946503,
+          "items_imbalance": 1.1566746666666667
+        }
+      ],
+      "total_work_s": [
+        1.030888557434082,
+        1.0145378112792969,
+        1.0272552967071533,
+        1.0284125804901123,
+        1.0279641151428223,
+        0.8389585018157959,
+        0.9813916683197021,
+        1.0028958320617676
+      ],
+      "total_time_imbalance": 1.037071530811154
+    }
+  ]
+}

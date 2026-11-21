@@ -1,0 +1,203 @@
+{
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "agents": 1000000,
+  "locations": 320850,
+  "threads": 8,
+  "chunk": 64,
+  "schedule": "dynamic",
+  "runs": 200,
+  "snapshot_step": 330,
+  "note": "unsynchronised = lost-update race (Rust: relaxed load+store, C: plain ++). wrong_runs counts runs whose per-location counts differ from the sequential count.",
+  "scenarios": [
+    {
+      "name": "realistic",
+      "description": "simulated placement at a Saturday daytime step near the epidemic peak (market visits spread infectious agents over shared locations)",
+      "infectious_agents": 32651,
+      "locations_with_infectious": 23519,
+      "backends": [
+        {
+          "backend": "rayon",
+          "methods": [
+            {
+              "method": "unsynchronised",
+              "correct_in_all_runs": false,
+              "runs": 200,
+              "wrong_runs": 200,
+              "max_lost_increments": 1397,
+              "time_ms": {
+                "median": 1.5996455,
+                "min": 1.107542,
+                "max": 1.8224580000000001
+              }
+            },
+            {
+              "method": "atomic",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 1.681,
+                "min": 1.302292,
+                "max": 2.294042
+              }
+            },
+            {
+              "method": "per_thread_buffers",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 2.2157085,
+                "min": 1.72875,
+                "max": 3.9128339999999997
+              }
+            }
+          ],
+          "fastest_correct": "atomic"
+        },
+        {
+          "backend": "openmp",
+          "methods": [
+            {
+              "method": "unsynchronised",
+              "correct_in_all_runs": false,
+              "runs": 200,
+              "wrong_runs": 108,
+              "max_lost_increments": 4,
+              "time_ms": {
+                "median": 0.3092705,
+                "min": 0.2585,
+                "max": 9.324375
+              }
+            },
+            {
+              "method": "atomic",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 0.32685450000000005,
+                "min": 0.286458,
+                "max": 0.7535000000000001
+              }
+            },
+            {
+              "method": "per_thread_buffers",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 1.1660205000000001,
+                "min": 0.776041,
+                "max": 2.291291
+              }
+            }
+          ],
+          "fastest_correct": "atomic"
+        }
+      ]
+    },
+    {
+      "name": "hotspot",
+      "description": "synthetic stress case: the same infectious agents all mapped to 64 locations",
+      "infectious_agents": 32651,
+      "locations_with_infectious": 64,
+      "backends": [
+        {
+          "backend": "rayon",
+          "methods": [
+            {
+              "method": "unsynchronised",
+              "correct_in_all_runs": false,
+              "runs": 200,
+              "wrong_runs": 200,
+              "max_lost_increments": 474,
+              "time_ms": {
+                "median": 1.712354,
+                "min": 1.315,
+                "max": 2.415625
+              }
+            },
+            {
+              "method": "atomic",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 1.7775215,
+                "min": 1.37575,
+                "max": 1.869292
+              }
+            },
+            {
+              "method": "per_thread_buffers",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 2.2190209999999997,
+                "min": 1.7934999999999999,
+                "max": 2.943625
+              }
+            }
+          ],
+          "fastest_correct": "atomic"
+        },
+        {
+          "backend": "openmp",
+          "methods": [
+            {
+              "method": "unsynchronised",
+              "correct_in_all_runs": false,
+              "runs": 200,
+              "wrong_runs": 200,
+              "max_lost_increments": 1617,
+              "time_ms": {
+                "median": 0.6429370000000001,
+                "min": 0.616333,
+                "max": 0.920416
+              }
+            },
+            {
+              "method": "atomic",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 1.2059579999999999,
+                "min": 1.080083,
+                "max": 6.109167
+              }
+            },
+            {
+              "method": "per_thread_buffers",
+              "correct_in_all_runs": true,
+              "runs": 200,
+              "wrong_runs": 0,
+              "max_lost_increments": 0,
+              "time_ms": {
+                "median": 0.9841875,
+                "min": 0.78725,
+                "max": 1.5383339999999999
+              }
+            }
+          ],
+          "fastest_correct": "per_thread_buffers"
+        }
+      ]
+    }
+  ]
+}

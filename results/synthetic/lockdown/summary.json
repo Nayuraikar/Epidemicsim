@@ -1,0 +1,126 @@
+{
+  "city": "synthetic",
+  "scenario": "lockdown",
+  "description": "Full lockdown (work, school, college, markets) for 28 days once 1% of the population is infectious.",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 100000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 200,
+  "interventions": [
+    {
+      "kind": "lockdown",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.01
+      },
+      "duration_days": 28
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.05473180000000001,
+      "p05": 0.04938450000000001,
+      "p95": 0.061049499999999986
+    },
+    "days_over_capacity": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    },
+    "deaths": {
+      "mean": 42.84,
+      "p05": 32.45,
+      "p95": 52.55
+    },
+    "peak_day": {
+      "mean": 57.04,
+      "p05": 50.0,
+      "p95": 64.55
+    },
+    "peak_hospital_load": {
+      "mean": 74.32,
+      "p05": 65.0,
+      "p95": 90.55
+    },
+    "peak_hospital_ratio": {
+      "mean": 0.3715999999999999,
+      "p05": 0.325,
+      "p95": 0.45275
+    },
+    "peak_infections": {
+      "mean": 1177.36,
+      "p05": 1064.0,
+      "p95": 1300.4
+    },
+    "r_initial": {
+      "mean": 1.6299202299619944,
+      "p05": 1.2678592477037707,
+      "p95": 2.299068176867397
+    },
+    "r_max": {
+      "mean": 4.868815397948119,
+      "p05": 2.2695068542054107,
+      "p95": 8.150537375
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "30446336b34f38d2",
+    "2531aea0b866de84",
+    "3cca4fb630935104",
+    "c51d4f828330aff4",
+    "5824a5f144481c94",
+    "61d60616e76d05e7",
+    "37e5202d14793e90",
+    "ab94f81d6024c03e",
+    "558f9cc4b4942ff9",
+    "c6c57d6b636b452a",
+    "a918d92a2702816b",
+    "caee4a008a7a663f",
+    "a69531de65e6e6c6",
+    "63f35b1405a12a06",
+    "8266795d9de356dc",
+    "85c3f708a8abef9f",
+    "2b61825e794150c0",
+    "4f4579dddb4bfad9",
+    "a58f1a6e71794967",
+    "67ac99d610bc21de",
+    "078f879e10f0e25e",
+    "2f876fdab104cd35",
+    "8d04c0566202c618",
+    "c07756d8c578db88",
+    "9a529c4a48ad526b",
+    "5509757878464486",
+    "a512eea202aa629b",
+    "3a76c62d939ae4e1",
+    "eb45fb7065b15c7b",
+    "10eb6569ceec1e96",
+    "290b0e14e6c3183d",
+    "a4ab1871c2c9fb44",
+    "d7abee390b8d0639",
+    "69209612a84efff0",
+    "47447a047d2b6135",
+    "ac599cdd89002ec4",
+    "d337f52e91dd3c40",
+    "c67aa93a902c4f67",
+    "f9556318a7580f69",
+    "19cb9e0873bfbaf5",
+    "f73317c712dbbea0",
+    "0311f0063f98bcb9",
+    "4e8399009e0fe70a",
+    "d1a1756628ce88bb",
+    "ebff3895ab9c94ae",
+    "1711c52cd724060f",
+    "d3c54a5dc40f6d18",
+    "4c28bbe4722ce340",
+    "bbd6aeb373dbcb26",
+    "134a3af8543f5737"
+  ]
+}

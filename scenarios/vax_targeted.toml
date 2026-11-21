@@ -1,0 +1,10 @@
+name = "vax_targeted"
+description = "Same doses as vax_random (40% of the population), but only to ages 40+ (age groups 2-4)."
+
+[[interventions]]
+kind = "vaccination"
+strategy = "age"
+ages = [2, 3, 4]
+start_day = 10
+coverage = 0.4
+rate_per_day = 0.01

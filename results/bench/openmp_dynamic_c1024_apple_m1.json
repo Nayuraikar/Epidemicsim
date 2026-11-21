@@ -1,0 +1,79 @@
+{
+  "backend": "openmp_dynamic_c1024",
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.9862902500000001,
+        "min": 1.982531583,
+        "max": 1.987625041
+      },
+      "agents_per_sec": 40276087.54561424,
+      "contacts_per_sec": 40276056.33164639,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 2,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.048291042,
+        "min": 1.046728916,
+        "max": 1.101001584
+      },
+      "agents_per_sec": 76314684.37178537,
+      "contacts_per_sec": 76314625.22790498,
+      "speedup": 1.8947889187438083,
+      "efficiency": 0.9473944593719041
+    },
+    {
+      "agents": 1000000,
+      "threads": 4,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.794875792,
+        "min": 0.761075167,
+        "max": 0.895837
+      },
+      "agents_per_sec": 100644655.18406427,
+      "contacts_per_sec": 100644577.18445651,
+      "speedup": 2.4988687163339853,
+      "efficiency": 0.6247171790834963
+    },
+    {
+      "agents": 1000000,
+      "threads": 8,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.597745583,
+        "min": 0.586660292,
+        "max": 0.605969584
+      },
+      "agents_per_sec": 133836204.35719723,
+      "contacts_per_sec": 133836100.63413885,
+      "speedup": 3.322969347646355,
+      "efficiency": 0.41537116845579436
+    }
+  ],
+  "amdahl": [
+    {
+      "agents": 1000000,
+      "serial_fraction": 0.1777179634245297,
+      "max_speedup": 5.626893200498909
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+name = "lockdown"
+description = "Full lockdown (work, school, college, markets) for 28 days once 1% of the population is infectious."
+
+[[interventions]]
+kind = "lockdown"
+trigger = { metric = "infectious", above = 0.01 }
+duration_days = 28

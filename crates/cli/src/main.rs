@@ -1,0 +1,423 @@
+use clap::{Args, Parser, Subcommand};
+use epidemicsim_core::{sim, Config};
+use std::path::PathBuf;
+
+#[derive(Parser)]
+#[command(name = "epidemicsim", about = "Epidemic simulation toolkit")]
+struct Cli {
+    #[command(subcommand)]
+    command: Option<Command>,
+}
+
+/// Backend selection flags shared by `run`, `compare` and `bench`.
+#[derive(Args, Clone)]
+struct BackendFlags {
+    /// Agent-update variant for ilp/rayon: naive | optimised
+    #[arg(long, default_value = "optimised")]
+    ilp: String,
+    /// Loop schedule for rayon/openmp: static | dynamic | guided
+    #[arg(long, default_value = "static")]
+    schedule: String,
+    /// Chunk size for the schedule (0 = default: static block, dynamic 1024, guided min 64)
+    #[arg(long, default_value_t = 0)]
+    chunk: usize,
+    /// SIMD kernel for the simd backend: scalar | neon | avx2
+    #[arg(long, default_value = "scalar")]
+    simd: String,
+}
+
+impl BackendFlags {
+    fn opts(&self, threads: usize) -> Result<epidemicsim_backends::BackendOpts, String> {
+        Ok(epidemicsim_backends::BackendOpts {
+            threads,
+            ilp: epidemicsim_backends::parse_ilp(&self.ilp)?,
+            schedule: self.schedule.parse()?,
+            chunk: self.chunk,
+            simd: epidemicsim_backends::parse_simd(&self.simd)?,
+        })
+    }
+}
+
+#[derive(Args)]
+struct RunArgs {
+    #[arg(long, default_value = "sequential")]
+    backend: String,
+    /// Worker threads (rayon/openmp)
+    #[arg(long, default_value_t = 1)]
+    threads: usize,
+    #[command(flatten)]
+    flags: BackendFlags,
+    /// TOML config (all fields optional); flags below override it
+    #[arg(long)]
+    config: Option<PathBuf>,
+    /// Load a prebuilt city from <cities-dir>/<city>/ (see `pipeline`); ignores --agents
+    #[arg(long)]
+    city: Option<String>,
+    #[arg(long, default_value = "cities")]
+    cities_dir: PathBuf,
+    #[arg(long)]
+    agents: Option<usize>,
+    #[arg(long)]
+    days: Option<u32>,
+    #[arg(long)]
+    seed: Option<u64>,
+    /// Output directory for timeseries.parquet and summary.json
+    #[arg(long, default_value = "results/run")]
+    out: PathBuf,
+}
+
+fn run(a: RunArgs) -> Result<(), Box<dyn std::error::Error>> {
+    let mut cfg = match &a.config {
+        Some(p) => Config::from_file(p)?,
+        None => Config::default(),
+    };
+    cfg.agents = a.agents.unwrap_or(cfg.agents);
+    cfg.days = a.days.unwrap_or(cfg.days);
+    cfg.seed = a.seed.unwrap_or(cfg.seed);
+    let mut backend = epidemicsim_backends::make_with(&a.backend, &a.flags.opts(a.threads)?)?;
+    let out = match &a.city {
+        Some(name) => {
+            let world = epidemicsim_data::load_world(&a.cities_dir.join(name), &cfg)?;
+            cfg.agents = world.agents.len();
+            sim::run_world(&cfg, world, &mut backend)
+        }
+        None => sim::run(&cfg, &mut backend),
+    };
+    std::fs::create_dir_all(&a.out)?;
+    epidemicsim_core::output::write_parquet(&a.out.join("timeseries.parquet"), &out.stats)?;
+    out.summary.write_json(&a.out.join("summary.json"))?;
+    let s = &out.summary;
+    println!(
+        "agents={} days={} seed={} peak_inf={}@d{} peak_hosp={}@d{} attack={:.1}% deaths={} hash={}",
+        s.agents, s.days, s.seed, s.peak_infectious, s.peak_infectious_day,
+        s.peak_hospital_load, s.peak_hospital_day, s.attack_rate * 100.0, s.total_deaths, s.hash
+    );
+    Ok(())
+}
+
+#[derive(Args)]
+struct PipelineArgs {
+    /// City names (cities/<name>.toml)
+    #[arg(required = true)]
+    cities: Vec<String>,
+    #[arg(long, default_value = "cities")]
+    cities_dir: PathBuf,
+    #[arg(long, default_value = "data_cache")]
+    cache_dir: PathBuf,
+    /// Use this .pbf instead of downloading (single city)
+    #[arg(long)]
+    pbf: Option<PathBuf>,
+    /// Override target agents from the TOML (max 1M)
+    #[arg(long)]
+    agents: Option<usize>,
+}
+
+fn pipeline(a: PipelineArgs) -> Result<(), Box<dyn std::error::Error>> {
+    let opts = epidemicsim_data::PipelineOpts {
+        cities_dir: a.cities_dir,
+        cache_dir: a.cache_dir,
+        pbf: a.pbf,
+        agents: a.agents,
+    };
+    for c in &a.cities {
+        let dir = epidemicsim_data::build_city(c, &opts)?;
+        let m = epidemicsim_data::read_meta(&dir)?;
+        println!(
+            "{c}: agents={} homes={} work={} markets={} hospitals={} weight={} -> {}",
+            m.agents,
+            m.counts.homes,
+            m.counts.schools + m.counts.colleges + m.counts.offices,
+            m.counts.markets,
+            m.counts.hospitals,
+            m.pop_weight,
+            dir.display()
+        );
+    }
+    Ok(())
+}
+
+#[derive(Args)]
+struct CompareArgs {
+    /// City folder under --cities-dir; omit for a synthetic city
+    #[arg(long)]
+    city: Option<String>,
+    #[arg(long, default_value = "cities")]
+    cities_dir: PathBuf,
+    /// "all" or a comma-separated list of scenario names
+    #[arg(long, default_value = "all")]
+    scenarios: String,
+    #[arg(long, default_value = "scenarios")]
+    scenarios_dir: PathBuf,
+    #[arg(long, default_value_t = 50)]
+    runs: usize,
+    /// TOML config (all fields optional); flags below override it
+    #[arg(long)]
+    config: Option<PathBuf>,
+    /// Synthetic city size (ignored with --city)
+    #[arg(long)]
+    agents: Option<usize>,
+    #[arg(long)]
+    days: Option<u32>,
+    /// Base seed; run k uses seed + k
+    #[arg(long)]
+    seed: Option<u64>,
+    /// Hospital beds per 1000 agents for synthetic cities (cities use their meta.json)
+    #[arg(long, default_value_t = 2.0)]
+    beds_per_1000: f64,
+    #[arg(long, default_value = "sequential")]
+    backend: String,
+    /// Worker threads (rayon/openmp)
+    #[arg(long, default_value_t = 1)]
+    threads: usize,
+    #[command(flatten)]
+    flags: BackendFlags,
+    #[arg(long, default_value = "results")]
+    out: PathBuf,
+}
+
+fn compare(a: CompareArgs) -> Result<(), Box<dyn std::error::Error>> {
+    use epidemicsim_scenarios::{compare::CompareOpts, EnsembleOpts, WorldSource};
+    let mut cfg = match &a.config {
+        Some(p) => Config::from_file(p)?,
+        None => Config::default(),
+    };
+    cfg.agents = a.agents.unwrap_or(cfg.agents);
+    cfg.days = a.days.unwrap_or(cfg.days);
+    cfg.seed = a.seed.unwrap_or(cfg.seed);
+    let bopts = a.flags.opts(a.threads)?;
+    epidemicsim_backends::make_with(&a.backend, &bopts)?;
+
+    let all = epidemicsim_scenarios::load_all(&a.scenarios_dir)?;
+    let chosen = if a.scenarios == "all" {
+        all
+    } else {
+        let mut v = Vec::new();
+        for name in a.scenarios.split(',').map(str::trim) {
+            let s = all
+                .iter()
+                .find(|s| s.name == name)
+                .ok_or_else(|| format!("no scenario '{name}' in {}", a.scenarios_dir.display()))?;
+            v.push(s.clone());
+        }
+        v
+    };
+
+    let (src, label, beds) = match &a.city {
+        Some(name) => {
+            let dir = a.cities_dir.join(name);
+            let world = epidemicsim_data::load_world(&dir, &cfg)?;
+            let beds = epidemicsim_data::read_meta(&dir)?.total_beds;
+            let frac = cfg.disease.initial_infected_frac;
+            (
+                WorldSource::City {
+                    world: Box::new(world),
+                    infected_frac: frac,
+                },
+                name.clone(),
+                beds,
+            )
+        }
+        None => (
+            WorldSource::Synth(Box::new(cfg.clone())),
+            "synthetic".to_string(),
+            a.beds_per_1000 * cfg.agents as f64 / 1000.0,
+        ),
+    };
+    let opts = CompareOpts {
+        city: label.clone(),
+        backend: a.backend.clone(),
+        ensemble: EnsembleOpts {
+            runs: a.runs,
+            days: cfg.days,
+            base_seed: cfg.seed,
+            hospital_capacity: beds.ceil().max(1.0) as u32,
+        },
+    };
+    let backend = a.backend.clone();
+    epidemicsim_scenarios::compare(&src, &chosen, &opts, &a.out, move || {
+        epidemicsim_backends::make_with(&backend, &bopts).expect("validated above")
+    })?;
+    println!(
+        "wrote {}/{label}/comparison.json ({} scenarios x {} runs)",
+        a.out.display(),
+        chosen.len(),
+        a.runs
+    );
+    Ok(())
+}
+
+#[derive(Args)]
+struct BenchArgs {
+    #[arg(long, default_value = "sequential")]
+    backend: String,
+    #[command(flatten)]
+    flags: BackendFlags,
+    /// Comma-separated agent counts
+    #[arg(long, value_delimiter = ',', default_values_t = [10_000usize, 100_000, 1_000_000])]
+    agents: Vec<usize>,
+    /// Also benchmark 10M agents (needs several GB of RAM)
+    #[arg(long)]
+    include_10m: bool,
+    /// Comma-separated thread counts; the first is the speedup reference
+    #[arg(long, value_delimiter = ',', default_values_t = [1usize])]
+    threads: Vec<usize>,
+    /// Simulated days per timed run (4 steps/day)
+    #[arg(long, default_value_t = 20)]
+    days: u32,
+    #[arg(long, default_value_t = 1)]
+    warmup: usize,
+    #[arg(long, default_value_t = 5)]
+    reps: usize,
+    #[arg(long, default_value_t = 42)]
+    seed: u64,
+    #[arg(long, default_value = "results/bench")]
+    out: PathBuf,
+    /// scaling (default) | race | imbalance | simd-align
+    #[arg(long, default_value = "scaling")]
+    suite: String,
+    /// City for --suite imbalance (loaded from --cities-dir)
+    #[arg(long, default_value = "mumbai")]
+    city: String,
+    #[arg(long, default_value = "cities")]
+    cities_dir: PathBuf,
+    /// Output directory for race / imbalance results
+    #[arg(long, default_value = "results/tlp")]
+    tlp_out: PathBuf,
+}
+
+fn bench_suite(a: &BenchArgs) -> Result<bool, Box<dyn std::error::Error>> {
+    use epidemicsim_bench::tlp;
+    match a.suite.as_str() {
+        "scaling" => Ok(false),
+        "race" => {
+            let o = tlp::RaceOpts {
+                threads: *a.threads.last().unwrap_or(&8),
+                ..Default::default()
+            };
+            let r = tlp::race(&o)?;
+            let path = a.tlp_out.join("race_demo.json");
+            tlp::write_json(&path, &r)?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        "imbalance" => {
+            let cfg = Config::default();
+            let world = epidemicsim_data::load_world(&a.cities_dir.join(&a.city), &cfg)?;
+            let o = tlp::ImbalanceOpts {
+                city: a.city.clone(),
+                threads: if a.threads == [1] {
+                    vec![1, 2, 4, 8]
+                } else {
+                    a.threads.clone()
+                },
+                days: a.days,
+                reps: a.reps.min(3),
+                chunk: a.flags.chunk,
+            };
+            let r = tlp::imbalance(&world, &o)?;
+            let path = a.tlp_out.join(format!("imbalance_{}.json", a.city));
+            tlp::write_json(&path, &r)?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        "simd-align" => {
+            let path = epidemicsim_bench::tlp::align_bench(&a.out, a.reps.max(3))?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        s => Err(format!("unknown --suite '{s}'").into()),
+    }
+}
+
+fn bench(a: BenchArgs) -> Result<(), Box<dyn std::error::Error>> {
+    if bench_suite(&a)? {
+        return Ok(());
+    }
+    let bopts = a.flags.opts(1)?;
+    epidemicsim_backends::make_with(&a.backend, &bopts)?;
+    let mut agents = a.agents.clone();
+    if a.include_10m && !agents.contains(&10_000_000) {
+        agents.push(10_000_000);
+    }
+    let opts = epidemicsim_bench::BenchOpts {
+        agents,
+        threads: a.threads.clone(),
+        days: a.days,
+        warmup: a.warmup,
+        reps: a.reps.max(1),
+        seed: a.seed,
+    };
+    let backend = a.backend.clone();
+    let b2 = bopts.clone();
+    let factory = move |t: usize| {
+        let mut o = b2.clone();
+        o.threads = t;
+        epidemicsim_backends::make_with(&backend, &o)
+    };
+    // Variant label (e.g. rayon_dynamic_c1024) keeps reports of different variants apart.
+    let label = epidemicsim_backends::label(&a.backend, &bopts);
+    let report = epidemicsim_bench::run(&label, &factory, &opts)?;
+    let path = epidemicsim_bench::write_report(&a.out, &report)?;
+    println!("wrote {}", path.display());
+    Ok(())
+}
+
+#[derive(Subcommand)]
+enum Command {
+    /// Run a synthetic-city simulation
+    Run(RunArgs),
+    /// Run scenarios as Monte Carlo ensembles and compare them
+    Compare(CompareArgs),
+    /// Benchmark a backend over several agent counts
+    Bench(BenchArgs),
+    /// Build city folders from OSM data
+    Pipeline(PipelineArgs),
+    /// Start the server (stub)
+    Serve,
+    /// Run everything (stub)
+    All,
+}
+
+fn main() {
+    let cli = Cli::parse();
+    if let Some(Command::Run(a)) = cli.command {
+        if let Err(e) = run(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
+    if let Some(Command::Pipeline(a)) = cli.command {
+        if let Err(e) = pipeline(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
+    if let Some(Command::Compare(a)) = cli.command {
+        if let Err(e) = compare(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
+    if let Some(Command::Bench(a)) = cli.command {
+        if let Err(e) = bench(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
+    println!("epidemicsim");
+    if let Some(cmd) = cli.command {
+        let name = match cmd {
+            Command::Run(_) => "run",
+            Command::Compare(_) => "compare",
+            Command::Bench(_) => "bench",
+            Command::Pipeline(_) => "pipeline",
+            Command::Serve => "serve",
+            Command::All => "all",
+        };
+        println!("{name}: not implemented yet");
+    }
+}

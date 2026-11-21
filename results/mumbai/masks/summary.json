@@ -1,0 +1,128 @@
+{
+  "city": "mumbai",
+  "scenario": "masks",
+  "description": "Masks adopted once 0.5% of the population is infectious: 60% compliance, 35% transmission reduction.",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [
+    {
+      "kind": "masks",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": null,
+      "compliance": 0.6,
+      "efficacy": 0.35
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.22381947999999993,
+      "p05": 0.2191574,
+      "p95": 0.22750169999999997
+    },
+    "days_over_capacity": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    },
+    "deaths": {
+      "mean": 1308.6,
+      "p05": 1229.9,
+      "p95": 1383.4
+    },
+    "peak_day": {
+      "mean": 84.2,
+      "p05": 83.0,
+      "p95": 90.0
+    },
+    "peak_hospital_load": {
+      "mean": 1131.02,
+      "p05": 1061.35,
+      "p95": 1197.65
+    },
+    "peak_hospital_ratio": {
+      "mean": 0.7540133333333334,
+      "p05": 0.7075666666666667,
+      "p95": 0.7984333333333333
+    },
+    "peak_infections": {
+      "mean": 16816.88,
+      "p05": 16232.0,
+      "p95": 17355.65
+    },
+    "r_initial": {
+      "mean": 1.3271824499968519,
+      "p05": 1.1829428179145904,
+      "p95": 1.4578632145420038
+    },
+    "r_max": {
+      "mean": 2.0937712341398838,
+      "p05": 2.0109155447797256,
+      "p95": 2.2171519778615476
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "6ecd2be3f06e5ce7",
+    "6ff240c55d5354ec",
+    "f88d649643029bf5",
+    "3c5a59202b177a8b",
+    "7645d9d6a3f628cd",
+    "c5deb8c10a7fa240",
+    "437940a033ffa84d",
+    "0fb6bd8e5bc2a56b",
+    "567ee01c6c77045e",
+    "90bd187ad01ab119",
+    "2b0fd123cc200ad8",
+    "0052e64202770a90",
+    "d269595328bbf698",
+    "b448e9343850169b",
+    "bdf1e601d4d360ea",
+    "9e68e2bfb1cc9bc3",
+    "dc572b3e85efd2c4",
+    "7c22d5f6864d3ee2",
+    "d731395f6a1aa037",
+    "9268d27ae54a6510",
+    "f5132db36c3477b2",
+    "c3755c055ef8fbbb",
+    "823b3d35da07e092",
+    "46458a0db0c22d4d",
+    "51dfd3f1aada6bee",
+    "7490b6e7658d140c",
+    "75d4b224721aab0b",
+    "e2e8fdb4e3961fd3",
+    "2590bf9a176071d2",
+    "cdb3c80a871dba2b",
+    "0ca7efd4520493ce",
+    "a85373247ebfb397",
+    "2ab2285dd310de61",
+    "6fd36dae21f2fd8f",
+    "578447269aefd677",
+    "a7a74b827e1b228f",
+    "e3f826f61e551f20",
+    "97d3f8a9319315c9",
+    "ea65a3a0458f2a17",
+    "8a16047534fcae50",
+    "01aaf8027057f7ff",
+    "e4dc8d5e970a691c",
+    "6ba5b6fadc0aa512",
+    "21c77d852f2f5e3f",
+    "524083c21a8ce1de",
+    "2a9b6c446b0a7360",
+    "d9a3915b991d4294",
+    "41c5feeb3f05f25c",
+    "0cf9f7c779b97a25",
+    "992233ede78a63f7"
+  ]
+}

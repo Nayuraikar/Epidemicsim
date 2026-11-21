@@ -1,0 +1,132 @@
+{
+  "city": "synthetic",
+  "scenario": "vax_targeted",
+  "description": "Same doses as vax_random (40% of the population), but only to ages 40+ (age groups 2-4).",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 100000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 200,
+  "interventions": [
+    {
+      "kind": "vaccination",
+      "start_day": 10,
+      "trigger": null,
+      "duration_days": null,
+      "strategy": "age",
+      "coverage": 0.4,
+      "rate_per_day": 0.01,
+      "ages": [
+        2,
+        3,
+        4
+      ],
+      "block_homes": 1000
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.23405759999999998,
+      "p05": 0.21870099999999998,
+      "p95": 0.246237
+    },
+    "days_over_capacity": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    },
+    "deaths": {
+      "mean": 34.06,
+      "p05": 22.25,
+      "p95": 43.55
+    },
+    "peak_day": {
+      "mean": 88.26,
+      "p05": 79.7,
+      "p95": 98.0
+    },
+    "peak_hospital_load": {
+      "mean": 61.28,
+      "p05": 51.0,
+      "p95": 71.1
+    },
+    "peak_hospital_ratio": {
+      "mean": 0.3064,
+      "p05": 0.255,
+      "p95": 0.3554999999999999
+    },
+    "peak_infections": {
+      "mean": 2178.04,
+      "p05": 2056.3,
+      "p95": 2311.7
+    },
+    "r_initial": {
+      "mean": 1.6299202299619944,
+      "p05": 1.2678592477037707,
+      "p95": 2.299068176867397
+    },
+    "r_max": {
+      "mean": 2.5466029763631424,
+      "p05": 2.1273116576931734,
+      "p95": 3.240599367241379
+    },
+    "vaccine_doses": {
+      "mean": 40000.0,
+      "p05": 40000.0,
+      "p95": 40000.0
+    }
+  },
+  "run_hashes": [
+    "4f77c7f7e770d149",
+    "2d46c9be465aa8cb",
+    "c7fd9a78a53d33dc",
+    "4cd2fc044a5cf784",
+    "51516bca48dec364",
+    "d1af9277bfc5f05e",
+    "ac1960f6b33adac4",
+    "d7d315f96c044e38",
+    "4464c98bbdbf7e84",
+    "394c9cceafedd650",
+    "a7c8c4b848396c3c",
+    "7d92454d8307aa69",
+    "34bcc3921324ba1e",
+    "71fdd783a6989380",
+    "385c2ffb2e868dee",
+    "396484506c2852ad",
+    "f87a5011463d655b",
+    "abf9e41c08c5c7fd",
+    "ad216c473e425dfb",
+    "3b4e6e0878494ddd",
+    "fd09be18ee32f940",
+    "ff7457a47c0e618e",
+    "4f32fe37be2b8beb",
+    "6acc918544f60fd1",
+    "72ec42495d830cf3",
+    "feb4b8abfb2400ae",
+    "1d88ffce26c3d397",
+    "1b20005b6b2a87a6",
+    "6ad3294c50c2ac73",
+    "dc999bd5fe5af81e",
+    "8aaec31f536551a8",
+    "54f2cd4509484cfe",
+    "940cd58a7585a18b",
+    "bc1f8e3905b923bc",
+    "ce6b12ed0aec3a41",
+    "9a1a8ae5e427cb21",
+    "ab08e66d3f6a9284",
+    "dda8c8299930a672",
+    "2465e6e0817f42be",
+    "dfb4d941e32894ca",
+    "58428206e5582a60",
+    "804ad43c7d09a1bd",
+    "98d2ffba9cbd1ffc",
+    "19b2b907e0ad55e0",
+    "844daf39a43a04ff",
+    "04545ef9a88ccb5f",
+    "3d5d51876d907ea6",
+    "9d99106d33cd7a26",
+    "e03c545c9f548916",
+    "dcca0ee25f29aa13"
+  ]
+}

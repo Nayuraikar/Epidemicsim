@@ -1,0 +1,32 @@
+{
+  "name": "bengaluru",
+  "source_url": "https://download.geofabrik.de/asia/india/southern-zone/southern-zone-latest.osm.pbf",
+  "bbox": [
+    77.46,
+    12.83,
+    77.76,
+    13.14
+  ],
+  "seed": 42,
+  "target_agents": 1000000,
+  "agents": 1000000,
+  "pop_weight": "building_density",
+  "hospital_beds_per_1000": 1.2,
+  "total_beds": 1200.0,
+  "counts": {
+    "homes": 300473,
+    "schools": 1649,
+    "colleges": 585,
+    "offices": 15894,
+    "markets": 2000,
+    "hospitals": 1112
+  },
+  "synthetic": {
+    "homes": 0,
+    "schools": 0,
+    "colleges": 0,
+    "offices": 8187,
+    "markets": 1118,
+    "hospitals": 0
+  }
+}

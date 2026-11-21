@@ -1,0 +1,30 @@
+name = "combo"
+description = "Masks and isolation from day 7, random vaccination from day 10, closures when 0.5% are infectious."
+
+[[interventions]]
+kind = "masks"
+start_day = 7
+compliance = 0.6
+efficacy = 0.35
+
+[[interventions]]
+kind = "isolation"
+start_day = 7
+compliance = 0.6
+
+[[interventions]]
+kind = "vaccination"
+strategy = "random"
+start_day = 10
+coverage = 0.4
+rate_per_day = 0.01
+
+[[interventions]]
+kind = "college_closure"
+trigger = { metric = "infectious", above = 0.005 }
+duration_days = 30
+
+[[interventions]]
+kind = "market_closure"
+trigger = { metric = "infectious", above = 0.005 }
+duration_days = 30

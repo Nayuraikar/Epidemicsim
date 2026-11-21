@@ -1,0 +1,16 @@
+[package]
+name = "epidemicsim-cli"
+version.workspace = true
+edition.workspace = true
+
+[[bin]]
+name = "epidemicsim"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+epidemicsim-core = { version = "0.1.0", path = "../core" }
+epidemicsim-data = { version = "0.1.0", path = "../data" }
+epidemicsim-scenarios = { version = "0.1.0", path = "../scenarios" }
+epidemicsim-backends = { version = "0.1.0", path = "../backends" }
+epidemicsim-bench = { version = "0.1.0", path = "../bench" }

@@ -1,0 +1,32 @@
+{
+  "name": "mumbai",
+  "source_url": "https://download.geofabrik.de/asia/india/western-zone/western-zone-latest.osm.pbf",
+  "bbox": [
+    72.76,
+    18.89,
+    73.05,
+    19.3
+  ],
+  "seed": 42,
+  "target_agents": 1000000,
+  "agents": 1000000,
+  "pop_weight": "building_density",
+  "hospital_beds_per_1000": 1.5,
+  "total_beds": 1500.0,
+  "counts": {
+    "homes": 300473,
+    "schools": 1081,
+    "colleges": 215,
+    "offices": 15894,
+    "markets": 2000,
+    "hospitals": 1229
+  },
+  "synthetic": {
+    "homes": 0,
+    "schools": 374,
+    "colleges": 0,
+    "offices": 13480,
+    "markets": 1556,
+    "hospitals": 0
+  }
+}

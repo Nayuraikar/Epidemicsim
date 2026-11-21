@@ -7,3 +7,11 @@ Read CLAUDE.md. Do NOT implement any simulation logic yet. Only scaffold:
 5. Add empty cities/*.toml for bengaluru, mumbai, delhi, chennai with TODO fields, and scenarios/*.toml for baseline, masks, vax_random, vax_targeted, isolation, closures, lockdown, combo with TODO fields.
 6. Write a first docs/PROGRESS.md with a checklist of the 8 phases and an empty "Findings" section. Write a stub docs/SCHEMA.md.
 7. Verify with `cargo build --workspace` and `cargo test --workspace`, then summarise what exists.
+
+Working rules (save tokens):
+- Be concise. No long summaries; end each task with <=10 lines: what changed, test status, next step.
+- Don't re-read files you just wrote. Don't paste large files or logs back; show only errors.
+- Run tests with quiet output (`cargo test -q`, `cargo build -q`).
+- Don't refactor or add features beyond the current prompt.
+- Update docs/PROGRESS.md with <=5 lines per phase.
+- Never run git commit, git push, git add, git reset or git checkout. The user commits. When a task is finished, print a suggested commit message and stop. Ask before adding dependencies.

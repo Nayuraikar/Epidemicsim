@@ -1,0 +1,45 @@
+{
+  "backend": "ilp_naive",
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.236090708,
+        "min": 0.229388709,
+        "max": 0.252314834
+      },
+      "agents_per_sec": 33885281.07594984,
+      "contacts_per_sec": 33885281.07594984,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 2.364162458,
+        "min": 2.209977125,
+        "max": 2.498684041
+      },
+      "agents_per_sec": 33838622.10030915,
+      "contacts_per_sec": 33838595.87537702,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

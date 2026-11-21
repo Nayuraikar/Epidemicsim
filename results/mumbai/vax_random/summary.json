@@ -1,0 +1,131 @@
+{
+  "city": "mumbai",
+  "scenario": "vax_random",
+  "description": "From day 10, vaccinate 1% of the population per day at random until 40% are covered.",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [
+    {
+      "kind": "vaccination",
+      "start_day": 10,
+      "trigger": null,
+      "duration_days": null,
+      "strategy": "random",
+      "coverage": 0.4,
+      "rate_per_day": 0.01,
+      "ages": [
+        3,
+        4
+      ],
+      "block_homes": 1000
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.16775930000000003,
+      "p05": 0.15957525000000003,
+      "p95": 0.17424415000000001
+    },
+    "days_over_capacity": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    },
+    "deaths": {
+      "mean": 773.28,
+      "p05": 692.35,
+      "p95": 845.1
+    },
+    "peak_day": {
+      "mean": 86.96,
+      "p05": 76.45,
+      "p95": 97.0
+    },
+    "peak_hospital_load": {
+      "mean": 627.8,
+      "p05": 590.45,
+      "p95": 664.3
+    },
+    "peak_hospital_ratio": {
+      "mean": 0.4185333333333333,
+      "p05": 0.39363333333333334,
+      "p95": 0.44286666666666663
+    },
+    "peak_infections": {
+      "mean": 11353.44,
+      "p05": 10829.9,
+      "p95": 11872.05
+    },
+    "r_initial": {
+      "mean": 1.3271824499968519,
+      "p05": 1.1829428179145904,
+      "p95": 1.4578632145420038
+    },
+    "r_max": {
+      "mean": 2.020940310722307,
+      "p05": 1.9103336006512737,
+      "p95": 2.1476470263672254
+    },
+    "vaccine_doses": {
+      "mean": 400000.0,
+      "p05": 400000.0,
+      "p95": 400000.0
+    }
+  },
+  "run_hashes": [
+    "72ba4bf86e8787de",
+    "1f1c027535baf154",
+    "45eae0691caf01dc",
+    "b15841eab2fd5096",
+    "82c3874775c19e65",
+    "71e87be81d1c7094",
+    "42aa702f88950842",
+    "94dd39388d908667",
+    "76c3cce571e66293",
+    "6d93d4c4482cc9b8",
+    "66187a8aa67c8b45",
+    "1f918e764108b24a",
+    "3040ac9c12918210",
+    "4cc2f91d6471d232",
+    "ada5df0b4d8cb2e8",
+    "c773027036ca7baf",
+    "3371166ea96866e5",
+    "db968978624ffd33",
+    "73951291ef586c5b",
+    "c5ea8d7b3b954793",
+    "cf3c1fd10d5b40a5",
+    "83afd8b36a0c22cf",
+    "6f7eb87a286f75da",
+    "e424c8f0f20fc871",
+    "8b39bfc5c57e8edc",
+    "d562b55ffbb75b40",
+    "6690abfee34f9cb9",
+    "224f1973a437d98a",
+    "1804a1d586247279",
+    "00c10b18583d2c28",
+    "7df65c73953d2df4",
+    "2c00f848f9e9a91e",
+    "a9f01d18667695d6",
+    "8e7a71ae8bb15c1f",
+    "c6e29d86d944a3e7",
+    "8adb0fc9d79e4043",
+    "cc1b4402274762ec",
+    "5cc1e9d60fc356c4",
+    "0a39d346205ed0ad",
+    "ecee37a124aea41d",
+    "f7d06d806bca58e6",
+    "ab02306b54c47c90",
+    "b8621905311323c2",
+    "c371126c70a702e1",
+    "b35a4a7f9564b0cc",
+    "58d5b1d44261a68a",
+    "15c41fd36318e76b",
+    "c8dbbf8688f1d150",
+    "2e54c70969884789",
+    "54509ab676e445de"
+  ]
+}

@@ -1,0 +1,7 @@
+name = "isolation"
+description = "From day 7, 60% of symptomatic agents stay home."
+
+[[interventions]]
+kind = "isolation"
+start_day = 7
+compliance = 0.6

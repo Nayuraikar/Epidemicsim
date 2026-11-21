@@ -1,0 +1,59 @@
+{
+  "backend": "sequential",
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 10000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.022676708,
+        "min": 0.022610875,
+        "max": 0.0227185
+      },
+      "agents_per_sec": 35278489.276309416,
+      "contacts_per_sec": 35278489.276309416,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.230364458,
+        "min": 0.228999084,
+        "max": 0.275981375
+      },
+      "agents_per_sec": 34727579.37337712,
+      "contacts_per_sec": 34727579.37337712,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 2.4561395839999998,
+        "min": 2.315538833,
+        "max": 2.518773208
+      },
+      "agents_per_sec": 32571438.741162363,
+      "contacts_per_sec": 32571413.498297337,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

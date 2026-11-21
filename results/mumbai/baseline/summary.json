@@ -1,0 +1,116 @@
+{
+  "city": "mumbai",
+  "scenario": "baseline",
+  "description": "No interventions.",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.41682974,
+      "p05": 0.41364880000000004,
+      "p95": 0.41945065000000004
+    },
+    "days_over_capacity": {
+      "mean": 50.2,
+      "p05": 49.0,
+      "p95": 51.25
+    },
+    "deaths": {
+      "mean": 3140.04,
+      "p05": 3023.0,
+      "p95": 3250.2999999999997
+    },
+    "peak_day": {
+      "mean": 79.9,
+      "p05": 76.0,
+      "p95": 83.0
+    },
+    "peak_hospital_load": {
+      "mean": 3259.22,
+      "p05": 3164.15,
+      "p95": 3349.1
+    },
+    "peak_hospital_ratio": {
+      "mean": 2.172813333333334,
+      "p05": 2.1094333333333335,
+      "p95": 2.2327333333333335
+    },
+    "peak_infections": {
+      "mean": 42582.42,
+      "p05": 41938.6,
+      "p95": 43366.5
+    },
+    "r_initial": {
+      "mean": 1.3271824499968519,
+      "p05": 1.1829428179145904,
+      "p95": 1.4578632145420038
+    },
+    "r_max": {
+      "mean": 2.0937712341398838,
+      "p05": 2.0109155447797256,
+      "p95": 2.2171519778615476
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "45ad28c1f99a7c1d",
+    "98fb49d20bda3d7b",
+    "f10a11875d3ae1d8",
+    "a29ecdcfbd18e98d",
+    "7e22063b49ca8c74",
+    "3e633931df1525e7",
+    "dbda4170e70b56e9",
+    "d7edb9d7512deea9",
+    "53563a6160912e9e",
+    "6018ef9b96e08ce9",
+    "9027963fd0512f82",
+    "d95d8a746c97c02f",
+    "9cfdd3b380587804",
+    "9f812f55364446f4",
+    "9dfa74d6499d54a5",
+    "690c9bb53d78ef53",
+    "aa135477b49ecc41",
+    "71098f70199ea01f",
+    "412ff40bb64a2b56",
+    "69f2e0e7533265fc",
+    "826d72d396c98271",
+    "d9b5984ade8c3f63",
+    "3e90eb01d63dd4b7",
+    "3384989a8b19db67",
+    "df864695b4d142f6",
+    "4a3f4696684188e3",
+    "3d480341bcafeab9",
+    "e883f762242bcfdc",
+    "1a2b7723e54af92a",
+    "b900b798ae16f0a8",
+    "ce3ef9ddb9a2b863",
+    "05f7f020fa5de427",
+    "9acc1e26fbcec6d3",
+    "545b0d28bb28fa40",
+    "afd129b073937855",
+    "7a8f8e223855e45b",
+    "949f60f7a5c49578",
+    "7fb198be8063cd96",
+    "8471aa82df9a9d3e",
+    "9cde68fb973ca8f1",
+    "b66f5e94108e4e0f",
+    "2674635efb759d49",
+    "0bda522a6abde792",
+    "d878a419de6849bb",
+    "e2855d8df4611a42",
+    "1e30db44fd54de16",
+    "add2ad88af8c2d7d",
+    "df652f036f4ce1c8",
+    "88712abb5ec578bc",
+    "72cc88ead139acf0"
+  ]
+}

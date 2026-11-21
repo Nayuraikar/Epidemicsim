@@ -1,0 +1,9 @@
+name = "vax_random"
+description = "From day 10, vaccinate 1% of the population per day at random until 40% are covered."
+
+[[interventions]]
+kind = "vaccination"
+strategy = "random"
+start_day = 10
+coverage = 0.4
+rate_per_day = 0.01

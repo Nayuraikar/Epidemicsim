@@ -5,3 +5,5 @@ data_cache/
 *.tif
 cities/*/agents.parquet
 .DS_Store
+
+!crates/data/tests/data/*.pbf

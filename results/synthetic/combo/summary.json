@@ -1,0 +1,164 @@
+{
+  "city": "synthetic",
+  "scenario": "combo",
+  "description": "Masks and isolation from day 7, random vaccination from day 10, closures when 0.5% are infectious.",
+  "backend": "sequential",
+  "runs": 50,
+  "agents": 100000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 200,
+  "interventions": [
+    {
+      "kind": "masks",
+      "start_day": 7,
+      "trigger": null,
+      "duration_days": null,
+      "compliance": 0.6,
+      "efficacy": 0.35
+    },
+    {
+      "kind": "isolation",
+      "start_day": 7,
+      "trigger": null,
+      "duration_days": null,
+      "compliance": 0.6
+    },
+    {
+      "kind": "vaccination",
+      "start_day": 10,
+      "trigger": null,
+      "duration_days": null,
+      "strategy": "random",
+      "coverage": 0.4,
+      "rate_per_day": 0.01,
+      "ages": [
+        3,
+        4
+      ],
+      "block_homes": 1000
+    },
+    {
+      "kind": "college_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    },
+    {
+      "kind": "market_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.0026442000000000076,
+      "p05": 0.0016870000000000218,
+      "p95": 0.004197000000000028
+    },
+    "days_over_capacity": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    },
+    "deaths": {
+      "mean": 2.28,
+      "p05": 0.0,
+      "p95": 5.0
+    },
+    "peak_day": {
+      "mean": 7.5,
+      "p05": 4.0,
+      "p95": 12.549999999999997
+    },
+    "peak_hospital_load": {
+      "mean": 5.46,
+      "p05": 3.0,
+      "p95": 9.0
+    },
+    "peak_hospital_ratio": {
+      "mean": 0.027300000000000005,
+      "p05": 0.015,
+      "p95": 0.045
+    },
+    "peak_infections": {
+      "mean": 55.78,
+      "p05": 46.0,
+      "p95": 70.55
+    },
+    "r_initial": {
+      "mean": 1.6299202299619944,
+      "p05": 1.2678592477037707,
+      "p95": 2.299068176867397
+    },
+    "r_max": {
+      "mean": 3.7948231080662698,
+      "p05": 1.9649157982105137,
+      "p95": 8.149072499999999
+    },
+    "vaccine_doses": {
+      "mean": 40000.0,
+      "p05": 40000.0,
+      "p95": 40000.0
+    }
+  },
+  "run_hashes": [
+    "3a4ed5506ac71206",
+    "7e7ede419f00c0a4",
+    "ab32f8a382900ee6",
+    "8245617857802700",
+    "b656ce30bd1ca2c4",
+    "c5405ae4d2e88057",
+    "9534faa7d0870978",
+    "0ad9c8242b2dc6fa",
+    "54a2df22a8692a16",
+    "5f017da01233df39",
+    "2795951f0590c53a",
+    "bcbed739ca27ff11",
+    "98c5aec375df693e",
+    "37ba380d61029a71",
+    "59257cde72704732",
+    "364398bd0550e473",
+    "35d65a0d83af63cd",
+    "e32e263328ece4e4",
+    "52b853a4e0f5b4a7",
+    "a66458ffd8cc2d6e",
+    "a093c7d9917c3a98",
+    "d1789138ff039d66",
+    "a611be61206dc517",
+    "a60b235f972259ad",
+    "1bae6d7fdf4ef24f",
+    "89be7994573bdbd6",
+    "28eaa19d775b8cab",
+    "539370413dd8ce3b",
+    "78f5db8f0c7ef5a8",
+    "d3dce3b67dec0b18",
+    "f6d0b96261b47fea",
+    "796015f72dbd0c60",
+    "28db5f5a5d5d4470",
+    "aee7c090e83ef0db",
+    "c6408b1fa9234fa3",
+    "202d758f74b89891",
+    "f62a4e67ec145b27",
+    "7fcc5a25c21123ce",
+    "ba89dfaa0e02b2ce",
+    "82bbb3ea59e04c48",
+    "0a2b3fdf04a68781",
+    "df8fb2d45aa03615",
+    "b949db2ed649e31f",
+    "5b3855ab2a9e61fe",
+    "055306961277f96c",
+    "9be4d080a69156c4",
+    "7be9e0bda0501439",
+    "fbbd9a5e34316b2a",
+    "6f139b510d7612e6",
+    "f8142b2e97a17e79"
+  ]
+}
