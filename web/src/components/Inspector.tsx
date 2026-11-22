@@ -1,3 +1,5 @@
+import { HELP } from '../helptext'
+import { Help } from './Help'
 import type { Run } from '../run'
 import { C } from '../colors'
 
@@ -9,7 +11,7 @@ export function Inspector({ run }: { run: Run | null }) {
   const a = run?.inspected
   return (
     <div className="card inspector fade-in">
-      <div className="chart-title"><h3>Agent inspector</h3><span className="note">click a map cell during a live run</span></div>
+      <div className="chart-title"><h3>Agent inspector</h3><Help h={HELP.inspector} /><span className="note">click a map cell during a live run</span></div>
       {!run && <div className="empty">No run yet.</div>}
       {run && !a && <div className="note">{run.inspectNote || (run.mode === 'replay' ? 'Replay frames hold no agent data. Start a live run (with “Record infection chains”) and click a map cell.' : 'Click a map cell to inspect an agent living there (an infected one if any).')}</div>}
       {a && (

@@ -15,6 +15,8 @@ import { MapPanel, snapshotMaps } from './components/MapPanel'
 import Nav from './components/Nav'
 import { MetricCards, type CardData } from './components/MetricCards'
 import { Transport } from './components/Transport'
+import { GuideContext, Help } from './components/Help'
+import { HELP } from './helptext'
 
 const MAX_RUNS = 3
 let nextId = 1
@@ -38,6 +40,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
   const [follow, setFollow] = useState(true)
   const [busy, setBusy] = useState(false)
   const [focus, setFocus] = useState(0)
+  const [guide, setGuide] = useState(false)
   const exportRef = useRef<HTMLDivElement>(null)
   const refresh = useCallback(() => bump((v) => v + 1), [])
   const runs = runsRef.current
@@ -73,6 +76,9 @@ export default function App({ demo = false }: { demo?: boolean }) {
 
   // ---- builder <-> presets ----
   const presetSpec = presets.find((p) => p.name === preset)
+  const presetB = presetSpec ? fromScenario(presetSpec) : null
+  const baseSpec = presets.find((x) => x.name === 'baseline')
+  const baseB = baseSpec ? fromScenario(baseSpec) : EMPTY
   const modified = !!presetSpec && !sameBuilder(b, fromScenario(presetSpec))
   const onPreset = (name: string) => { const p = presets.find((x) => x.name === name); if (p) { setPreset(name); setB(fromScenario(p)) } }
   const baked = info?.baked_scenarios ?? []
@@ -217,6 +223,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
   if (!cities) return <div className="app"><div className="card empty" style={{ gridColumn: '1/-1' }}><div className="spinner" />Loading…</div></div>
 
   return (
+    <GuideContext.Provider value={guide}>
     <div className="app">
       <header className="topbar">
         <div className="brand">epidemicsim<small>studio</small></div>
@@ -229,11 +236,12 @@ export default function App({ demo = false }: { demo?: boolean }) {
           ))}
         </div>
         <span className="spacer" />
-        <button className="btn" disabled={!runs.length || busy} onClick={doExportPng}>{busy ? 'Exporting…' : 'Export comparison PNG'}</button>
+        <button className="btn" disabled={!runs.length || busy} onClick={doExportPng}>{busy ? 'Exporting…' : 'Export comparison PNG'}</button><Help h={HELP.exportPng} once />
+        <button className={`btn ${guide ? 'primary' : ''}`} aria-pressed={guide} onClick={() => setGuide((g) => !g)}>Guide</button>
       </header>
 
       <aside className="sidebar">
-        <ScenarioBuilder b={b} set={setB} presets={presets.map((p) => p.name)} preset={preset} modified={modified} onPreset={onPreset}
+        <ScenarioBuilder b={b} ref0={presetB} base={baseB} set={setB} presets={presets.map((p) => p.name)} preset={preset} modified={modified} onPreset={onPreset}
           disabled={!anyBuilt} canReplay={canReplay} replayHint={replayHint} liveAgents={liveAgents} maxAgents={cities.max_live_agents} setLiveAgents={setLiveAgents}
           backend={backend} backends={cities.backends} setBackend={setBackend} chains={chains} setChains={setChains}
           onLive={startLive} onReplay={startReplay} onExport={() => exportScenarioJson(currentSpec())} />
@@ -251,7 +259,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
             <div className="maps" style={{ ['--n' as string]: Math.max(runs.length, 1) }}>
               {runs.length === 0 && (
                 <div className="card mapcard fade-in">
-                  <div className="head"><b>{info?.name} · {info?.agents?.toLocaleString()} agents</b><span className="note">idle</span></div>
+                  <div className="head"><b>{info?.name} · {info?.agents?.toLocaleString()} agents</b><Help h={HELP.heatmap} /><span className="note">idle</span></div>
                   <MapPanel run={null} frame={undefined} bbox={info?.bbox ?? null} onPick={pick} />
                   <div className="counts note">Choose a scenario and press <b>Run live</b>{baked.length ? <> or <b>Replay</b> ({baked.join(', ')} are pre-baked)</> : ''}.</div>
                 </div>
@@ -262,7 +270,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
                 return (
                   <div className="card mapcard fade-in" key={r.id} onClick={() => setFocus(runs.indexOf(r))} style={focusRun === r && runs.length > 1 ? { outline: `2px solid ${color}` } : undefined}>
                     <div className="head">
-                      <b data-export-text style={{ color }}><span className="dot" style={{ background: color }} />{r.label}</b>
+                      <b data-export-text style={{ color }}><span className="dot" style={{ background: color }} />{r.label}</b><Help h={HELP.heatmap} once={rows[0].r !== r} />
                       <button className="btn" onClick={(e) => { e.stopPropagation(); removeRun(r.id) }} aria-label="Remove run">✕</button>
                     </div>
                     <MapPanel run={r} frame={frame} bbox={info?.bbox ?? null} onPick={pick} />
@@ -275,6 +283,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
                         <span><i className="dot" style={{ background: C.I }} />I {(c[2] + c[3]).toLocaleString()}</span>
                         <span><i className="dot" style={{ background: C.R }} />R {c[5].toLocaleString()}</span>
                         <span><i className="dot" style={{ background: C.D }} />D {c[6].toLocaleString()}</span>
+                        <Help h={HELP.counts} once={rows[0].r !== r} />
                       </> : <span className="note">waiting for data…</span>}
                       {r.meta && r.meta.subsample > 1 && <span className="note">· {(r.meta.agents / 1000).toFixed(0)}k-agent sample of {(r.meta.city_agents / 1e6).toFixed(1)}M</span>}
                     </div>
@@ -292,18 +301,18 @@ export default function App({ demo = false }: { demo?: boolean }) {
                 <div className="charts" style={{ ['--n' as string]: runs.length }}>
                   {rows.map((x, j) => (
                     <div className="card fade-in" key={x.r.id}>
-                      <div className="chart-title"><b data-export-text style={{ color: x.color }}>{x.r.label}: SEIR{x.r.bands ? ' · 5–95% band' : ''}</b></div>
+                      <div className="chart-title"><b data-export-text style={{ color: x.color }}>{x.r.label}: SEIR{x.r.bands ? ' · 5–95% band' : ''}</b>{x.r.bands && <Help h={HELP.band} once={j > 0} />}</div>
                       <SeirChart data={chartData[j]} yMax={yMax} banded={!!x.r.bands} />
                     </div>
                   ))}
                 </div>
                 <div className="charts two">
-                  <div className="card fade-in"><div className="chart-title"><b data-export-text>Hospital load vs capacity</b></div><HospitalChart series={series} /></div>
-                  <div className="card fade-in"><div className="chart-title"><b data-export-text>R<sub>t</sub> (daily mean)</b></div><RtChart series={series} /></div>
+                  <div className="card fade-in"><div className="chart-title"><b data-export-text>Hospital load vs capacity</b><Help h={HELP.hospital} /></div><HospitalChart series={series} /></div>
+                  <div className="card fade-in"><div className="chart-title"><b data-export-text>R<sub>t</sub> (daily mean)</b><Help h={HELP.rt} /></div><RtChart series={series} /></div>
                 </div>
                 <div className="charts two">
                   <div className="card fade-in">
-                    <div className="chart-title"><b data-export-text>Hotspots{focusRun ? ` · ${focusRun.label}` : ''}</b><span className="note">top zones by new infections</span></div>
+                    <div className="chart-title"><b data-export-text>Hotspots{focusRun ? ` · ${focusRun.label}` : ''}</b><Help h={HELP.hotspots} /><span className="note">top zones by new infections</span></div>
                     {focusRun && focusRun.meta ? <Hotspots run={focusRun} version={focusRun.frames.length} /> : <div className="empty">Waiting for data…</div>}
                   </div>
                   <Inspector run={focusRun} />
@@ -314,6 +323,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
         )}
       </main>
     </div>
+    </GuideContext.Provider>
   )
 }
 

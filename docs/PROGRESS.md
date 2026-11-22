@@ -53,6 +53,8 @@
   - Headless Chrome screenshots of all Lab tabs at 1280/390 px: no horizontal overflow; wide tables scroll inside their card.
 - UI redesign (web/ only): journal/lab-notebook style (paper/ink/hairlines, serif+mono, 2px radius, no shadows/gradients); Landing figures read from results via API; Lab numbered sidebar.
   - Screenshots at 1280 px for Landing, all Lab tabs, Studio; no horizontal overflow at 390 px on all routes. `#/lab?tab=<id>` deep-links a tab.
+- Studio hover help (web/ only): `<Help>` (hover/focus/tap, Escape/outside click, portalled and clamped to viewport), copy in `web/src/helptext.ts` checked against spec.rs/engine.rs/schedule.rs, live "preset -> now" hints, "Differs from baseline" line, Guide toggle.
+  - Headless Chrome at 1280 px: all 27 help panels inside the viewport, Escape/outside click close, no console errors. Untested: touch device, Safari/Firefox, 390 px layout.
 
 ## Findings
 
