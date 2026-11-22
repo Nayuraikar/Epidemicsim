@@ -18,7 +18,7 @@ import { Transport } from './components/Transport'
 const MAX_RUNS = 3
 let nextId = 1
 
-export default function App() {
+export default function App({ demo = false }: { demo?: boolean }) {
   const [cities, setCities] = useState<CitiesResp | null>(null)
   const [presets, setPresets] = useState<ScenarioSpec[]>([])
   const [loadErr, setLoadErr] = useState('')
@@ -123,6 +123,24 @@ export default function App() {
     })
   }
 
+  // ---- one-click demo (#/demo): pick a built city with baked frames, replay combo/baseline automatically ----
+  const [demoPhase, setDemoPhase] = useState(demo ? 0 : 9)
+  const demoTarget = (() => {
+    const cs = cities?.cities.filter((c) => c.built && c.baked_scenarios.length) ?? []
+    const c = cs.find((x) => x.name === 'mumbai') ?? cs[0]
+    return c ? { city: c.name, preset: ['combo', 'baseline'].find((p) => c.baked_scenarios.includes(p)) ?? c.baked_scenarios[0] } : null
+  })()
+  useEffect(() => {
+    if (!cities || !presets.length || !city || demoPhase > 1) return
+    if (!demoTarget) { setDemoPhase(9); return }
+    if (demoPhase === 0) {
+      if (city !== demoTarget.city) { setCity(demoTarget.city); return }
+      onPreset(demoTarget.preset); setDemoPhase(1); return
+    }
+    if (city === demoTarget.city && preset === demoTarget.preset && city in comparisons) { setDemoPhase(2); startReplay() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [demo, demoPhase, cities, presets, city, preset, comparisons])
+
   const removeRun = (id: number) => { const i = runs.findIndex((x) => x.id === id); if (i >= 0) { runs[i].conn?.close(); runs.splice(i, 1); setFocus(0); refresh() } }
 
   // ---- playback: rAF loop; live runs push frames, we flush ~30 fps and (when following) track the live edge ----
@@ -201,6 +219,7 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">epidemicsim<small>studio</small></div>
+        <a className="btn" href="#/">Home</a><a className="btn" href="#/lab">Lab</a>
         <div className="chips" role="tablist" aria-label="City">
           {cities.cities.map((c) => (
             <button key={c.name} role="tab" aria-selected={c.name === city} className={`chip ${c.name === city ? 'on' : ''} ${c.built ? '' : 'off'}`} onClick={() => pickCity(c.name)}>

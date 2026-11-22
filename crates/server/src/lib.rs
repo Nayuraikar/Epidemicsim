@@ -492,6 +492,66 @@ async fn ws_session(mut socket: WebSocket, app: Shared) {
     }
 }
 
+// ---------- PAGP Lab: read-only access to measured result files ----------
+
+/// Result sub-folders the Lab may read, and the file types it may return.
+const LAB_ROOTS: [&str; 7] = ["bench", "ilp", "tlp", "gpu", "mpi", "ptx", "kaggle"];
+const LAB_EXTS: [&str; 8] = ["json", "md", "asm", "ptx", "tsv", "csv", "log", "txt"];
+
+fn lab_walk(base: &Path, dir: &Path, out: &mut Vec<Value>) {
+    let Ok(rd) = std::fs::read_dir(dir) else {
+        return;
+    };
+    let mut ents: Vec<_> = rd.flatten().collect();
+    ents.sort_by_key(|e| e.file_name());
+    for e in ents {
+        let p = e.path();
+        if p.is_dir() {
+            lab_walk(base, &p, out);
+        } else if let (Ok(md), Some(ext)) = (e.metadata(), p.extension().and_then(|x| x.to_str())) {
+            if LAB_EXTS.contains(&ext) {
+                if let Ok(rel) = p.strip_prefix(base) {
+                    out.push(json!({ "path": rel.to_string_lossy(), "bytes": md.len() }));
+                }
+            }
+        }
+    }
+}
+
+/// `GET /api/lab/index`: every readable result file with its size (empty files show up with bytes = 0).
+async fn lab_index(State(app): State<Shared>) -> Json<Value> {
+    let mut files = Vec::new();
+    for r in LAB_ROOTS {
+        lab_walk(&app.dirs.results, &app.dirs.results.join(r), &mut files);
+    }
+    Json(json!({ "files": files }))
+}
+
+/// `GET /api/lab/file/<path under results/>`: raw file contents (text), whitelisted roots and extensions only.
+async fn lab_file(
+    State(app): State<Shared>,
+    UrlPath(path): UrlPath<String>,
+) -> Result<Response, ApiErr> {
+    let parts: Vec<&str> = path.split('/').collect();
+    let ok_part = |s: &&str| {
+        !s.is_empty()
+            && !s.starts_with('.')
+            && s.bytes()
+                .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'_' | b'-' | b'.'))
+    };
+    let ext = path.rsplit('.').next().unwrap_or("");
+    if !parts.iter().all(ok_part) || !LAB_ROOTS.contains(&parts[0]) || !LAB_EXTS.contains(&ext) {
+        return Err(bad("path not allowed"));
+    }
+    let bytes = std::fs::read(app.dirs.results.join(&path)).map_err(|_| missing("not found"))?;
+    let ctype = if ext == "json" {
+        "application/json"
+    } else {
+        "text/plain; charset=utf-8"
+    };
+    Ok(([(header::CONTENT_TYPE, ctype)], bytes).into_response())
+}
+
 pub fn router(app: Shared) -> Router {
     let index = app.dirs.web.join("index.html");
     let spa = ServeDir::new(&app.dirs.web).not_found_service(ServeFile::new(index));
@@ -502,6 +562,8 @@ pub fn router(app: Shared) -> Router {
         .route("/api/cities/{city}/scenarios/{sc}/summary", get(summary))
         .route("/api/cities/{city}/scenarios/{sc}/bands", get(bands))
         .route("/api/cities/{city}/scenarios/{sc}/frames", get(frames))
+        .route("/api/lab/index", get(lab_index))
+        .route("/api/lab/file/{*path}", get(lab_file))
         .route("/ws/live", get(ws_live))
         .fallback_service(spa)
         .layer(CorsLayer::permissive())

@@ -46,6 +46,8 @@ fn golden_table() {
         };
         rows.push((format!("openmp {} (4t)", s.name()), "openmp", o));
     }
+    // NEON exists only on aarch64; on other targets the row is skipped, not a failure.
+    #[cfg(target_arch = "aarch64")]
     rows.push((
         "simd neon".into(),
         "simd",

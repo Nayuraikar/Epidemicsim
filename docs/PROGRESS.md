@@ -34,7 +34,11 @@
   - REST (cities, scenarios, comparison, bands, summary, baked frames) + `/ws/live` (start/pause/resume/stop/speed/inspect); live capped at 250k agents via household subsample (non-home beta x k^0.6, tuned on Mumbai only).
   - Infection chains recorded in the server (flag, no engine change): sources = co-located infectious agents, not a unique infector; inspector works in live runs only.
   - Tested headless Chrome (CDP): replay, live, pause, inspector click, 2-run compare, JSON/PNG export, not-built city. Untested: real GPU/Metal backend live, other browsers, touch, phone layout.
-- [ ] Phase 8: Phase 8 (TODO: define)
+- [x] Phase 8: PAGP Lab, landing, report, README
+  - server `/api/lab/index` + `/api/lab/file/<path>` (whitelisted results roots); web `#/` landing, `#/studio`, `#/lab` (10 tabs, all from results files), `#/demo` (auto-replay).
+  - `scripts/gen_report.py` -> `docs/REPORT.md` (9 PAGP sections + Limitations); README with mermaid, setup, demo script; golden_table skips NEON off aarch64.
+  - Tested headless Chrome: all 10 tabs render without console errors, demo replay starts. Untested: Safari/Firefox, phone layout, PTX diff on the largest pairs (-G vs -O3 aligns only if <30M cells).
+  - Notes: kaggle/ptx/analysis.md and ptx/analysis.md are unfilled templates (not used); Mac golden status comes from this file (logs not saved).
 
 ## Findings
 
