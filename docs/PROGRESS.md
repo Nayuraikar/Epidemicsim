@@ -51,6 +51,8 @@
   - 100k agents, 2 and 3 cities: single-process and MPI JSON byte-identical (shasum). Untested: MPI on real 1M cities, other backends, GPU sync path with travel.
 - UI polish (web/ only): Model-tab charts fixed (overlapped tornado bars, 10-day travel ticks, 0-15 d calibration axis), tooltips rounded to 1 dp, shared Nav with active page, consistent card/legend/axis layout.
   - Headless Chrome screenshots of all Lab tabs at 1280/390 px: no horizontal overflow; wide tables scroll inside their card.
+- UI redesign (web/ only): journal/lab-notebook style (paper/ink/hairlines, serif+mono, 2px radius, no shadows/gradients); Landing figures read from results via API; Lab numbered sidebar.
+  - Screenshots at 1280 px for Landing, all Lab tabs, Studio; no horizontal overflow at 390 px on all routes. `#/lab?tab=<id>` deep-links a tab.
 
 ## Findings
 

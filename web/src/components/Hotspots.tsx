@@ -34,9 +34,9 @@ export function Hotspots({ run, version }: { run: Run; version: number }) {
     <div>
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={rows} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-          <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
-          <XAxis dataKey="day" stroke={C.line} tick={{ fill: C.muted, fontSize: 11 }} />
-          <YAxis stroke={C.line} tick={{ fill: C.muted, fontSize: 11 }} />
+          <CartesianGrid stroke={C.line} strokeDasharray="1 3" />
+          <XAxis dataKey="day" stroke={C.muted} tickLine={false} tick={{ fill: C.muted, fontSize: 11, fontFamily: 'ui-monospace, Menlo, monospace' }} />
+          <YAxis stroke={C.muted} tickLine={false} tick={{ fill: C.muted, fontSize: 11, fontFamily: 'ui-monospace, Menlo, monospace' }} />
           <Tooltip formatter={(v) => (typeof v === 'number' ? (Math.round(v * 10) / 10).toFixed(1) : String(v))} labelFormatter={(d) => `day ${d}`} />
           {top.map(({ n }, i) => <Area key={n} dataKey={n} stackId="z" stroke={ZCOL[i]} fill={ZCOL[i]} fillOpacity={0.55} isAnimationActive={false} />)}
           <Area dataKey="Other" stackId="z" stroke="#cbd5e1" fill="#e2e8f0" isAnimationActive={false} />

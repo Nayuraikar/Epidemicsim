@@ -5,18 +5,19 @@ import type { Fetched } from './data'
 
 /** Series colours: scenario identity + SEIR constants from the Studio (theme.css). */
 export const PAL = [C.S, C.I, C.R, C.E, C.runs[1], C.runs[2], C.runs[0], C.D]
-export const axis = { stroke: C.line, tick: { fill: C.muted, fontSize: 11 } }
-export const grid = <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
+const MONO = 'ui-monospace, "SF Mono", Menlo, monospace'
+export const axis = { stroke: C.muted, tick: { fill: C.muted, fontSize: 11, fontFamily: MONO }, tickLine: false }
+export const grid = <CartesianGrid stroke={C.line} strokeDasharray="1 3" />
 /** Tooltip values: 1 decimal place everywhere (numbers and [lo, hi] ranges), unit appended when given. */
 export const r1 = (v: unknown) => (typeof v === 'number' && isFinite(v) ? (Math.round(v * 10) / 10).toFixed(1) : String(v ?? ''))
 const tipFmt = (unit = '') => (v: unknown) => (Array.isArray(v) ? `${r1(v[0])} – ${r1(v[1])}${unit}` : `${r1(v)}${unit}`)
-const tipStyle = { borderRadius: 10, border: `1px solid ${C.line}`, fontSize: 12 }
+const tipStyle = { borderRadius: 2, border: `1px solid ${C.ink}`, boxShadow: 'none', background: '#fff', fontSize: 12, fontFamily: MONO }
 export const tipU = (unit = '') => <Tooltip contentStyle={tipStyle} formatter={tipFmt(unit)} labelFormatter={(l) => (typeof l === 'number' ? r1(l).replace(/\.0$/, '') : l)} />
 export const tip = tipU()
 /** Legend always sits below the plot (and below any x-axis label). */
-export const legend = <Legend verticalAlign="bottom" align="center" height={32} wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+export const legend = <Legend verticalAlign="bottom" align="center" height={32} wrapperStyle={{ fontSize: 11, paddingTop: 8, fontFamily: MONO, color: C.muted }} iconType="plainline" />
 /** x-axis label that stays inside the axis band, clear of the legend. */
-export const xlabel = (value: string) => ({ value, position: 'insideBottom' as const, offset: -4, fontSize: 11, fill: C.muted })
+export const xlabel = (value: string) => ({ value, position: 'insideBottom' as const, offset: -4, fontSize: 11, fill: C.muted, fontFamily: MONO })
 export const Xax = (p: ComponentProps<typeof XAxis>) => <XAxis {...axis} {...(p.label ? { height: 44 } : {})} {...p} />
 export const Yax = (p: ComponentProps<typeof YAxis>) => <YAxis {...axis} {...p} />
 export const Chart = ({ children, h = 280 }: { children: React.ReactElement; h?: number }) => <ResponsiveContainer width="100%" height={h}>{children}</ResponsiveContainer>
@@ -32,7 +33,7 @@ export function NotRun({ what, f }: { what: string; f?: Fetched<unknown> | Fetch
   const loading = list.some((x) => x.s === 'loading')
   const err = list.find((x) => x.s === 'error') as { m: string } | undefined
   return (
-    <div className="card lab-notrun">
+    <div className="lab-notrun">
       <b>{loading ? 'Loading…' : err ? 'Could not read' : 'Not run'}</b>
       <span>{loading ? what : err ? `${what}: ${err.m}` : `${what} is missing or empty in results/. Run the benchmark that writes it, then reload.`}</span>
     </div>
@@ -44,10 +45,10 @@ export function Need({ what, files, children }: { what: string; files: Fetched<u
 }
 
 export const Explain = ({ children }: { children: ReactNode }) => <p className="lab-explain">{children}</p>
-export const Finding = ({ children }: { children: ReactNode }) => <div className="lab-finding"><b>Key finding</b><span>{children}</span></div>
-export const Settings = ({ children }: { children: ReactNode }) => <div className="lab-settings">Run settings: {children}</div>
+export const Finding = ({ children }: { children: ReactNode }) => <div className="lab-finding"><b>Finding</b><span>{children}</span></div>
+export const Settings = ({ children }: { children: ReactNode }) => <div className="lab-settings">RUN SETTINGS · {children}</div>
 export function Panel({ title, settings, children }: { title: string; settings?: ReactNode; children: ReactNode }) {
-  return <section className="card lab-panel"><h3>{title}</h3>{children}{settings && <Settings>{settings}</Settings>}</section>
+  return <section className="lab-panel"><h3>{title}</h3>{children}{settings && <Settings>{settings}</Settings>}</section>
 }
 export function Table({ head, rows }: { head: string[]; rows: ReactNode[][] }) {
   return (

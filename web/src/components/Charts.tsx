@@ -4,14 +4,14 @@ import { C } from '../colors'
 
 const SEIR: [string, string, string][] = [['S', C.S, 'Susceptible'], ['E', C.E, 'Exposed'], ['I', C.I, 'Infectious (A+I)'], ['R', C.R, 'Recovered'], ['D', C.D, 'Dead']]
 const k = (v: number) => (v >= 1e6 ? `${(v / 1e6).toFixed(1)}M` : v >= 1e4 ? `${Math.round(v / 1e3)}k` : v >= 1e3 ? `${(v / 1e3).toFixed(1)}k` : String(Math.round(v)))
-const axis = { stroke: C.line, tick: { fill: C.muted, fontSize: 11 } }
+const axis = { stroke: C.muted, tick: { fill: C.muted, fontSize: 11, fontFamily: 'ui-monospace, "SF Mono", Menlo, monospace' }, tickLine: false }
 
 /** SEIR(D) curves with 5-95% bands (bands only when the data came from an ensemble). */
 export function SeirChart({ data, yMax, banded }: { data: Pt[]; yMax: number; banded: boolean }) {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <ComposedChart data={data} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-        <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
+        <CartesianGrid stroke={C.line} strokeDasharray="1 3" />
         <XAxis dataKey="day" {...axis} />
         <YAxis {...axis} tickFormatter={k} domain={[0, yMax]} allowDataOverflow />
         <Tooltip formatter={(v) => (Array.isArray(v) ? `${k(+v[0])} – ${k(+v[1])}` : k(+(v ?? 0)))} labelFormatter={(d) => `day ${d}`} />
@@ -36,7 +36,7 @@ export function HospitalChart({ series }: { series: Series[] }) {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <ComposedChart data={rows} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-        <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
+        <CartesianGrid stroke={C.line} strokeDasharray="1 3" />
         <XAxis dataKey="day" {...axis} />
         <YAxis {...axis} tickFormatter={k} />
         <Tooltip formatter={(v) => (Array.isArray(v) ? `${k(+v[0])} – ${k(+v[1])}` : k(+(v ?? 0)))} labelFormatter={(d) => `day ${d}`} />
@@ -60,7 +60,7 @@ export function RtChart({ series }: { series: Series[] }) {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <ComposedChart data={rows} margin={{ top: 4, right: 8, left: -8, bottom: 0 }}>
-        <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
+        <CartesianGrid stroke={C.line} strokeDasharray="1 3" />
         <XAxis dataKey="day" {...axis} />
         <YAxis {...axis} domain={[0, 4]} allowDataOverflow />
         <Tooltip formatter={(v) => (typeof v === 'number' ? (Math.round(v * 10) / 10).toFixed(1) : String(v))} labelFormatter={(d) => `day ${d}`} />

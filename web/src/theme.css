@@ -1,4 +1,5 @@
-/* Single source of truth for colours (light theme only). TS reads these via colors.ts. */
+/* Single source of truth for colours (light theme only). TS reads these via colors.ts.
+   Journal palette: paper, ink, hairlines. Colour is reserved for data (SEIR + run identity). */
 :root {
   color-scheme: light;
   --s: #2563eb;      /* Susceptible  blue  */
@@ -6,15 +7,16 @@
   --i: #dc2626;      /* Infectious   red   */
   --r: #16a34a;      /* Recovered    green */
   --d: #6b7280;      /* Dead         grey  */
-  --run-1: #334155;  /* scenario identity colours (distinct from compartments) */
-  --run-2: #7c3aed;
-  --run-3: #0891b2;
-  --bg: #f6f7f9;
+  --run-1: #16181c;  /* scenario identity colours (data only; distinct from compartments) */
+  --run-2: #9a5b1f;
+  --run-3: #0e7490;
+  --bg: #f7f6f2;
   --surface: #ffffff;
-  --ink: #111827;
-  --muted: #6b7280;
-  --line: #e5e7eb;
-  --accent: #2563eb;
-  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 16px rgba(16, 24, 40, 0.06);
-  --radius: 14px;
+  --ink: #16181c;
+  --muted: #6b6f76;
+  --line: #d8d5cc;
+  --accent: #16181c;
+  --serif: Charter, 'Iowan Old Style', Georgia, serif;
+  --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 }
