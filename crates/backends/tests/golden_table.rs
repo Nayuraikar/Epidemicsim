@@ -69,6 +69,27 @@ fn golden_table() {
             ));
         }
     }
+    #[cfg(feature = "cuda")]
+    if epidemicsim_backends::cuda::available() {
+        for (count, update, part) in [
+            ("atomic", "branch", 0),
+            ("segmented", "pred", 0),
+            ("segmented", "smem", 0),
+            ("atomic", "pairs", 0),
+            ("atomic", "branch", 4),
+        ] {
+            rows.push((
+                format!("cuda {count} {update} p{part}"),
+                "cuda",
+                BackendOpts {
+                    cuda_count: count.into(),
+                    cuda_update: update.into(),
+                    cuda_partition: part,
+                    ..Default::default()
+                },
+            ));
+        }
+    }
     println!("\n{:<22} {:<6} {:<6}", "variant", "novax", "vax");
     let mut all = true;
     for (label, name, o) in rows {

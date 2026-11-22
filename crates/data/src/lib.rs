@@ -66,3 +66,36 @@ pub fn build_from_pbf(
     io::write_city(out_dir, &city.locations, &city.agents, &city.meta)?;
     Ok(out_dir.to_path_buf())
 }
+
+/// Empirical: k=10 on Mumbai gives attack 41.3% / peak day 84 vs 41.7% / day 80 for the full city
+/// (exponent 0.5 gave 19%, 0.75 gave 61%). Not validated for other k or cities.
+const SUBSAMPLE_BETA_EXP: f64 = 0.6;
+
+/// Keep whole households whose home id hashes into 1 of `k` buckets (about `1/k` of agents) and
+/// rescale non-home transmission by `k^0.6` so epidemic size roughly matches the full city.
+/// Approximate; used for capped live runs.
+pub fn subsample_world(full: &epidemicsim_core::World, k: u32) -> epidemicsim_core::World {
+    use epidemicsim_core::agents::Agents;
+    if k <= 1 {
+        return full.clone();
+    }
+    let keep = |home: u32| (home.wrapping_mul(2_654_435_761) >> 7).is_multiple_of(k);
+    let a = &full.agents;
+    let mut agents = Agents::with_capacity(a.len() / k as usize + 16);
+    for i in 0..a.len() {
+        if keep(a.home_loc[i]) {
+            agents.push(a.age_group[i], a.home_loc[i], a.work_loc[i], 0, 0);
+        }
+    }
+    let mut disease = full.disease.clone();
+    for kind in 1..disease.beta.len() {
+        disease.beta[kind] *= f64::from(k).powf(SUBSAMPLE_BETA_EXP);
+    }
+    epidemicsim_core::World::new(
+        full.seed,
+        agents,
+        full.layout.clone(),
+        disease,
+        full.vaccine.clone(),
+    )
+}

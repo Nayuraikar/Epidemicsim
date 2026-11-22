@@ -1,0 +1,1 @@
+{"agents":99860,"backend":"rayon","capacity":150,"city_agents":1000000,"days":120,"grid":{"bbox":[72.76,18.89,73.05,19.3],"cols":31,"rows":46,"zones":["North-west","North","North-east","West","Centre","East","South-west","South","South-east"]},"scenario":"baseline","seed":42,"subsample":10}

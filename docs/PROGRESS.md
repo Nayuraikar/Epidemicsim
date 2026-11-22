@@ -27,8 +27,13 @@
   - Metal: `backends/src/mtl` (MSL Philox, atomics counts, simdgroup reduction). f64 tests become integer thresholds; vaccinated lambda*(1-ve) emulated exactly in u64; lambda's f64 `exp` runs on the CPU for active locations only.
   - Backend trait got `sync_to_host`/`host_changed` (scenario vaccination edits agents on the host).
   - MPI: `crates/mpi` (rsmpi 0.8 + Homebrew OpenMPI 5, builds fine); `compare --mpi auto|static|dynamic`; `bench --suite mpi|metal` regenerate results.
-- [ ] Phase 6: Phase 6 (TODO: define)
-- [ ] Phase 7: Phase 7 (TODO: define)
+- [x] Phase 6 (code complete, NOTHING RUN ON A GPU): CUDA backend `--features cuda` (cudarc+NVRTC; kernels in `crates/kernels-c/cuda`; atomics/segmented counts, branch/pred/smem/pairs, AoS/SoA, health-state partition, exact host lambda like Metal), block sweep + warp + variant benches, `scripts/ptx.sh`, AVX2 golden test + bench path, OpenACC source, `scripts/kaggle_run.sh`, `docs/KAGGLE.md`.
+  - Verified here: Mac build/tests/clippy (default and `--features cuda`), host emulation of Philox/`lt_prod`/predication (`scripts/cuda_host_check.sh`), x86_64 compile of AVX2 tests. Metal refactored onto `gpu_common.rs`, golden still PASS.
+  - Unverified: NVRTC/nvcc compile, every GPU result (golden, speedups, ncu), PTX counts, AVX2 on real x86, OpenACC on a GPU. First check = `docs/KAGGLE.md`.
+- [x] Phase 7: Server + studio (`epidemicsim serve|bake`, web/ with maplibre + deck.gl + Recharts)
+  - REST (cities, scenarios, comparison, bands, summary, baked frames) + `/ws/live` (start/pause/resume/stop/speed/inspect); live capped at 250k agents via household subsample (non-home beta x k^0.6, tuned on Mumbai only).
+  - Infection chains recorded in the server (flag, no engine change): sources = co-located infectious agents, not a unique infector; inspector works in live runs only.
+  - Tested headless Chrome (CDP): replay, live, pause, inspector click, 2-run compare, JSON/PNG export, not-built city. Untested: real GPU/Metal backend live, other browsers, touch, phone layout.
 - [ ] Phase 8: Phase 8 (TODO: define)
 
 ## Findings

@@ -30,6 +30,21 @@ struct BackendFlags {
     /// Metal: use private (GPU-only) agent buffers instead of shared
     #[arg(long)]
     metal_private: bool,
+    /// CUDA threads per block: 64 | 128 | 256 | 512
+    #[arg(long, default_value_t = 256)]
+    cuda_block: u32,
+    /// CUDA per-location counting: atomic | segmented
+    #[arg(long, default_value = "atomic")]
+    cuda_count: String,
+    /// CUDA update kernel: branch | pred | smem | pairs
+    #[arg(long, default_value = "branch")]
+    cuda_update: String,
+    /// CUDA agent layout: soa | aos
+    #[arg(long, default_value = "soa")]
+    cuda_layout: String,
+    /// CUDA: re-partition agents by health state every N steps (0 = off)
+    #[arg(long, default_value_t = 0)]
+    cuda_partition: u32,
 }
 
 impl BackendFlags {
@@ -42,6 +57,11 @@ impl BackendFlags {
             simd: epidemicsim_backends::parse_simd(&self.simd)?,
             metal_tg: self.metal_tg,
             metal_private: self.metal_private,
+            cuda_block: self.cuda_block,
+            cuda_count: self.cuda_count.clone(),
+            cuda_update: self.cuda_update.clone(),
+            cuda_layout: self.cuda_layout.clone(),
+            cuda_partition: self.cuda_partition,
         })
     }
 }
@@ -249,38 +269,45 @@ fn compare(a: CompareArgs) -> Result<(), Box<dyn std::error::Error>> {
         },
     };
     let backend = a.backend.clone();
-    let launched = epidemicsim_mpi::launched_by_mpirun();
-    let mode = match a.mpi.as_str() {
-        "auto" => launched.then_some(epidemicsim_mpi::Mode::Static),
-        "off" => None,
-        m => Some(m.parse::<epidemicsim_mpi::Mode>()?),
-    };
-    if launched && mode.is_none() {
-        return Err("started by mpirun but --mpi off: every rank would repeat the work".into());
-    }
-    if let Some(mode) = mode {
-        let rep = epidemicsim_mpi::compare_mpi(
-            &src,
-            &chosen,
-            &opts,
-            &a.out,
-            move || epidemicsim_backends::make_with(&backend, &bopts).expect("validated above"),
-            mode,
-        )?;
-        if rep.per_rank[0].rank == 0 {
-            if let Some(p) = &a.mpi_timing {
-                epidemicsim_mpi::scaling::write(p, &rep)?;
-            }
-            println!(
-                "wrote {}/{label}/comparison.json ({} scenarios x {} runs, {} ranks, {:?})",
-                a.out.display(),
-                chosen.len(),
-                a.runs,
-                rep.ranks,
-                mode
-            );
+    #[cfg(feature = "mpi")]
+    {
+        let launched = epidemicsim_mpi::launched_by_mpirun();
+        let mode = match a.mpi.as_str() {
+            "auto" => launched.then_some(epidemicsim_mpi::Mode::Static),
+            "off" => None,
+            m => Some(m.parse::<epidemicsim_mpi::Mode>()?),
+        };
+        if launched && mode.is_none() {
+            return Err("started by mpirun but --mpi off: every rank would repeat the work".into());
         }
-        return Ok(());
+        if let Some(mode) = mode {
+            let rep = epidemicsim_mpi::compare_mpi(
+                &src,
+                &chosen,
+                &opts,
+                &a.out,
+                move || epidemicsim_backends::make_with(&backend, &bopts).expect("validated above"),
+                mode,
+            )?;
+            if rep.per_rank[0].rank == 0 {
+                if let Some(p) = &a.mpi_timing {
+                    epidemicsim_mpi::scaling::write(p, &rep)?;
+                }
+                println!(
+                    "wrote {}/{label}/comparison.json ({} scenarios x {} runs, {} ranks, {:?})",
+                    a.out.display(),
+                    chosen.len(),
+                    a.runs,
+                    rep.ranks,
+                    mode
+                );
+            }
+            return Ok(());
+        }
+    }
+    #[cfg(not(feature = "mpi"))]
+    if a.mpi != "auto" && a.mpi != "off" {
+        return Err("built without the `mpi` feature".into());
     }
     epidemicsim_scenarios::compare(&src, &chosen, &opts, &a.out, move || {
         epidemicsim_backends::make_with(&backend, &bopts).expect("validated above")
@@ -320,7 +347,8 @@ struct BenchArgs {
     seed: u64,
     #[arg(long, default_value = "results/bench")]
     out: PathBuf,
-    /// scaling (default) | race | imbalance | simd-align | metal | mpi
+    /// scaling (default) | race | imbalance | simd-align | metal | mpi | cuda | cuda-variants | warp
+    /// (the last three need `--features cuda`)
     #[arg(long, default_value = "scaling")]
     suite: String,
     /// City for --suite imbalance (loaded from --cities-dir)
@@ -328,6 +356,9 @@ struct BenchArgs {
     city: String,
     #[arg(long, default_value = "cities")]
     cities_dir: PathBuf,
+    /// Output directory for the GPU suites (cuda, cuda-variants, warp)
+    #[arg(long, default_value = "results/gpu")]
+    gpu_out: PathBuf,
     /// Output directory for race / imbalance results
     #[arg(long, default_value = "results/tlp")]
     tlp_out: PathBuf,
@@ -368,6 +399,7 @@ fn bench_suite(a: &BenchArgs) -> Result<bool, Box<dyn std::error::Error>> {
             println!("wrote {}", path.display());
             Ok(true)
         }
+        #[cfg(feature = "mpi")]
         "mpi" => {
             let procs = if a.threads == [1] {
                 vec![1, 2, 4, 8]
@@ -466,6 +498,60 @@ fn bench_suite(a: &BenchArgs) -> Result<bool, Box<dyn std::error::Error>> {
             println!("wrote {}", path.display());
             Ok(true)
         }
+        #[cfg(not(feature = "mpi"))]
+        "mpi" => Err("built without the `mpi` feature".into()),
+        #[cfg(feature = "cuda")]
+        "cuda" | "cuda-variants" | "warp" => {
+            use epidemicsim_backends::cuda::measure;
+            let big = a.agents == [10_000, 100_000, 1_000_000];
+            let reps = a.reps.max(1);
+            let (name, b) = match a.suite.as_str() {
+                "cuda" => {
+                    let agents = if big {
+                        vec![100_000, 1_000_000]
+                    } else {
+                        a.agents.clone()
+                    };
+                    (
+                        "cuda_breakdown",
+                        measure::breakdown(&agents, a.days, a.warmup, reps, a.seed)?,
+                    )
+                }
+                "cuda-variants" => {
+                    let agents = if big {
+                        vec![1_000_000]
+                    } else {
+                        a.agents.clone()
+                    };
+                    let blk = a.flags.cuda_block;
+                    (
+                        "cuda_variants",
+                        measure::variants(&agents, blk, a.days, a.warmup, reps, a.seed)?,
+                    )
+                }
+                _ => {
+                    let n = if big {
+                        1_000_000
+                    } else {
+                        *a.agents.last().unwrap_or(&1_000_000)
+                    };
+                    let prev = [0.0005, 0.005, 0.02, 0.1, 0.4];
+                    let blk = a.flags.cuda_block;
+                    (
+                        "cuda_warp",
+                        measure::warp(n, &prev, blk, a.days, a.warmup, reps, a.seed)?,
+                    )
+                }
+            };
+            let path = a.gpu_out.join(format!("{name}.json"));
+            b.write(&path)?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        #[cfg(not(feature = "cuda"))]
+        "cuda" | "cuda-variants" | "warp" => {
+            Err("this suite needs a build with `--features cuda` and an NVIDIA GPU".into())
+        }
         "simd-align" => {
             let path = epidemicsim_bench::tlp::align_bench(&a.out, a.reps.max(3))?;
             println!("wrote {}", path.display());
@@ -508,6 +594,91 @@ fn bench(a: BenchArgs) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[derive(Args)]
+struct ServeArgs {
+    #[arg(long, default_value = "127.0.0.1:8080")]
+    addr: String,
+    #[arg(long, default_value = "cities")]
+    cities_dir: PathBuf,
+    #[arg(long, default_value = "scenarios")]
+    scenarios_dir: PathBuf,
+    #[arg(long, default_value = "results")]
+    results_dir: PathBuf,
+    /// Built web app to serve (npm run build in web/)
+    #[arg(long, default_value = "web/dist")]
+    web_dir: PathBuf,
+}
+
+#[derive(Args)]
+struct BakeArgs {
+    #[arg(long)]
+    city: String,
+    /// "all" or a comma-separated list of scenario names
+    #[arg(long, default_value = "all")]
+    scenarios: String,
+    #[arg(long, default_value = "rayon")]
+    backend: String,
+    /// Worker threads (rayon/openmp); 0 = all cores
+    #[arg(long, default_value_t = 0)]
+    threads: usize,
+    /// Agents to simulate (0 = the full city)
+    #[arg(long, default_value_t = 0)]
+    agents: usize,
+    #[arg(long, default_value_t = 120)]
+    days: u32,
+    #[arg(long, default_value_t = 42)]
+    seed: u64,
+    #[arg(long, default_value = "cities")]
+    cities_dir: PathBuf,
+    #[arg(long, default_value = "scenarios")]
+    scenarios_dir: PathBuf,
+    #[arg(long, default_value = "results")]
+    out: PathBuf,
+}
+
+fn bake(a: BakeArgs) -> Result<(), Box<dyn std::error::Error>> {
+    let threads = if a.threads == 0 {
+        std::thread::available_parallelism().map_or(1, |n| n.get())
+    } else {
+        a.threads
+    };
+    let dirs = epidemicsim_server::Dirs {
+        cities: a.cities_dir,
+        scenarios: a.scenarios_dir,
+        results: a.out,
+        web: PathBuf::new(),
+    };
+    epidemicsim_server::bake(
+        &dirs,
+        &epidemicsim_server::BakeOpts {
+            city: a.city,
+            scenarios: (a.scenarios != "all").then(|| {
+                a.scenarios
+                    .split(',')
+                    .map(|s| s.trim().to_string())
+                    .collect()
+            }),
+            backend: a.backend,
+            threads,
+            agents: a.agents,
+            days: a.days,
+            seed: a.seed,
+        },
+    )
+}
+
+fn serve(a: ServeArgs) -> Result<(), Box<dyn std::error::Error>> {
+    epidemicsim_server::serve(
+        epidemicsim_server::Dirs {
+            cities: a.cities_dir,
+            scenarios: a.scenarios_dir,
+            results: a.results_dir,
+            web: a.web_dir,
+        },
+        &a.addr,
+    )
+}
+
 #[derive(Subcommand)]
 enum Command {
     /// Run a synthetic-city simulation
@@ -518,8 +689,10 @@ enum Command {
     Bench(BenchArgs),
     /// Build city folders from OSM data
     Pipeline(PipelineArgs),
-    /// Start the server (stub)
-    Serve,
+    /// Start the studio server (REST + WebSocket + static web/dist)
+    Serve(ServeArgs),
+    /// Pre-bake replay frames under results/<city>/<scenario>/frames
+    Bake(BakeArgs),
     /// Run everything (stub)
     All,
 }
@@ -547,6 +720,20 @@ fn main() {
         }
         return;
     }
+    if let Some(Command::Serve(a)) = cli.command {
+        if let Err(e) = serve(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
+    if let Some(Command::Bake(a)) = cli.command {
+        if let Err(e) = bake(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
     if let Some(Command::Bench(a)) = cli.command {
         if let Err(e) = bench(a) {
             eprintln!("error: {e}");
@@ -561,7 +748,7 @@ fn main() {
             Command::Compare(_) => "compare",
             Command::Bench(_) => "bench",
             Command::Pipeline(_) => "pipeline",
-            Command::Serve => "serve",
+            Command::Serve(_) | Command::Bake(_) => unreachable!(),
             Command::All => "all",
         };
         println!("{name}: not implemented yet");

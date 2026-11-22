@@ -1,7 +1,10 @@
 //! Backend registry: sequential reference, ILP variants, rayon, OpenMP (C) and SIMD.
 // Index loops over fixed lane counts are deliberate (explicit unrolling in the kernels).
 #![allow(clippy::needless_range_loop)]
+#[cfg(feature = "cuda")]
+pub mod cuda;
 pub mod engine;
+pub mod gpu_common;
 pub mod kernels;
 #[cfg(target_os = "macos")]
 pub mod mtl;
@@ -16,7 +19,15 @@ pub use par::Schedule;
 use par::{RayonPar, Serial};
 pub use simd::SimdKind;
 
-pub const NAMES: [&str; 6] = ["sequential", "ilp", "rayon", "openmp", "simd", "metal"];
+pub const NAMES: [&str; 7] = [
+    "sequential",
+    "ilp",
+    "rayon",
+    "openmp",
+    "simd",
+    "metal",
+    "cuda",
+];
 
 /// Backend selection flags (each backend uses the ones that apply to it).
 #[derive(Clone, Debug)]
@@ -31,6 +42,12 @@ pub struct BackendOpts {
     pub metal_tg: usize,
     /// Metal: private (GPU-only) agent buffers instead of shared.
     pub metal_private: bool,
+    /// CUDA (feature `cuda`): block size, count mode, update kernel, layout, partition period.
+    pub cuda_block: u32,
+    pub cuda_count: String,
+    pub cuda_update: String,
+    pub cuda_layout: String,
+    pub cuda_partition: u32,
 }
 
 impl Default for BackendOpts {
@@ -43,6 +60,11 @@ impl Default for BackendOpts {
             simd: SimdKind::Scalar,
             metal_tg: 64,
             metal_private: false,
+            cuda_block: 256,
+            cuda_count: "atomic".into(),
+            cuda_update: "branch".into(),
+            cuda_layout: "soa".into(),
+            cuda_partition: 0,
         }
     }
 }
@@ -88,6 +110,22 @@ pub fn label(name: &str, o: &BackendOpts) -> String {
             } else {
                 let m = if o.metal_private { "private" } else { "shared" };
                 format!("metal_{m}_tg{}", o.metal_tg)
+            }
+        }
+        "cuda" => {
+            let d = BackendOpts::default();
+            let same = o.cuda_block == d.cuda_block
+                && o.cuda_count == d.cuda_count
+                && o.cuda_update == d.cuda_update
+                && o.cuda_layout == d.cuda_layout
+                && o.cuda_partition == d.cuda_partition;
+            if same {
+                "cuda".to_string()
+            } else {
+                format!(
+                    "cuda_{}_{}_{}_b{}_p{}",
+                    o.cuda_layout, o.cuda_count, o.cuda_update, o.cuda_block, o.cuda_partition
+                )
             }
         }
         _ => name.to_string(),
@@ -137,6 +175,16 @@ pub fn make_with(name: &str, o: &BackendOpts) -> Result<Box<dyn Backend + Send>,
             threadgroup: o.metal_tg,
             private: o.metal_private,
         })?)),
+        #[cfg(feature = "cuda")]
+        "cuda" => Ok(Box::new(cuda::CudaBackend::new(cuda::CudaOpts {
+            block: o.cuda_block,
+            count: cuda::parse_count(&o.cuda_count)?,
+            update: cuda::parse_update(&o.cuda_update)?,
+            layout: cuda::parse_layout(&o.cuda_layout)?,
+            partition_every: o.cuda_partition,
+        })?)),
+        #[cfg(not(feature = "cuda"))]
+        "cuda" => Err("the cuda backend needs `--features cuda` (and an NVIDIA GPU)".into()),
         _ => Err(format!(
             "unknown or not-yet-implemented backend '{name}' (available: {})",
             NAMES.join(", ")

@@ -214,3 +214,63 @@ pub fn load_world(dir: &Path, cfg: &Config) -> Result<World, Box<dyn Error>> {
     world.seed_infections(cfg.disease.initial_infected_frac);
     Ok(world)
 }
+
+/// Read `locations.parquet` (coordinates and kinds) from a city folder.
+pub fn read_locations(dir: &Path) -> Result<Locations, Box<dyn Error>> {
+    let mut l = Locations::default();
+    for b in read_batches(&dir.join("locations.parquet"))? {
+        let (kind, sub) = (
+            col::<UInt8Array>(&b, "kind")?,
+            col::<UInt8Array>(&b, "subtype")?,
+        );
+        let (lon, lat) = (
+            col::<Float64Array>(&b, "lon")?,
+            col::<Float64Array>(&b, "lat")?,
+        );
+        let size = col::<Float32Array>(&b, "size")?;
+        let syn = col::<UInt8Array>(&b, "synthetic")?;
+        for i in 0..b.num_rows() {
+            l.kind.push(kind.value(i));
+            l.subtype.push(sub.value(i));
+            l.lon.push(lon.value(i));
+            l.lat.push(lat.value(i));
+            l.size.push(size.value(i));
+            l.synthetic.push(syn.value(i));
+        }
+    }
+    Ok(l)
+}
+
+/// Read a Parquet file of numeric columns (any integer/float type) as `(name, values)` pairs.
+pub type NumericColumns = Vec<(String, Vec<f64>)>;
+
+pub fn read_numeric_columns(path: &Path) -> Result<NumericColumns, Box<dyn Error>> {
+    use arrow_array::cast::AsArray;
+    use arrow_array::types::{Float64Type, UInt32Type};
+    let mut out: Vec<(String, Vec<f64>)> = Vec::new();
+    for b in read_batches(path)? {
+        if out.is_empty() {
+            out = b
+                .schema()
+                .fields()
+                .iter()
+                .map(|f| (f.name().clone(), vec![]))
+                .collect();
+        }
+        for (k, c) in b.columns().iter().enumerate() {
+            match c.data_type() {
+                DataType::Float64 => out[k]
+                    .1
+                    .extend(c.as_primitive::<Float64Type>().values().iter().copied()),
+                DataType::UInt32 => out[k].1.extend(
+                    c.as_primitive::<UInt32Type>()
+                        .values()
+                        .iter()
+                        .map(|&v| f64::from(v)),
+                ),
+                t => return Err(format!("unsupported column type {t}").into()),
+            }
+        }
+    }
+    Ok(out)
+}

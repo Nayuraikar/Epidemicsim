@@ -72,7 +72,7 @@ fn openmp_schedules_match() {
 
 #[test]
 fn simd_kernels_match() {
-    for simd in [SimdKind::Scalar, SimdKind::Neon] {
+    for simd in [SimdKind::Scalar, SimdKind::Neon, SimdKind::Avx2] {
         if simd.check().is_err() {
             continue;
         }
@@ -103,6 +103,66 @@ fn metal_variants_match() {
                     ..Default::default()
                 },
             );
+        }
+    }
+}
+
+/// Runs only on x86_64; fails (instead of skipping) when `EPI_REQUIRE_AVX2=1` and the CPU lacks AVX2.
+#[cfg(target_arch = "x86_64")]
+#[test]
+fn avx2_matches_on_x86_64() {
+    if !std::is_x86_feature_detected!("avx2") {
+        assert!(
+            std::env::var("EPI_REQUIRE_AVX2").is_err(),
+            "EPI_REQUIRE_AVX2 set but this CPU has no AVX2"
+        );
+        eprintln!("no AVX2: skipping");
+        return;
+    }
+    check(
+        "simd",
+        &BackendOpts {
+            simd: SimdKind::Avx2,
+            ..Default::default()
+        },
+    );
+}
+
+/// CUDA golden test (feature `cuda`): every kernel variant and block size must reproduce the
+/// sequential reference bit for bit. With `EPI_REQUIRE_CUDA=1` a missing GPU is a failure.
+#[cfg(feature = "cuda")]
+#[test]
+fn cuda_variants_match() {
+    if !epidemicsim_backends::cuda::available() {
+        assert!(
+            std::env::var("EPI_REQUIRE_CUDA").is_err(),
+            "EPI_REQUIRE_CUDA set but no CUDA device/driver"
+        );
+        eprintln!("no CUDA device: skipping");
+        return;
+    }
+    let o = |layout: &str, count: &str, update: &str, block: u32, part: u32| BackendOpts {
+        cuda_layout: layout.into(),
+        cuda_count: count.into(),
+        cuda_update: update.into(),
+        cuda_block: block,
+        cuda_partition: part,
+        ..Default::default()
+    };
+    for block in [64, 128, 256, 512] {
+        check("cuda", &o("soa", "atomic", "branch", block, 0));
+    }
+    for count in ["atomic", "segmented"] {
+        for update in ["branch", "pred", "smem", "pairs"] {
+            check("cuda", &o("soa", count, update, 128, 0));
+        }
+    }
+    for update in ["branch", "pred"] {
+        check("cuda", &o("aos", "atomic", update, 256, 0));
+    }
+    for update in ["branch", "pred", "smem"] {
+        for part in [1, 3] {
+            check("cuda", &o("soa", "segmented", update, 128, part));
         }
     }
 }

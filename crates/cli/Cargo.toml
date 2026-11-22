@@ -7,6 +7,13 @@ edition.workspace = true
 name = "epidemicsim"
 path = "src/main.rs"
 
+[features]
+# MPI (rsmpi) needs an MPI install + libclang; off for GPU-only machines (--no-default-features).
+default = ["mpi"]
+mpi = ["dep:epidemicsim-mpi"]
+# NVIDIA GPU backend + CUDA bench suites (needs an NVIDIA driver at run time only).
+cuda = ["epidemicsim-backends/cuda"]
+
 [dependencies]
 clap = { version = "4", features = ["derive"] }
 epidemicsim-core = { version = "0.1.0", path = "../core" }
@@ -14,4 +21,5 @@ epidemicsim-data = { version = "0.1.0", path = "../data" }
 epidemicsim-scenarios = { version = "0.1.0", path = "../scenarios" }
 epidemicsim-backends = { version = "0.1.0", path = "../backends" }
 epidemicsim-bench = { version = "0.1.0", path = "../bench" }
-epidemicsim-mpi = { version = "0.1.0", path = "../mpi" }
+epidemicsim-mpi = { version = "0.1.0", path = "../mpi", optional = true }
+epidemicsim-server = { version = "0.1.0", path = "../server" }

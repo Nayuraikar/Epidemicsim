@@ -65,3 +65,9 @@ Run k of every scenario uses seed `base_seed + k` (paired comparison). Hospital 
 `points` per (agents, threads): `wall_s` {median,min,max} for the whole `days`-day run, `agents_per_sec` (agents x steps / s),
 `contacts_per_sec` (agent-location visits = alive agents x steps / s; not pairwise contacts), `speedup` and `efficiency`
 vs the first thread count, and `amdahl` (least-squares serial fraction per agent count; needs >= 2 thread counts).
+
+## Server (`epidemicsim serve [--addr 127.0.0.1:8080]`, serves web/dist)
+REST: `/api/cities`, `/api/scenarios`, `/api/cities/{c}/comparison`, `/api/cities/{c}/scenarios/{s}/{summary,bands,frames}`.
+WS `/ws/live`: client `start{city,scenario,backend,agents,days,seed,chains,speed}`, `pause|resume|stop`, `speed{steps_per_sec}`, `inspect{cell|agent}`;
+server `status|ready|frame|agent|done|error`. Frame: counts S..D, new_infections, hospital_load, r_t, density `[cell,n,..]`, hot `[zone,n,..]`, kinds.
+`epidemicsim bake --city X` writes `results/<city>/<scenario>/frames/{meta,frames}.json`.

@@ -538,6 +538,7 @@ mod tests {
     use super::*;
     use epidemicsim_core::rng::philox4x32_10;
 
+    #[allow(dead_code)] // only the NEON tests use it
     fn lcg(s: &mut u64) -> u32 {
         *s = s
             .wrapping_mul(6364136223846793005)

@@ -1,0 +1,20 @@
+/* Single source of truth for colours (light theme only). TS reads these via colors.ts. */
+:root {
+  color-scheme: light;
+  --s: #2563eb;      /* Susceptible  blue  */
+  --e: #f59e0b;      /* Exposed      amber */
+  --i: #dc2626;      /* Infectious   red   */
+  --r: #16a34a;      /* Recovered    green */
+  --d: #6b7280;      /* Dead         grey  */
+  --run-1: #334155;  /* scenario identity colours (distinct from compartments) */
+  --run-2: #7c3aed;
+  --run-3: #0891b2;
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #111827;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --accent: #2563eb;
+  --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 4px 16px rgba(16, 24, 40, 0.06);
+  --radius: 14px;
+}
