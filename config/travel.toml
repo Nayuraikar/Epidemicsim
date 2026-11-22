@@ -1,0 +1,50 @@
+# Inter-city travel for `epidemicsim compare --travel config/travel.toml`.
+# ASSUMED, ILLUSTRATIVE flows. These are NOT measured commuter or passenger data and NOT a forecast.
+# They only let us ask "what if infectious people moved between these cities at roughly this rate".
+
+# Cities to couple (must be built: cities/<name>/). One MPI rank per city with `mpirun -n <count>`.
+cities = ["mumbai", "bengaluru", "chennai"]
+
+# Cities seeded at day 0 with the normal initial_infected_frac. The others get only a trace
+# (other_initial_frac, at least one agent) in BOTH arms, so without travel they start on their own
+# later and travel can only make that start earlier.
+seed_cities = ["mumbai"]
+other_initial_frac = 0.00001
+
+# Symptomatic (state I) agents travel this much less often than symptomless (state A) ones. Assumed.
+symptomatic_factor = 0.3
+
+# Epidemic start = first day the cumulative infected fraction reaches this level.
+start_threshold = 0.005
+
+# Assumed share of each city's residents making a trip to the other city on a given day
+# (per-agent daily probability). Asymmetric on purpose; all values are guesses.
+[[flows]]
+from = "mumbai"
+to = "bengaluru"
+per_agent_per_day = 0.0004
+
+[[flows]]
+from = "bengaluru"
+to = "mumbai"
+per_agent_per_day = 0.0004
+
+[[flows]]
+from = "mumbai"
+to = "chennai"
+per_agent_per_day = 0.0002
+
+[[flows]]
+from = "chennai"
+to = "mumbai"
+per_agent_per_day = 0.0002
+
+[[flows]]
+from = "bengaluru"
+to = "chennai"
+per_agent_per_day = 0.0005
+
+[[flows]]
+from = "chennai"
+to = "bengaluru"
+per_agent_per_day = 0.0005

@@ -303,7 +303,19 @@ if sn:
 else:
     S.append("## 11. Sensitivity\n\n" + NOT_RUN + "\n")
 
-S.append("## 12. Inter-city travel\n\n" + NOT_RUN + " Not implemented yet (deferred; see docs/PROGRESS.md).\n")
+tv = js("travel/calibrated_baseline.json")
+if tv:
+    rows = []
+    for i, c in enumerate(tv["cities"]):
+        a, b, p = tv["without_travel"]["cities"][i], tv["with_travel"]["cities"][i], tv["paired"][i]
+        st = lambda x: f"day {f(x['start_median'])} ({x['reached']}/{tv['runs']})" if x["start_median"] is not None else f"never (0/{tv['runs']})"
+        rows.append([c + (" (seeded)" if tv["seeded"][i] else ""), st(a), st(b), f"{p['earlier']} / {p['later']} / {p['same']}", f(p["mean_shift_days"]) if p["mean_shift_days"] is not None else "n/a", f(b["imports_mean"]), f"{a['attack_rate']['mean'] * 100:.1f}% -> {b['attack_rate']['mean'] * 100:.1f}%"])
+    fl = ", ".join(f"{x['from']}->{x['to']} {x['per_agent_per_day']}" for x in tv["flows"])
+    sec("12. Inter-city travel (ASSUMED, illustrative flows)", f"Cities {', '.join(tv['cities'])} ({', '.join(f'{x:,}' for x in tv['agents'])} agents) advance in lockstep; each day infectious agents (symptomless: full rate, symptomatic: x{tv['symptomatic_factor']}) travel and infect one random susceptible resident of the destination. Trip rates (per agent per day, ASSUMED, not commuter data): {fl}. Only the seeded city ({', '.join(c for c, s_ in zip(tv['cities'], tv['seeded']) if s_)}) has the normal initial infections; the others start with a trace ({tv['other_initial_frac']} of agents, at least one) in both arms. Scenario {tv['scenario']}, parameter set {tv['params']}, {tv['runs']} runs per arm with paired seeds from {tv['base_seed']}, {tv['days']} days. 'Start' = first day cumulative infected reaches {tv['start_threshold'] * 100:.2f}%. Chart: Lab tab Model.",
+        table(["city", "start without travel (runs reaching)", "start with travel", "earlier / later / same (paired)", "mean shift, days", "mean imports per run", "attack rate without -> with"], rows),
+        "Result: " + "; ".join(f"{c}: earlier in {p['earlier']} of {tv['runs']} runs, later in {p['later']}, mean shift {f(p['mean_shift_days'])} d" for c, p, sd in zip(tv["cities"], tv["paired"], tv["seeded"]) if not sd and p["mean_shift_days"] is not None) + ". The shift is small next to the 30-50 day gap before the other cities start on their own. What it shows: with these assumed rates, whether imports from the seeded city move the other cities' start day, measured on identical seeds. What it does not show: real mobility (rates are guesses, one trip type, no return trips or duration away, one infection per arrival), real inter-city timing, or any forecast. Cities are separate graphs of 1M agents each; travel changes nothing but the daily seeding. Single-process and one-MPI-rank-per-city runs produce byte-identical JSON on a 100k-agent, 3-city case (see docs/PROGRESS.md).")
+else:
+    S.append("## 12. Inter-city travel\n\n" + NOT_RUN + " Run `epidemicsim compare --travel config/travel.toml --params calibrated --runs 6 --days 120`.\n")
 
 # summary + limitations
 mach = js("kaggle/machine.json") or {}

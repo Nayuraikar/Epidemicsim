@@ -15,6 +15,10 @@ pub mod purpose {
     pub const SYNTH_VAX: u32 = 7;
     pub const ISOLATE: u32 = 8;
     pub const VACCINATE: u32 = 9;
+    /// Inter-city travel: does an infectious agent travel today, and to which city.
+    pub const TRAVEL: u32 = 10;
+    /// Inter-city travel: which agent of the destination city an arriving traveller meets.
+    pub const TRAVEL_LAND: u32 = 11;
 }
 
 #[inline]

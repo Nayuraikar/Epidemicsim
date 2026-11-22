@@ -96,6 +96,55 @@ function Calibration() {
   )
 }
 
+type CityArm = { city: string; cum_frac_mean: number[]; start_days: (number | null)[]; reached: number; start_median: number | null; attack_rate: { mean: number }; imports_mean: number }
+type Paired = { city: string; earlier: number; later: number; same: number; only_with_travel: number; only_without_travel: number; mean_shift_days: number | null }
+type Travel = {
+  note: string; params: string; scenario: string; cities: string[]; seeded: boolean[]; agents: number[]; runs: number; days: number; base_seed: number
+  start_threshold: number; other_initial_frac: number; symptomatic_factor: number; flows: { from: string; to: string; per_agent_per_day: number }[]
+  without_travel: { cities: CityArm[] }; with_travel: { cities: CityArm[] }; paired: Paired[]
+}
+
+const dayTxt = (v: number | null | undefined) => (v == null ? 'never' : `day ${f3(v)}`)
+
+function TravelCompare() {
+  const f = useJson<Travel>('travel/calibrated_baseline.json')
+  const d = okOf(f)
+  const others = d ? d.cities.filter((_, i) => !d.seeded[i]) : []
+  const [pick, setPick] = useState('')
+  const city = pick && others.includes(pick) ? pick : others[0]
+  const ci = d && city ? d.cities.indexOf(city) : -1
+  const data = d && ci >= 0 ? d.with_travel.cities[ci].cum_frac_mean.map((v, day) => ({ day, with: v * 100, without: d.without_travel.cities[ci].cum_frac_mean[day] * 100 })) : []
+  const pr = d && ci >= 0 ? d.paired[ci] : null
+  const src = d ? d.cities.filter((_, i) => d.seeded[i]).join(', ') : ''
+  return (
+    <Need what="Inter-city travel run (travel/calibrated_baseline.json)" files={[f]}>
+      {d && pr && ci >= 0 && (
+        <>
+          <Explain><b>Assumed, illustrative flows.</b> Each day an infectious agent (symptomless: full rate, symptomatic: ×{d.symptomatic_factor}) may travel to another city and infects one random susceptible resident there. The per-agent trip rates in config/travel.toml are guesses, not commuter data, and nothing here is a forecast. {src} starts with the normal initial infections; the other cities start with a trace ({f3(d.other_initial_frac * 100)}% of agents, at least one). Both arms use identical seeds, so the only difference is travel.</Explain>
+          <Finding>
+            In {city}, the epidemic (cumulative infected ≥ {f3(d.start_threshold * 100)}%) started {dayTxt(d.without_travel.cities[ci].start_median)} (median of {d.without_travel.cities[ci].reached}/{d.runs} runs that got there) without travel and {dayTxt(d.with_travel.cities[ci].start_median)} ({d.with_travel.cities[ci].reached}/{d.runs}) with travel. Paired by seed: earlier in {pr.earlier}, later in {pr.later}, same day in {pr.same} of {d.runs} runs{pr.mean_shift_days != null ? `; mean shift ${f3(pr.mean_shift_days)} days (negative = earlier)` : ''}. {pr.earlier > pr.later ? 'Travel brought the start forward.' : pr.later > pr.earlier ? 'Travel did not bring the start forward here.' : 'No consistent effect on the start day.'}
+          </Finding>
+          <Panel title={`Cumulative infected in ${city}, with vs without travel`} settings={`${d.cities.join(' + ')} (${d.agents.map((a) => a.toLocaleString()).join(' / ')} agents), scenario ${d.scenario}, ${d.runs} runs per arm (paired seeds from ${d.base_seed}), ${d.days} days, parameter set: ${d.params}, mean over runs`}>
+            <Select label="City " value={city} onChange={setPick} options={others.map((c) => ({ v: c, l: c }))} />
+            <Chart h={280}>
+              <LineChart data={data}>{grid}<Xax dataKey="day" label={{ value: 'day', position: 'insideBottom', offset: -2, fontSize: 11 }} /><Yax unit="%" />{tip}{legend}
+                <ReferenceLine y={d.start_threshold * 100} stroke={C.D} strokeDasharray="4 3" label={{ value: 'epidemic start', fontSize: 11, fill: C.muted }} />
+                <Line dataKey="without" name="without travel" stroke={C.S} dot={false} isAnimationActive={false} />
+                <Line dataKey="with" name="with travel" stroke={C.I} dot={false} isAnimationActive={false} />
+              </LineChart>
+            </Chart>
+            <Table
+              head={['city', 'start without', 'start with', 'earlier / later / same', 'mean imports per run', 'attack rate without → with']}
+              rows={d.cities.map((c, i) => [c, dayTxt(d.without_travel.cities[i].start_median), dayTxt(d.with_travel.cities[i].start_median), `${d.paired[i].earlier} / ${d.paired[i].later} / ${d.paired[i].same}`, f3(d.with_travel.cities[i].imports_mean), `${f3(d.without_travel.cities[i].attack_rate.mean * 100)}% → ${f3(d.with_travel.cities[i].attack_rate.mean * 100)}%`])}
+            />
+            <p className="note">{d.note} Imports = arrivals that hit a susceptible resident. Assumed daily trip rates: {d.flows.map((x) => `${x.from}→${x.to} ${x.per_agent_per_day}`).join(', ')}.</p>
+          </Panel>
+        </>
+      )}
+    </Need>
+  )
+}
+
 export function ModelTab() {
   return (
     <>
@@ -103,6 +152,8 @@ export function ModelTab() {
       <Calibration />
       <h2 className="lab-h">Sensitivity</h2>
       <Tornado />
+      <h2 className="lab-h">Inter-city travel (assumed flows)</h2>
+      <TravelCompare />
     </>
   )
 }

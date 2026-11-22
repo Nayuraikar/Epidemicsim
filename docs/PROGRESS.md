@@ -47,7 +47,8 @@
 - [x] Phase 10 (items 1-2 of 3): calibration + sensitivity; defaults/golden untouched. `--params calibrated` (config/calibrated.toml), `calibrate`, `sensitivity`, Lab "Model" tab, docs/CALIBRATION.md.
   - Fit to an ASSUMED 5-day doubling (beta x1.6, asym x1.1; 4.98 +/- 0.21 d on 100k synthetic); real cities 4.6 (Mumbai) / 5.5 d (Bengaluru). Isolation attack 72.9% -> 48.8% (Mumbai calibrated): model structure, not compliance.
   - Sensitivity (calibrated, 100k synthetic, 10 runs): beta dominates; hospitalisation/fatality rates change attack rate < 0.5 pp.
-  - NOT DONE: item 3 inter-city travel (matrix, ensemble seeding, MPI rank per city, hash check, Lab view); say "continue".
+  - Item 3 inter-city travel (ASSUMED flows in config/travel.toml): `compare --travel`, `scenarios/src/travel.rs`, `mpirun -n <cities>` = one rank per city; Lab Model tab. Calibrated, 1M-agent Mumbai/Bengaluru/Chennai, 6 runs: Bengaluru starts 2.8 d earlier (6/6 runs), Chennai 1 d (4/6); small vs the 30-50 d endogenous gap.
+  - 100k agents, 2 and 3 cities: single-process and MPI JSON byte-identical (shasum). Untested: MPI on real 1M cities, other backends, GPU sync path with travel.
 
 ## Findings
 

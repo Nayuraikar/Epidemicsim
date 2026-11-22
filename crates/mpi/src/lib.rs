@@ -11,6 +11,9 @@
 use epidemicsim_core::{Backend, StepStats};
 use epidemicsim_scenarios::compare::{write_all, CompareOpts};
 use epidemicsim_scenarios::ensemble::{ensemble_from_results, run_once};
+use epidemicsim_scenarios::travel::{
+    build_report, run_coupled, ArmRuns, CityRun, Ctx, Exchange, TravelReport,
+};
 use epidemicsim_scenarios::{RunMetrics, Scenario, WorldSource};
 use mpi::traits::*;
 use serde::Serialize;
@@ -294,6 +297,105 @@ where
     }
     world.barrier();
     Ok(report)
+}
+
+/// `Exchange` over MPI: every rank owns one city and contributes one row of traveller counts.
+struct MpiExchange<'a, C: Communicator>(&'a C);
+
+impl<C: Communicator> Exchange for MpiExchange<'_, C> {
+    fn all_rows(&self, mine: &[Vec<u32>]) -> Vec<Vec<u32>> {
+        let n = self.0.size() as usize;
+        let mut buf = vec![0u32; n * n];
+        self.0.all_gather_into(&mine[0][..], &mut buf[..]);
+        buf.chunks(n).map(<[u32]>::to_vec).collect()
+    }
+}
+
+/// Inter-city travel with one MPI rank per city (`mpirun -n <cities>`). Each rank simulates its
+/// own city and, once a day, all-gathers the per-destination traveller counts; rank 0 collects
+/// the per-run results and builds the same report as the single-process path (byte-identical
+/// JSON). Returns the report on rank 0, `None` elsewhere.
+pub fn travel_mpi<B, F>(
+    ctx: &Ctx,
+    params: &str,
+    runs: usize,
+    base_seed: u64,
+    make_backend: F,
+) -> Result<Option<TravelReport>, Box<dyn Error>>
+where
+    B: Backend,
+    F: Fn() -> B,
+{
+    let universe = mpi::initialize().ok_or("MPI was already initialised")?;
+    let world = universe.world();
+    let n = ctx.travel.n();
+    if world.size() as usize != n {
+        return Err(format!(
+            "travel needs one MPI rank per city: {n} cities but {} ranks (mpirun -n {n})",
+            world.size()
+        )
+        .into());
+    }
+    let rank = world.rank() as usize;
+    let ex = MpiExchange(&world);
+    // [arm][run] flat words: pack(stats, metrics) followed by the import count.
+    let mut mine: Vec<Vec<u64>> = Vec::new();
+    for coupled in [false, true] {
+        for k in 0..runs {
+            let mut bs = [make_backend()];
+            let r = run_coupled(ctx, &[rank], coupled, base_seed + k as u64, &mut bs, &ex)
+                .pop()
+                .expect("one owned city");
+            let mut v = pack(&r.stats, &r.metrics);
+            v.push(u64::from(r.imports));
+            mine.push(v);
+        }
+    }
+    if rank != 0 {
+        let flat: Vec<u64> = mine
+            .iter()
+            .flat_map(|v| std::iter::once(v.len() as u64).chain(v.iter().copied()))
+            .collect();
+        world
+            .process_at_rank(0)
+            .send_with_tag(&flat[..], TAG_GATHER);
+        world.barrier();
+        return Ok(None);
+    }
+    let mut per_city: Vec<Vec<Vec<u64>>> = vec![Vec::new(); n];
+    per_city[0] = mine;
+    for _ in 1..n {
+        let (m, st) = world.any_process().receive_vec_with_tag::<u64>(TAG_GATHER);
+        let mut i = 0;
+        let mut v = Vec::new();
+        while i < m.len() {
+            let len = m[i] as usize;
+            v.push(m[i + 1..i + 1 + len].to_vec());
+            i += 1 + len;
+        }
+        per_city[st.source_rank() as usize] = v;
+    }
+    let arm = |a: usize| -> ArmRuns {
+        (0..runs)
+            .map(|k| {
+                (0..n)
+                    .map(|c| {
+                        let v = &per_city[c][a * runs + k];
+                        let (stats, metrics) = unpack(&v[..v.len() - 1]);
+                        CityRun {
+                            city: c,
+                            stats,
+                            metrics,
+                            imports: v[v.len() - 1] as u32,
+                        }
+                    })
+                    .collect()
+            })
+            .collect()
+    };
+    let report = build_report(ctx, params, runs, base_seed, &arm(0), &arm(1));
+    world.barrier();
+    Ok(Some(report))
 }
 
 #[cfg(test)]

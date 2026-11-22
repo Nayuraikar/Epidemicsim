@@ -350,9 +350,17 @@ Transfer to the real city graphs (1M agents, 5 seeds each): mumbai doubling 4.65
 
 **Analysis.** Largest attack-rate swing: beta (home/work/market). Attack-rate change under 0.5 pp either way (not distinguishable from noise at this run count): hospitalisation rate, fatality rate (given hospitalised). In the state machine H follows I (hospitalisation happens at the end of the symptomatic period), so these parameters have no direct route into transmission; they change deaths and hospital load, which this table does not show. Only the calibrated set was varied; parameters were not varied jointly.
 
-## 12. Inter-city travel
+## 12. Inter-city travel (ASSUMED, illustrative flows)
 
-_Not run: file missing or empty._ Not implemented yet (deferred; see docs/PROGRESS.md).
+**Method.** Cities mumbai, bengaluru, chennai (1,000,000, 1,000,000, 1,000,000 agents) advance in lockstep; each day infectious agents (symptomless: full rate, symptomatic: x0.3) travel and infect one random susceptible resident of the destination. Trip rates (per agent per day, ASSUMED, not commuter data): mumbai->bengaluru 0.0004, bengaluru->mumbai 0.0004, mumbai->chennai 0.0002, chennai->mumbai 0.0002, bengaluru->chennai 0.0005, chennai->bengaluru 0.0005. Only the seeded city (mumbai) has the normal initial infections; the others start with a trace (1e-05 of agents, at least one) in both arms. Scenario baseline, parameter set calibrated, 6 runs per arm with paired seeds from 42, 120 days. 'Start' = first day cumulative infected reaches 0.50%. Chart: Lab tab Model.
+
+| city | start without travel (runs reaching) | start with travel | earlier / later / same (paired) | mean shift, days | mean imports per run | attack rate without -> with |
+|---|---|---|---|---|---|---|
+| mumbai (seeded) | day 14 (6/6) | day 14 (6/6) | 0 / 0 / 6 | 0 | 358 | 72.9% -> 72.9% |
+| bengaluru | day 48 (6/6) | day 45.5 (6/6) | 6 / 0 / 0 | -2.83 | 1,645 | 69.7% -> 70.4% |
+| chennai | day 37.5 (6/6) | day 37 (6/6) | 4 / 0 / 2 | -1 | 812 | 72.8% -> 72.9% |
+
+**Analysis.** Result: bengaluru: earlier in 6 of 6 runs, later in 0, mean shift -2.83 d; chennai: earlier in 4 of 6 runs, later in 0, mean shift -1 d. The shift is small next to the 30-50 day gap before the other cities start on their own. What it shows: with these assumed rates, whether imports from the seeded city move the other cities' start day, measured on identical seeds. What it does not show: real mobility (rates are guesses, one trip type, no return trips or duration away, one infection per arrival), real inter-city timing, or any forecast. Cities are separate graphs of 1M agents each; travel changes nothing but the daily seeding. Single-process and one-MPI-rank-per-city runs produce byte-identical JSON on a 100k-agent, 3-city case (see docs/PROGRESS.md).
 
 ## Threats to validity
 

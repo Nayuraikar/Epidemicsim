@@ -186,6 +186,12 @@ struct CompareArgs {
     /// City folder under --cities-dir; omit for a synthetic city
     #[arg(long)]
     city: Option<String>,
+    /// Couple the cities of this file (config/travel.toml, ASSUMED illustrative flows): runs one
+    /// scenario with and without inter-city travel and writes <out>/travel/<name>.json. Uses the
+    /// built cities, or synthetic ones of --agents size if --agents is given. Under
+    /// `mpirun -n <cities>` each rank simulates one city.
+    #[arg(long)]
+    travel: Option<PathBuf>,
     #[arg(long, default_value = "cities")]
     cities_dir: PathBuf,
     /// "all" or a comma-separated list of scenario names
@@ -223,8 +229,121 @@ struct CompareArgs {
     out: PathBuf,
 }
 
+fn compare_travel(
+    a: &CompareArgs,
+    path: &std::path::Path,
+) -> Result<(), Box<dyn std::error::Error>> {
+    use epidemicsim_scenarios::travel::{build_report, run_single, write_report, Ctx, Travel};
+    use epidemicsim_scenarios::WorldSource;
+    if a.city.is_some() {
+        return Err("--travel takes its cities from the travel file; drop --city".into());
+    }
+    let mut cfg = load_cfg(&a.config, &a.params)?;
+    cfg.agents = a.agents.unwrap_or(cfg.agents);
+    cfg.days = a.days.unwrap_or(cfg.days);
+    cfg.seed = a.seed.unwrap_or(cfg.seed);
+    let bopts = a.flags.opts(a.threads)?;
+    epidemicsim_backends::make_with(&a.backend, &bopts)?;
+    let travel = Travel::from_file(path)?;
+    let all = epidemicsim_scenarios::load_all(&a.scenarios_dir)?;
+    let name = if a.scenarios == "all" {
+        "baseline"
+    } else {
+        a.scenarios.as_str()
+    };
+    let scenario = all.iter().find(|s| s.name == name).ok_or_else(|| {
+        format!(
+            "--travel runs one scenario; no '{name}' in {}",
+            a.scenarios_dir.display()
+        )
+    })?;
+    let synthetic = a.agents.is_some();
+    let (mut srcs, mut caps) = (Vec::new(), Vec::new());
+    for c in &travel.cities {
+        if synthetic {
+            srcs.push(WorldSource::Synth(Box::new(cfg.clone())));
+            caps.push(
+                (a.beds_per_1000 * cfg.agents as f64 / 1000.0)
+                    .ceil()
+                    .max(1.0) as u32,
+            );
+        } else {
+            let dir = a.cities_dir.join(c);
+            let world = epidemicsim_data::load_world(&dir, &cfg)?;
+            caps.push(
+                epidemicsim_data::read_meta(&dir)?
+                    .total_beds
+                    .ceil()
+                    .max(1.0) as u32,
+            );
+            srcs.push(WorldSource::City {
+                world: Box::new(world),
+                infected_frac: cfg.disease.initial_infected_frac,
+            });
+        }
+    }
+    let ctx = Ctx {
+        srcs: &srcs,
+        capacities: &caps,
+        travel: &travel,
+        scenario,
+        days: cfg.days,
+    };
+    let file = a.out.join("travel").join(format!(
+        "{}{}_{}.json",
+        if synthetic {
+            format!("synthetic{}_", cfg.agents)
+        } else {
+            String::new()
+        },
+        a.params,
+        scenario.name
+    ));
+    let backend = a.backend.clone();
+    let t0 = std::time::Instant::now();
+    #[cfg(feature = "mpi")]
+    if epidemicsim_mpi::launched_by_mpirun() {
+        if a.mpi == "off" {
+            return Err("started by mpirun but --mpi off: every rank would repeat the work".into());
+        }
+        let rep = epidemicsim_mpi::travel_mpi(&ctx, &a.params, a.runs, cfg.seed, || {
+            epidemicsim_backends::make_with(&backend, &bopts).expect("validated above")
+        })?;
+        if let Some(rep) = rep {
+            write_report(&file, &rep)?;
+            println!(
+                "wrote {} ({} cities, {} runs, one MPI rank per city, {:.1}s)",
+                file.display(),
+                travel.n(),
+                a.runs,
+                t0.elapsed().as_secs_f64()
+            );
+        }
+        return Ok(());
+    }
+    if a.mpi != "auto" && a.mpi != "off" {
+        return Err("--travel with --mpi needs mpirun -n <number of cities>".into());
+    }
+    let (without, with) = run_single(&ctx, a.runs, cfg.seed, move || {
+        epidemicsim_backends::make_with(&backend, &bopts).expect("validated above")
+    });
+    let rep = build_report(&ctx, &a.params, a.runs, cfg.seed, &without, &with);
+    write_report(&file, &rep)?;
+    println!(
+        "wrote {} ({} cities, {} runs, single process, {:.1}s)",
+        file.display(),
+        travel.n(),
+        a.runs,
+        t0.elapsed().as_secs_f64()
+    );
+    Ok(())
+}
+
 fn compare(a: CompareArgs) -> Result<(), Box<dyn std::error::Error>> {
     use epidemicsim_scenarios::{compare::CompareOpts, EnsembleOpts, WorldSource};
+    if let Some(p) = &a.travel {
+        return compare_travel(&a, p);
+    }
     let mut cfg = load_cfg(&a.config, &a.params)?;
     cfg.agents = a.agents.unwrap_or(cfg.agents);
     cfg.days = a.days.unwrap_or(cfg.days);

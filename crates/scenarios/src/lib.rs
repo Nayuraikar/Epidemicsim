@@ -5,6 +5,7 @@ pub mod engine;
 pub mod ensemble;
 pub mod metrics;
 pub mod spec;
+pub mod travel;
 
 pub use compare::{compare, CompareOpts};
 pub use engine::Controller;
