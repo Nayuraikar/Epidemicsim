@@ -3,7 +3,7 @@ import { Bar, BarChart, ComposedChart, ErrorBar, Line, LineChart } from 'rechart
 import { C } from '../colors'
 import { kgBench, macBench, M1, XEON, okOf, pt, settingsOf, significance, sigText, tm, useJson, useJsons, useText, type Bench, type BPoint, type Machine } from './data'
 import { WeakCpuPanel, WeakMpiPanel } from './ScalingPanels'
-import { big, Chart, Collapsible, Explain, f3, Finding, grid, legend, Need, NotRun, PAL, Panel, Pre, sec, Select, Table, tip, x2, Xax, Yax } from './ui'
+import { big, Chart, Collapsible, Explain, f3, Finding, grid, legend, Need, NotRun, PAL, Panel, Pre, sec, Select, Table, tip, x2, Xax, Yax, xlabel } from './ui'
 
 type Jsons = Record<string, ReturnType<typeof useJson<Bench>>>
 const VARIANTS = [
@@ -69,7 +69,7 @@ export function PerformanceTab() {
         </div>
         <div className="lab-grid2">
           <Panel title="Speedup vs threads (1M agents)" settings={vs[0] && settingsOf(vs[0].b!, 'M1 variants; Xeon rayon only has 1 and 4 threads', '1M agents')}>
-            <Chart><ComposedChart data={spRows}>{grid}<Xax dataKey="t" label={{ value: 'threads', position: 'insideBottom', offset: -2, fontSize: 11 }} /><Yax />{tip}{legend}
+            <Chart><ComposedChart data={spRows}>{grid}<Xax dataKey="t" label={xlabel('threads')} /><Yax />{tip}{legend}
               <Line dataKey="ideal" name="ideal" stroke={C.D} strokeDasharray="4 4" dot={false} isAnimationActive={false} />
               {vs.map((v) => <Line key={v.key} dataKey={v.key} name={v.label} stroke={v.color} strokeWidth={2} connectNulls isAnimationActive={false}><ErrorBar dataKey={`${v.key}_e`} stroke={v.color} /></Line>)}</ComposedChart></Chart>
           </Panel>

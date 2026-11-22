@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Bar, BarChart, Cell, Line, LineChart, ReferenceLine } from 'recharts'
+import { Bar, BarChart, Line, LineChart, ReferenceLine } from 'recharts'
 import { C } from '../colors'
 import { okOf, useJson } from './data'
-import { Chart, Explain, f3, Finding, grid, legend, Need, PAL, Panel, Select, Table, tip, Xax, Yax } from './ui'
+import { Chart, Explain, f3, Finding, grid, legend, Need, PAL, Panel, Select, Table, tipU, Xax, Yax, xlabel } from './ui'
 
 type Out = { attack_rate: number; attack_rate_p05: number; attack_rate_p95: number; peak_infections: number; peak_infections_p05: number; peak_infections_p95: number }
 type Row = { parameter: string; scenario: string; base_value: number; low_value: number; high_value: number; base: Out; low: Out; high: Out }
@@ -44,12 +44,12 @@ function Tornado() {
           </Finding>
           <Panel title="Tornado: change in outcome vs the central run" settings={`${d.city} city, ${d.agents.toLocaleString()} agents, ${d.days} days, ${d.runs} runs per setting (paired seeds from ${d.base_seed}), ${d.backend} backend, parameter set: ${d.params} · ±${d.delta * 100}% one at a time`}>
             <Select label="Outcome " value={m} onChange={setM} options={METRICS} />
-            <Chart h={60 + data.length * 44}>
-              <BarChart data={data} layout="vertical" stackOffset="sign" margin={{ left: 120 }}>
-                {grid}<Xax type="number" unit={unit} /><Yax type="category" dataKey="name" width={240} />{tip}{legend}
+            <Chart h={90 + data.length * 40}>
+              <BarChart data={data} layout="vertical" barSize={16} barGap={-16} margin={{ left: 0, right: 16 }}>
+                {grid}<Xax type="number" unit={unit} tickFormatter={(v) => String(Math.round(v * 10) / 10)} /><Yax type="category" dataKey="name" width={170} interval={0} />{tipU(unit)}{legend}
                 <ReferenceLine x={0} stroke={C.ink} />
-                <Bar dataKey="lo" name={`-${d.delta * 100}% parameter`} fill={C.S} isAnimationActive={false}>{data.map((_, i) => <Cell key={i} fill={C.S} />)}</Bar>
-                <Bar dataKey="hi" name={`+${d.delta * 100}% parameter`} fill={C.I} isAnimationActive={false}>{data.map((_, i) => <Cell key={i} fill={C.I} />)}</Bar>
+                <Bar dataKey="lo" name={`-${d.delta * 100}% parameter`} fill={C.S} isAnimationActive={false} />
+                <Bar dataKey="hi" name={`+${d.delta * 100}% parameter`} fill={C.I} fillOpacity={0.85} isAnimationActive={false} />
               </BarChart>
             </Chart>
             <Table
@@ -74,6 +74,7 @@ function Calibration() {
   const asyms = [...new Set(coarse.map((p) => p.asym_scale))]
   const betas = [...new Set(coarse.map((p) => p.beta_scale))]
   const data = betas.map((b) => ({ b, ...Object.fromEntries(asyms.map((a) => [`a${a}`, coarse.find((p) => p.beta_scale === b && p.asym_scale === a)?.doubling_days_mean])) }))
+  const off = coarse.filter((p) => p.doubling_days_mean > 15).length
   return (
     <Need what="Calibration grid (calibration/grid.json)" files={[f]}>
       {g && (
@@ -83,12 +84,13 @@ function Calibration() {
             Default parameters double in {f3(g.default_doubling_days)} days; the best grid point (beta x{g.best.beta_scale}, asymptomatic x{g.best.asym_scale}) doubles in {f3(g.best.doubling_days_mean)} ± {f3(g.best.doubling_days_sd)} days (target {g.target_doubling_days}). Run-to-run sd of the doubling time is large at low beta, so the fit error is within noise.
           </Finding>
           <Panel title="Doubling time vs beta scale (coarse grid)" settings={`${g.agents.toLocaleString()} synthetic agents, ${g.runs_per_point} runs per grid point, base seed ${g.base_seed}, growth fitted over days ${g.fit_window_days[0]}-${g.fit_window_days[1]} (stopped at 5% cumulative attack), mean over runs`}>
-            <Chart h={260}>
-              <LineChart data={data}>{grid}<Xax dataKey="b" label={{ value: 'beta scale', position: 'insideBottom', offset: -2, fontSize: 11 }} /><Yax unit=" d" />{tip}{legend}
-                <ReferenceLine y={g.target_doubling_days} stroke={C.D} strokeDasharray="4 3" label={{ value: 'assumed target', fontSize: 11, fill: C.muted }} />
+            <Chart>
+              <LineChart data={data} margin={{ right: 16 }}>{grid}<Xax dataKey="b" label={xlabel('beta scale')} /><Yax unit=" d" domain={[0, 15]} allowDataOverflow ticks={[0, 3, 6, 9, 12, 15]} />{tipU(' d')}{legend}
+                <ReferenceLine y={g.target_doubling_days} stroke={C.D} strokeDasharray="4 3" label={{ value: 'assumed target', position: 'insideTopRight', fontSize: 11, fill: C.muted }} />
                 {asyms.map((a, i) => <Line key={a} dataKey={`a${a}`} name={`asymptomatic x${a}`} stroke={PAL[i % PAL.length]} dot isAnimationActive={false} />)}
               </LineChart>
             </Chart>
+            {off > 0 && <p className="note">{off} grid point{off > 1 ? 's' : ''} above 15 d (low beta) clipped at the top of the axis; exact values in docs/CALIBRATION.md.</p>}
           </Panel>
         </>
       )}
@@ -114,6 +116,7 @@ function TravelCompare() {
   const city = pick && others.includes(pick) ? pick : others[0]
   const ci = d && city ? d.cities.indexOf(city) : -1
   const data = d && ci >= 0 ? d.with_travel.cities[ci].cum_frac_mean.map((v, day) => ({ day, with: v * 100, without: d.without_travel.cities[ci].cum_frac_mean[day] * 100 })) : []
+  const dayTicks = Array.from({ length: Math.floor(data.length / 10) + 1 }, (_, i) => i * 10)
   const pr = d && ci >= 0 ? d.paired[ci] : null
   const src = d ? d.cities.filter((_, i) => d.seeded[i]).join(', ') : ''
   return (
@@ -126,9 +129,9 @@ function TravelCompare() {
           </Finding>
           <Panel title={`Cumulative infected in ${city}, with vs without travel`} settings={`${d.cities.join(' + ')} (${d.agents.map((a) => a.toLocaleString()).join(' / ')} agents), scenario ${d.scenario}, ${d.runs} runs per arm (paired seeds from ${d.base_seed}), ${d.days} days, parameter set: ${d.params}, mean over runs`}>
             <Select label="City " value={city} onChange={setPick} options={others.map((c) => ({ v: c, l: c }))} />
-            <Chart h={280}>
-              <LineChart data={data}>{grid}<Xax dataKey="day" label={{ value: 'day', position: 'insideBottom', offset: -2, fontSize: 11 }} /><Yax unit="%" />{tip}{legend}
-                <ReferenceLine y={d.start_threshold * 100} stroke={C.D} strokeDasharray="4 3" label={{ value: 'epidemic start', fontSize: 11, fill: C.muted }} />
+            <Chart>
+              <LineChart data={data} margin={{ right: 16 }}>{grid}<Xax dataKey="day" type="number" domain={[0, 'dataMax']} ticks={dayTicks} interval={0} label={xlabel('day')} /><Yax unit="%" />{tipU('%')}{legend}
+                <ReferenceLine y={d.start_threshold * 100} stroke={C.D} strokeDasharray="4 3" label={{ value: 'epidemic start', position: 'insideTopLeft', offset: 8, fontSize: 11, fill: C.muted }} />
                 <Line dataKey="without" name="without travel" stroke={C.S} dot={false} isAnimationActive={false} />
                 <Line dataKey="with" name="with travel" stroke={C.I} dot={false} isAnimationActive={false} />
               </LineChart>

@@ -1,7 +1,9 @@
+import Nav from './components/Nav'
+
 export default function Landing() {
   return (
     <div className="landing">
-      <header className="topbar"><div className="brand">epidemicsim<small>agent-based epidemics, parallel backends</small></div></header>
+      <header className="topbar"><div className="brand">epidemicsim<small>agent-based epidemics, parallel backends</small></div><span className="spacer" /><Nav active="home" /></header>
       <section className="hero">
         <h1>Simulate an epidemic across a whole city, then see how fast each kind of parallelism can do it.</h1>
         <p>One agent-based model (1M people, 4 steps a day) run by sequential, multithreaded, SIMD, Metal, CUDA and MPI backends that all produce identical results.</p>

@@ -37,7 +37,7 @@ export function Hotspots({ run, version }: { run: Run; version: number }) {
           <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
           <XAxis dataKey="day" stroke={C.line} tick={{ fill: C.muted, fontSize: 11 }} />
           <YAxis stroke={C.line} tick={{ fill: C.muted, fontSize: 11 }} />
-          <Tooltip labelFormatter={(d) => `day ${d}`} />
+          <Tooltip formatter={(v) => (typeof v === 'number' ? (Math.round(v * 10) / 10).toFixed(1) : String(v))} labelFormatter={(d) => `day ${d}`} />
           {top.map(({ n }, i) => <Area key={n} dataKey={n} stackId="z" stroke={ZCOL[i]} fill={ZCOL[i]} fillOpacity={0.55} isAnimationActive={false} />)}
           <Area dataKey="Other" stackId="z" stroke="#cbd5e1" fill="#e2e8f0" isAnimationActive={false} />
           <Legend />

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { IlpTab, MpiTab, PerformanceTab, SimdTab, TlpTab } from './CpuTabs'
+import Nav from '../components/Nav'
 import { GpuTab, PtxTab, WarpTab } from './GpuTabs'
 import { MemoryTab } from './MemTabs'
 import { ModelTab } from './ModelTabs'
@@ -18,11 +19,10 @@ export default function Lab() {
     <div className="lab">
       <header className="topbar">
         <div className="brand">epidemicsim<small>PAGP lab</small></div>
-        <nav className="chips" role="tablist" aria-label="Lab section">
+        <span className="spacer" /><Nav active="lab" />
+        <nav className="chips lab-tabs" role="tablist" aria-label="Lab section">
           {TABS.map((t) => <button key={t.id} role="tab" aria-selected={t.id === tab} className={`chip ${t.id === tab ? 'on' : ''}`} onClick={() => pick(t.id)}>{t.label}</button>)}
         </nav>
-        <span className="spacer" />
-        <a className="btn" href="#/">Home</a><a className="btn" href="#/studio">Studio</a>
       </header>
       <main className="lab-main" key={tab}><Cur /></main>
     </div>

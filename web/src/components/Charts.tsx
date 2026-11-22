@@ -63,7 +63,7 @@ export function RtChart({ series }: { series: Series[] }) {
         <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
         <XAxis dataKey="day" {...axis} />
         <YAxis {...axis} domain={[0, 4]} allowDataOverflow />
-        <Tooltip labelFormatter={(d) => `day ${d}`} />
+        <Tooltip formatter={(v) => (typeof v === 'number' ? (Math.round(v * 10) / 10).toFixed(1) : String(v))} labelFormatter={(d) => `day ${d}`} />
         <ReferenceLine y={1} stroke={C.muted} strokeDasharray="6 4" label={{ value: 'R = 1', fill: C.muted, fontSize: 11, position: 'insideTopRight' }} />
         {series.map((s, j) => s.banded && <Area key={'b' + j} dataKey={`rb${j}`} stroke="none" fill={s.color} fillOpacity={0.14} isAnimationActive={false} legendType="none" tooltipType="none" />)}
         {series.map((s, j) => <Line key={j} dataKey={`r${j}`} name={s.label} stroke={s.color} strokeWidth={2} dot={false} isAnimationActive={false} />)}

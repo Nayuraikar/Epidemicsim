@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Bar, BarChart, LineChart, Line } from 'recharts'
 import { kgBench, M1, T4, XEON, okOf, pt, settingsOf, useJson, useJsons, useText, type Bench } from './data'
-import { big, Chart, Explain, f3, Finding, grid, legend, Need, NotRun, PAL, Panel, Pre, sec, Select, Table, tip, x2, Xax, Yax } from './ui'
+import { big, Chart, Explain, f3, Finding, grid, legend, Need, NotRun, PAL, Panel, Pre, sec, Select, Table, tip, x2, Xax, Yax, xlabel } from './ui'
 
 interface MRow { agents: number; storage: string; threadgroup: number; steps: number; total_s: number; kernel_s: number; cpu_lambda_s: number; readback_s: number; dispatch_overhead_s: number; matches_sequential: boolean }
 interface MBreak { device: string; warmup: number; reps: number; days: number; rows: MRow[] }
@@ -93,7 +93,7 @@ export function WarpTab() {
           <>
             <Finding>Fastest update kernel per prevalence: {best.join('; ')}. {(() => { const a = d.rows.filter((r) => r.variant === 'soa_atomic_branch_b256'), b = d.rows.filter((r) => r.variant === 'soa_atomic_pred_b256'); const ratio = prevs.map((p) => (b.find((r) => r.prevalence === p)!.kernel_update_s! / a.find((r) => r.prevalence === p)!.kernel_update_s!)); return `Predicated / branchy update time ranges ${Math.min(...ratio).toFixed(2)}x to ${Math.max(...ratio).toFixed(2)}x across prevalences.` })()}</Finding>
             <Panel title="Update-kernel time by prevalence (s)" settings={`${d.device} · ${big(d.rows[0].agents)} agents · ${d.days} days (${d.rows[0].steps} steps) · ${d.reps} reps (+${d.warmup} warm-up) · block ${d.rows[0].block} · partition = sort agents by health state every N steps`}>
-              <Chart h={280}><BarChart data={rows}>{grid}<Xax dataKey="p" label={{ value: 'prevalence', position: 'insideBottom', offset: -2, fontSize: 11 }} /><Yax unit=" s" />{tip}{legend}{variants.map((v, i) => <Bar key={v} dataKey={label(v)} fill={PAL[i]} isAnimationActive={false} />)}</BarChart></Chart>
+              <Chart h={280}><BarChart data={rows}>{grid}<Xax dataKey="p" label={xlabel('prevalence')} /><Yax unit=" s" />{tip}{legend}{variants.map((v, i) => <Bar key={v} dataKey={label(v)} fill={PAL[i]} isAnimationActive={false} />)}</BarChart></Chart>
             </Panel>
             <Panel title="Total run time by prevalence (s)" settings="same runs; includes placement, transfers and readback">
               <Chart h={220}><LineChart data={totals}>{grid}<Xax dataKey="p" /><Yax unit=" s" />{tip}{legend}{variants.map((v, i) => <Line key={v} dataKey={label(v)} stroke={PAL[i]} strokeWidth={2} isAnimationActive={false} />)}</LineChart></Chart>

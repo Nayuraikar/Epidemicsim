@@ -49,6 +49,8 @@
   - Sensitivity (calibrated, 100k synthetic, 10 runs): beta dominates; hospitalisation/fatality rates change attack rate < 0.5 pp.
   - Item 3 inter-city travel (ASSUMED flows in config/travel.toml): `compare --travel`, `scenarios/src/travel.rs`, `mpirun -n <cities>` = one rank per city; Lab Model tab. Calibrated, 1M-agent Mumbai/Bengaluru/Chennai, 6 runs: Bengaluru starts 2.8 d earlier (6/6 runs), Chennai 1 d (4/6); small vs the 30-50 d endogenous gap.
   - 100k agents, 2 and 3 cities: single-process and MPI JSON byte-identical (shasum). Untested: MPI on real 1M cities, other backends, GPU sync path with travel.
+- UI polish (web/ only): Model-tab charts fixed (overlapped tornado bars, 10-day travel ticks, 0-15 d calibration axis), tooltips rounded to 1 dp, shared Nav with active page, consistent card/legend/axis layout.
+  - Headless Chrome screenshots of all Lab tabs at 1280/390 px: no horizontal overflow; wide tables scroll inside their card.
 
 ## Findings
 

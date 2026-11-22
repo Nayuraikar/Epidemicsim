@@ -1,7 +1,7 @@
 import { Bar, BarChart, ComposedChart, ErrorBar, Line, Scatter } from 'recharts'
 import { C } from '../colors'
 import { macBench, okOf, pt, significance, sigText, tm, useJson, withCi, type Bench, type Machine } from './data'
-import { Chart, Explain, f3, Finding, grid, legend, Need, PAL, Panel, Table, tip, x2, Xax, Yax } from './ui'
+import { Chart, Explain, f3, Finding, grid, legend, Need, PAL, Panel, Table, tip, x2, Xax, Yax, xlabel } from './ui'
 
 interface Stat { median: number; mean: number; ci95: number; max: number }
 interface Roof { name: string; threads: number; peak: number; unit: string; value: Stat; detail: string }
@@ -41,7 +41,7 @@ function Roofline() {
           <Finding>Measured on {d.machine.cpu}: triad bandwidth {bw1 ? f3(bw1.peak) : 'n/a'} GB/s (1 thread) and {bw8 ? f3(bw8.peak) : 'n/a'} GB/s (8 threads); NEON FP32 FMA peak {fp1 ? f3(fp1.peak) : 'n/a'} GFLOP/s (1 thread) and {fp8 ? f3(fp8.peak) : 'n/a'} (8); scalar integer mul+add peak {in1 ? f3(in1.peak) : 'n/a'} Gop/s (1 thread). Kernel arithmetic intensity: timer {kt ? f3(kt.arithmetic_intensity) : 'n/a'} ops/B, Philox stream {k('philox_stream', 'scalar') ? f3(k('philox_stream', 'scalar')!.arithmetic_intensity) : 'n/a'} ops/B.{kernelSp && whole && share != null && bound != null ? ` NEON vs scalar: timer kernel ${x2(kernelSp)} alone, whole run ${x2(whole)}. The timer kernel is at most ${(share * 100).toFixed(1)}% of a scalar step at 1M agents (upper bound: every agent infected), which by Amdahl's law caps the whole-run gain at ${x2(bound)}${verdict === 'consistent' ? ', matching the measured whole-run speedup: the small share of the kernel explains the small end-to-end gain.' : verdict === 'bound-above' ? `, above the measured ${x2(whole)}, so this share alone does not fully explain the gap (not explained by this data).` : `, below the measured ${x2(whole)}, so the kernel share does not explain it (the data does not support this explanation).`}` : ''}</Finding>
           <Panel title="Roofline (log-log)" settings={`${d.machine.cpu} · kernels single-threaded, ${d.reps} reps (+1 warm-up), median; roofs = best repetition · ops/bytes per element are static tallies of the kernel source · thermal before: ${d.thermal_before ?? 'n/a'}; after: ${d.thermal_after ?? 'n/a'}`}>
             <Chart h={340}><ComposedChart data={curve} margin={{ left: 4, right: 12, top: 6 }}>{grid}
-              <Xax dataKey="x" type="number" scale="log" domain={[0.05, 120]} ticks={[0.1, 1, 10, 100]} label={{ value: 'arithmetic intensity (ops / byte)', position: 'insideBottom', offset: -2, fontSize: 11 }} />
+              <Xax dataKey="x" type="number" scale="log" domain={[0.05, 120]} ticks={[0.1, 1, 10, 100]} label={xlabel('arithmetic intensity (ops / byte)')} />
               <Yax type="number" scale="log" domain={[0.1, 1000]} ticks={[0.1, 1, 10, 100, 1000]} label={{ value: 'Gop/s (integer) · GFLOP/s (FP32)', angle: -90, position: 'insideLeft', fontSize: 11 }} />
               {tip}{legend}
               <Line dataKey="int1" name="roof: memory + integer peak, 1 thread" stroke={C.S} strokeWidth={2} dot={false} isAnimationActive={false} />

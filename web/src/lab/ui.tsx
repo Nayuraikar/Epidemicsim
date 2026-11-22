@@ -7,11 +7,19 @@ import type { Fetched } from './data'
 export const PAL = [C.S, C.I, C.R, C.E, C.runs[1], C.runs[2], C.runs[0], C.D]
 export const axis = { stroke: C.line, tick: { fill: C.muted, fontSize: 11 } }
 export const grid = <CartesianGrid stroke={C.line} strokeDasharray="3 3" />
-export const tip = <Tooltip contentStyle={{ borderRadius: 10, border: `1px solid ${C.line}`, fontSize: 12 }} />
-export const legend = <Legend wrapperStyle={{ fontSize: 12 }} />
-export const Xax = (p: ComponentProps<typeof XAxis>) => <XAxis {...axis} {...p} />
+/** Tooltip values: 1 decimal place everywhere (numbers and [lo, hi] ranges), unit appended when given. */
+export const r1 = (v: unknown) => (typeof v === 'number' && isFinite(v) ? (Math.round(v * 10) / 10).toFixed(1) : String(v ?? ''))
+const tipFmt = (unit = '') => (v: unknown) => (Array.isArray(v) ? `${r1(v[0])} – ${r1(v[1])}${unit}` : `${r1(v)}${unit}`)
+const tipStyle = { borderRadius: 10, border: `1px solid ${C.line}`, fontSize: 12 }
+export const tipU = (unit = '') => <Tooltip contentStyle={tipStyle} formatter={tipFmt(unit)} labelFormatter={(l) => (typeof l === 'number' ? r1(l).replace(/\.0$/, '') : l)} />
+export const tip = tipU()
+/** Legend always sits below the plot (and below any x-axis label). */
+export const legend = <Legend verticalAlign="bottom" align="center" height={32} wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+/** x-axis label that stays inside the axis band, clear of the legend. */
+export const xlabel = (value: string) => ({ value, position: 'insideBottom' as const, offset: -4, fontSize: 11, fill: C.muted })
+export const Xax = (p: ComponentProps<typeof XAxis>) => <XAxis {...axis} {...(p.label ? { height: 44 } : {})} {...p} />
 export const Yax = (p: ComponentProps<typeof YAxis>) => <YAxis {...axis} {...p} />
-export const Chart = ({ children, h = 260 }: { children: React.ReactElement; h?: number }) => <ResponsiveContainer width="100%" height={h}>{children}</ResponsiveContainer>
+export const Chart = ({ children, h = 280 }: { children: React.ReactElement; h?: number }) => <ResponsiveContainer width="100%" height={h}>{children}</ResponsiveContainer>
 
 export const f3 = (v: number | null | undefined) => (v == null || !isFinite(v) ? 'n/a' : v >= 100 ? v.toFixed(0) : v >= 10 ? v.toFixed(1) : v >= 1 ? v.toFixed(2) : v >= 0.01 ? v.toFixed(3) : v.toPrecision(2))
 export const sec = (v: number | null | undefined) => (v == null ? 'n/a' : `${f3(v)} s`)

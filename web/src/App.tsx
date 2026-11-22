@@ -12,6 +12,7 @@ import { HospitalChart, RtChart, SeirChart, type Series } from './components/Cha
 import { Hotspots } from './components/Hotspots'
 import { Inspector } from './components/Inspector'
 import { MapPanel, snapshotMaps } from './components/MapPanel'
+import Nav from './components/Nav'
 import { MetricCards, type CardData } from './components/MetricCards'
 import { Transport } from './components/Transport'
 
@@ -219,7 +220,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
     <div className="app">
       <header className="topbar">
         <div className="brand">epidemicsim<small>studio</small></div>
-        <a className="btn" href="#/">Home</a><a className="btn" href="#/lab">Lab</a>
+        <Nav active="studio" />
         <div className="chips" role="tablist" aria-label="City">
           {cities.cities.map((c) => (
             <button key={c.name} role="tab" aria-selected={c.name === city} className={`chip ${c.name === city ? 'on' : ''} ${c.built ? '' : 'off'}`} onClick={() => pickCity(c.name)}>
