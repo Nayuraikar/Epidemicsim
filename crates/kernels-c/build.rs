@@ -6,7 +6,6 @@ fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=openmp");
     println!("cargo:rerun-if-changed=cuda");
-    println!("cargo:rerun-if-changed=openacc");
     println!("cargo:rerun-if-env-changed=LIBOMP_PREFIX");
     println!("cargo:rustc-check-cfg=cfg(has_openmp)");
 

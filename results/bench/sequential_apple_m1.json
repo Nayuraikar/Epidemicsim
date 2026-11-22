@@ -9,20 +9,26 @@
   },
   "days": 20,
   "warmup": 1,
-  "reps": 5,
+  "reps": 10,
   "seed": 42,
+  "thermal_before": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "thermal_after": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
   "points": [
     {
       "agents": 10000,
       "threads": 1,
       "steps": 80,
       "wall_s": {
-        "median": 0.022676708,
-        "min": 0.022610875,
-        "max": 0.0227185
+        "median": 0.022693000499999998,
+        "min": 0.022641791,
+        "max": 0.0230425,
+        "mean": 0.022740720899999997,
+        "std_dev": 0.0001257906979244579,
+        "ci95": 0.00008997899276497217,
+        "n": 10
       },
-      "agents_per_sec": 35278489.276309416,
-      "contacts_per_sec": 35278489.276309416,
+      "agents_per_sec": 35253160.9912052,
+      "contacts_per_sec": 35253160.9912052,
       "speedup": 1.0,
       "efficiency": 1.0
     },
@@ -31,12 +37,16 @@
       "threads": 1,
       "steps": 80,
       "wall_s": {
-        "median": 0.230364458,
-        "min": 0.228999084,
-        "max": 0.275981375
+        "median": 0.22970931249999998,
+        "min": 0.229108042,
+        "max": 0.232494375,
+        "mean": 0.23008377910000002,
+        "std_dev": 0.00113429342739889,
+        "ci95": 0.0008113682631649971,
+        "n": 10
       },
-      "agents_per_sec": 34727579.37337712,
-      "contacts_per_sec": 34727579.37337712,
+      "agents_per_sec": 34826624.62802853,
+      "contacts_per_sec": 34826624.62802853,
       "speedup": 1.0,
       "efficiency": 1.0
     },
@@ -45,12 +55,16 @@
       "threads": 1,
       "steps": 80,
       "wall_s": {
-        "median": 2.4561395839999998,
-        "min": 2.315538833,
-        "max": 2.518773208
+        "median": 2.3069315625,
+        "min": 2.2942148749999998,
+        "max": 3.827114708,
+        "mean": 2.5320183375,
+        "std_dev": 0.5012231843996771,
+        "ci95": 0.3585285559812925,
+        "n": 10
       },
-      "agents_per_sec": 32571438.741162363,
-      "contacts_per_sec": 32571413.498297337,
+      "agents_per_sec": 34678098.518581435,
+      "contacts_per_sec": 34678071.64305508,
       "speedup": 1.0,
       "efficiency": 1.0
     }

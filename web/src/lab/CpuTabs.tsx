@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
-import { Bar, BarChart, ComposedChart, Line, LineChart } from 'recharts'
+import { Bar, BarChart, ComposedChart, ErrorBar, Line, LineChart } from 'recharts'
 import { C } from '../colors'
-import { kgBench, macBench, M1, XEON, okOf, pt, settingsOf, useJson, useJsons, useText, type Bench, type BPoint, type Machine } from './data'
+import { kgBench, macBench, M1, XEON, okOf, pt, settingsOf, significance, sigText, tm, useJson, useJsons, useText, type Bench, type BPoint, type Machine } from './data'
+import { WeakCpuPanel, WeakMpiPanel } from './ScalingPanels'
 import { big, Chart, Collapsible, Explain, f3, Finding, grid, legend, Need, NotRun, PAL, Panel, Pre, sec, Select, Table, tip, x2, Xax, Yax } from './ui'
 
 type Jsons = Record<string, ReturnType<typeof useJson<Bench>>>
@@ -15,6 +16,18 @@ const VARIANTS = [
   { key: 'kg_rayon_guided_c64', label: 'rayon guided (Xeon)', hw: XEON, file: kgBench('rayon_guided_c64') },
 ]
 const ONE_M = 1_000_000
+type SpIv = { s: number; lo: number; hi: number; known: boolean }
+/** Speedup T(1 thread)/T(t threads) of one variant with a delta-method interval from the 95% CIs of the two mean times. */
+function spIv(b: Bench | null | undefined, n: number, t: number): SpIv | undefined {
+  const p1 = pt(b ?? null, n, 1), pn = pt(b ?? null, n, t)
+  if (!p1 || !pn) return undefined
+  const s = tm(p1.wall_s)! / tm(pn.wall_s)!
+  const known = p1.wall_s.ci95 != null && pn.wall_s.ci95 != null
+  const rel = known ? Math.hypot(p1.wall_s.ci95! / tm(p1.wall_s)!, pn.wall_s.ci95! / tm(pn.wall_s)!) : 0
+  return { s, lo: s * (1 - rel), hi: s * (1 + rel), known }
+}
+const spSig = (a?: SpIv, b?: SpIv): 'sig' | 'ns' | 'unknown' => (!a || !b || !a.known || !b.known ? 'unknown' : a.lo > b.hi || b.lo > a.hi ? 'sig' : 'ns')
+const relCi = (p?: { wall_s: { median: number; mean?: number; ci95?: number } }) => (p && p.wall_s.ci95 != null ? p.wall_s.ci95 / tm(p.wall_s)! : 0)
 
 // ------------------------------------------------------------------ Performance
 export function PerformanceTab() {
@@ -28,28 +41,29 @@ export function PerformanceTab() {
     { k: 'metal', l: 'Metal (M1)', b: okOf(f.metal) }, { k: 'cuda', l: 'CUDA (T4)', b: okOf(f.cuda) },
   ].filter((s) => s.b)
   const sizes = [...new Set(series.flatMap((s) => s.b!.points.map((p) => p.agents)))].sort((a, b) => a - b)
-  const rowsOf = (key: 'agents_per_sec' | 'contacts_per_sec') => sizes.map((n) => ({ n, ...Object.fromEntries(series.map((s) => [s.k, pt(s.b, n)?.[key]])) }))
+  const rowsOf = (key: 'agents_per_sec' | 'contacts_per_sec') => sizes.map((n) => ({ n, ...Object.fromEntries(series.flatMap((s) => { const p = pt(s.b, n); return [[s.k, p?.[key]], [`${s.k}_e`, p ? p[key] * relCi(p) : 0]] })) }))
   const vs = VARIANTS.map((v, i) => ({ ...v, b: okOf(f[v.key]), color: PAL[i % PAL.length] })).filter((v) => v.b)
   const threads = [...new Set(vs.flatMap((v) => v.b!.points.filter((p) => p.agents === ONE_M).map((p) => p.threads)))].sort((a, b) => a - b)
-  const spRows = threads.map((t) => ({ t, ideal: t, ...Object.fromEntries(vs.map((v) => [v.key, pt(v.b, ONE_M, t)?.speedup])) }))
+  const spRows = threads.map((t) => ({ t, ideal: t, ...Object.fromEntries(vs.flatMap((v) => { const q = spIv(v.b, ONE_M, t); return [[v.key, pt(v.b, ONE_M, t)?.speedup], [`${v.key}_e`, q && q.known ? q.s - q.lo : 0]] })) }))
   const effRows = threads.map((t) => ({ t, ...Object.fromEntries(vs.map((v) => [v.key, pt(v.b, ONE_M, t)?.efficiency])) }))
   const cur = vs.find((v) => v.key === sel) ?? vs[0]
   const am = cur?.b?.amdahl.find((a) => a.agents === ONE_M)
   const fit = am ? Array.from({ length: Math.max(...threads, 8) }, (_, i) => i + 1).map((n) => ({ t: n, fit: 1 / (am.serial_fraction + (1 - am.serial_fraction) / n), measured: pt(cur!.b, ONE_M, n)?.speedup, ideal: n })) : []
-  const bestAt = (n: number) => series.map((s) => ({ l: s.l, v: pt(s.b, n)?.agents_per_sec ?? 0 })).sort((a, b) => b.v - a.v)[0]
-  const top = bestAt(ONE_M)
-  const mx = vs.map((v) => ({ l: v.label, s: Math.max(...v.b!.points.filter((p) => p.agents === ONE_M).map((p) => p.speedup)) })).sort((a, b) => b.s - a.s)[0]
+  const rank = series.map((s) => ({ l: s.l, p: pt(s.b, ONE_M) })).filter((x) => x.p).sort((a, b) => b.p!.agents_per_sec - a.p!.agents_per_sec)
+  const top = rank[0] && { l: rank[0].l, v: rank[0].p!.agents_per_sec, sig: rank[1] ? significance(rank[0].p!.wall_s, rank[1].p!.wall_s) : 'unknown' as const, runner: rank[1]?.l }
+  const spRank = vs.map((v) => { const t = Math.max(...v.b!.points.filter((p) => p.agents === ONE_M).map((p) => p.threads)); return { l: v.label, q: spIv(v.b, ONE_M, t)!, t } }).filter((x) => x.q).sort((a, b) => b.q.s - a.q.s)
+  const mx = spRank[0] && { l: spRank[0].l, s: spRank[0].q.s, sig: spSig(spRank[0].q, spRank[1]?.q), runner: spRank[1]?.l }
   return (
     <>
       <Explain>Speedup is time on 1 thread divided by time on N threads; efficiency is speedup divided by N. Amdahl's law fits the measured speedups with a serial fraction s: speedup(N) = 1 / (s + (1 - s) / N).</Explain>
       <Explain>Throughput is agents (and agent-location visits, "contacts") advanced per second at each population size, for the sequential reference and the GPU backends.</Explain>
       <Need what="Performance benchmarks" files={[f.seq]}>
-        {top && mx && <Finding>At 1M agents the highest measured throughput is {top.l} at {big(top.v)} agents/s. Best CPU thread speedup is {mx.l}: {x2(mx.s)} over its own 1 thread.{am ? ` ${cur!.label}: serial fraction ${f3(am.serial_fraction)}, Amdahl ceiling ${x2(am.max_speedup)}.` : ''}</Finding>}
+        {top && mx && <Finding>At 1M agents the highest measured throughput is {top.l} at {big(top.v)} agents/s ({top.runner ? `vs ${top.runner}: ${sigText(top.sig)}` : 'no runner-up'}). Best CPU thread speedup is {mx.l}: {x2(mx.s)} over its own 1 thread ({mx.runner ? `vs ${mx.runner}: ${sigText(mx.sig)}` : 'no runner-up'}).{am ? ` ${cur!.label}: serial fraction ${f3(am.serial_fraction)}, Amdahl ceiling ${x2(am.max_speedup)}.` : ''}</Finding>}
         <div className="lab-grid2">
           {(['agents_per_sec', 'contacts_per_sec'] as const).map((key) => (
-            <Panel key={key} title={`${key === 'agents_per_sec' ? 'Agents' : 'Contacts'} per second vs population`} settings={series.map((s) => `${s.l}: ${s.b!.machine.cpu}, ${s.b!.days} days (${s.b!.points[0]?.steps} steps), ${s.b!.reps} reps, median`).join(' | ') + ' · 1 thread for CPU rows'}>
+            <Panel key={key} title={`${key === 'agents_per_sec' ? 'Agents' : 'Contacts'} per second vs population`} settings={series.map((s) => `${s.l}: ${s.b!.machine.cpu}, ${s.b!.days} days (${s.b!.points[0]?.steps} steps), ${s.b!.reps} reps, median; error bars = 95% CI of the mean where recorded`).join(' | ') + ' · 1 thread for CPU rows'}>
               <Chart><LineChart data={rowsOf(key)} margin={{ left: 0, right: 12, top: 6 }}>{grid}<Xax dataKey="n" type="number" scale="log" domain={['dataMin', 'dataMax']} ticks={sizes} tickFormatter={big} /><Yax tickFormatter={big} />{tip}{legend}
-                {series.map((s, i) => <Line key={s.k} dataKey={s.k} name={s.l} stroke={PAL[i]} strokeWidth={2} connectNulls isAnimationActive={false} />)}</LineChart></Chart>
+                {series.map((s, i) => <Line key={s.k} dataKey={s.k} name={s.l} stroke={PAL[i]} strokeWidth={2} connectNulls isAnimationActive={false}><ErrorBar dataKey={`${s.k}_e`} stroke={PAL[i]} /></Line>)}</LineChart></Chart>
             </Panel>
           ))}
         </div>
@@ -57,7 +71,7 @@ export function PerformanceTab() {
           <Panel title="Speedup vs threads (1M agents)" settings={vs[0] && settingsOf(vs[0].b!, 'M1 variants; Xeon rayon only has 1 and 4 threads', '1M agents')}>
             <Chart><ComposedChart data={spRows}>{grid}<Xax dataKey="t" label={{ value: 'threads', position: 'insideBottom', offset: -2, fontSize: 11 }} /><Yax />{tip}{legend}
               <Line dataKey="ideal" name="ideal" stroke={C.D} strokeDasharray="4 4" dot={false} isAnimationActive={false} />
-              {vs.map((v) => <Line key={v.key} dataKey={v.key} name={v.label} stroke={v.color} strokeWidth={2} connectNulls isAnimationActive={false} />)}</ComposedChart></Chart>
+              {vs.map((v) => <Line key={v.key} dataKey={v.key} name={v.label} stroke={v.color} strokeWidth={2} connectNulls isAnimationActive={false}><ErrorBar dataKey={`${v.key}_e`} stroke={v.color} /></Line>)}</ComposedChart></Chart>
           </Panel>
           <Panel title="Parallel efficiency vs threads (1M agents)" settings="same runs as the speedup chart">
             <Chart><LineChart data={effRows}>{grid}<Xax dataKey="t" /><Yax domain={[0, 1.05]} />{tip}{legend}
@@ -79,6 +93,8 @@ export function PerformanceTab() {
           </Panel>
         )}
       </Need>
+      <h2 className="lab-h">Weak scaling</h2>
+      <WeakCpuPanel />
     </>
   )
 }
@@ -123,16 +139,16 @@ export function IlpTab() {
   const nfn = nf.find((x) => x.name === `${pair}_naive`)
   const ofn = of.find((x) => x.name === (flush ? 'flush_batch' : `${pair}_optimised`))
   const sizes = [100_000, ONE_M]
-  const rows = sizes.map((n) => ({ n: big(n), naive: pt(nb, n)?.wall_s.median, optimised: pt(ob, n)?.wall_s.median }))
+  const rows = sizes.map((n) => ({ n: big(n), naive: tm(pt(nb, n)?.wall_s), naive_e: pt(nb, n)?.wall_s.ci95 ?? 0, optimised: tm(pt(ob, n)?.wall_s), optimised_e: pt(ob, n)?.wall_s.ci95 ?? 0 }))
   const cN = count((nfn?.lines ?? []).filter(isInsn)), cO = count((ofn?.lines ?? []).filter(isInsn))
   return (
     <>
       <Explain>Instruction-level parallelism: the "optimised" kernels unroll four agents at a time, hoist per-step constants out of the per-agent loop and replace branches with selects, so the CPU can overlap independent work.</Explain>
       <Explain>Below: the same simulation with the naive vs optimised kernels (one thread), then the generated aarch64 assembly side by side. Highlighted lines are the categories in the legend; counts are static, not executed.</Explain>
       <Need what="ILP benchmark (ilp_naive / ilp_optimised)" files={[f.n, f.o]}>
-        <Finding>Optimised kernels run {sizes.map((n) => `${x2((pt(nb, n)?.wall_s.median ?? NaN) / (pt(ob, n)?.wall_s.median ?? NaN))} faster at ${big(n)}`).join(' and ')} ({sec(pt(nb, ONE_M)?.wall_s.median)} to {sec(pt(ob, ONE_M)?.wall_s.median)} at 1M). The assembly view shows why the code is much larger: {nfn?.name} has {nfn ? nfn.lines.filter(isInsn).length : 'n/a'} instructions, {ofn?.name} has {ofn ? ofn.lines.filter(isInsn).length : 'n/a'}.</Finding>
-        <Panel title="Naive vs optimised wall time" settings={settingsOf(nb, M1, '1 thread, sequential schedule')}>
-          <Chart h={220}><BarChart data={rows}>{grid}<Xax dataKey="n" /><Yax unit=" s" />{tip}{legend}<Bar dataKey="naive" fill={C.I} isAnimationActive={false} /><Bar dataKey="optimised" fill={C.R} isAnimationActive={false} /></BarChart></Chart>
+        <Finding>Optimised kernels run {sizes.map((n) => `${x2((pt(nb, n)?.wall_s.median ?? NaN) / (pt(ob, n)?.wall_s.median ?? NaN))} faster at ${big(n)}`).join(' and ')} ({sec(pt(nb, ONE_M)?.wall_s.median)} to {sec(pt(ob, ONE_M)?.wall_s.median)} at 1M). Naive vs optimised at 1M: {sigText(significance(pt(nb, ONE_M)?.wall_s, pt(ob, ONE_M)?.wall_s))}. The assembly view shows why the code is much larger: {nfn?.name} has {nfn ? nfn.lines.filter(isInsn).length : 'n/a'} instructions, {ofn?.name} has {ofn ? ofn.lines.filter(isInsn).length : 'n/a'}.</Finding>
+        <Panel title="Naive vs optimised wall time (mean, 95% CI)" settings={settingsOf(nb, M1, '1 thread, sequential schedule; error bars = 95% CI of the mean')}>
+          <Chart h={220}><BarChart data={rows}>{grid}<Xax dataKey="n" /><Yax unit=" s" />{tip}{legend}<Bar dataKey="naive" fill={C.I} isAnimationActive={false}><ErrorBar dataKey="naive_e" stroke={C.D} /></Bar><Bar dataKey="optimised" fill={C.R} isAnimationActive={false}><ErrorBar dataKey="optimised_e" stroke={C.D} /></Bar></BarChart></Chart>
         </Panel>
       </Need>
       <Panel title="Assembly: naive vs optimised" settings="Apple M1 aarch64 --release, cargo-show-asm: results/ilp/{naive,optimised}.asm">
@@ -164,9 +180,10 @@ export function TlpTab() {
   const [cfg, setCfg] = useState('rayon|guided')
   const bs = VARIANTS.slice(0, 6).map((v, i) => ({ ...v, b: okOf(f[v.key]), color: PAL[i] })).filter((v) => v.b)
   const threads = [1, 2, 4, 8]
-  const time = threads.map((t) => ({ t, ...Object.fromEntries(bs.map((v) => [v.key, pt(v.b, ONE_M, t)?.wall_s.median])) }))
-  const sp = threads.map((t) => ({ t, ...Object.fromEntries(bs.map((v) => [v.key, pt(v.b, ONE_M, t)?.speedup])) }))
-  const best8 = bs.map((v) => ({ l: v.label, s: pt(v.b, ONE_M, 8)?.speedup ?? 0 })).sort((a, b) => b.s - a.s)[0]
+  const time = threads.map((t) => ({ t, ...Object.fromEntries(bs.flatMap((v) => [[v.key, tm(pt(v.b, ONE_M, t)?.wall_s)], [`${v.key}_e`, pt(v.b, ONE_M, t)?.wall_s.ci95 ?? 0]])) }))
+  const sp = threads.map((t) => ({ t, ...Object.fromEntries(bs.flatMap((v) => { const q = spIv(v.b, ONE_M, t); return [[v.key, q?.s], [`${v.key}_e`, q && q.known ? q.s - q.lo : 0]] })) }))
+  const rank8 = bs.map((v) => ({ l: v.label, q: spIv(v.b, ONE_M, 8) })).filter((x) => x.q).sort((a, b) => b.q!.s - a.q!.s)
+  const best8 = rank8[0] && { l: rank8[0].l, s: rank8[0].q!.s, runner: rank8[1]?.l, runnerS: rank8[1]?.q?.s, sig: spSig(rank8[0].q, rank8[1]?.q) }
   const mum = okOf(im.mum), che = okOf(im.che)
   const [be, sc] = cfg.split('|')
   const imbRows = SCHEDS.flatMap((s) => ['rayon', 'openmp'].map((b) => ({ k: `${b} ${s}`, Mumbai: mum?.points.find((p) => p.backend === b && p.schedule === s && p.threads === 8)?.total_time_imbalance, Chennai: che?.points.find((p) => p.backend === b && p.schedule === s && p.threads === 8)?.total_time_imbalance })))
@@ -182,13 +199,13 @@ export function TlpTab() {
       <Explain>Thread-level parallelism splits agents over cores. The schedule decides how: static gives each thread one fixed block, dynamic hands out small chunks on demand, guided hands out shrinking chunks.</Explain>
       <Explain>Load imbalance is the busiest thread's work time divided by the mean (1.00 = perfect). The race demo counts per-location infectious agents with and without synchronisation to show what a data race does to the answer.</Explain>
       <Need what="Thread-scaling benchmarks" files={[f.rayon_guided_c64]}>
-        {best8 && <Finding>At 1M agents and 8 threads the best schedule is {best8.l} with {x2(best8.s)} over its own 1-thread run on {M1} (4 performance + 4 efficiency cores).</Finding>}
+        {best8 && <Finding>At 1M agents and 8 threads the highest speedup is {best8.l} with {x2(best8.s)} over its own 1-thread run on {M1} (4 performance + 4 efficiency cores); runner-up {best8.runner ?? 'none'}{best8.runnerS ? ` at ${x2(best8.runnerS)}` : ''}: {sigText(best8.sig)}. Where the CIs overlap, the ranking of schedules is not a finding.</Finding>}
         <div className="lab-grid2">
           <Panel title="Wall time vs threads (1M agents)" settings={settingsOf(bs[0]?.b ?? null, M1, '1M agents, chunk: static 0 / dynamic 1024 / guided 64')}>
-            <Chart><LineChart data={time}>{grid}<Xax dataKey="t" /><Yax unit=" s" />{tip}{legend}{bs.map((v) => <Line key={v.key} dataKey={v.key} name={v.label} stroke={v.color} strokeWidth={2} strokeDasharray={v.key.startsWith('openmp') ? '5 3' : undefined} isAnimationActive={false} />)}</LineChart></Chart>
+            <Chart><LineChart data={time}>{grid}<Xax dataKey="t" /><Yax unit=" s" />{tip}{legend}{bs.map((v) => <Line key={v.key} dataKey={v.key} name={v.label} stroke={v.color} strokeWidth={2} strokeDasharray={v.key.startsWith('openmp') ? '5 3' : undefined} isAnimationActive={false}><ErrorBar dataKey={`${v.key}_e`} stroke={v.color} /></Line>)}</LineChart></Chart>
           </Panel>
-          <Panel title="Speedup vs own 1 thread" settings="same runs (OpenMP dashed); each backend's 1-thread time differs">
-            <Chart><LineChart data={sp}>{grid}<Xax dataKey="t" /><Yax />{tip}{legend}{bs.map((v) => <Line key={v.key} dataKey={v.key} name={v.label} stroke={v.color} strokeWidth={2} strokeDasharray={v.key.startsWith('openmp') ? '5 3' : undefined} isAnimationActive={false} />)}</LineChart></Chart>
+          <Panel title="Speedup vs own 1 thread" settings="same runs (OpenMP dashed); each backend's 1-thread time differs; error bars: delta-method 95% interval from the CIs of the two mean times">
+            <Chart><LineChart data={sp}>{grid}<Xax dataKey="t" /><Yax />{tip}{legend}{bs.map((v) => <Line key={v.key} dataKey={v.key} name={v.label} stroke={v.color} strokeWidth={2} strokeDasharray={v.key.startsWith('openmp') ? '5 3' : undefined} isAnimationActive={false}><ErrorBar dataKey={`${v.key}_e`} stroke={v.color} /></Line>)}</LineChart></Chart>
           </Panel>
         </div>
       </Need>
@@ -229,7 +246,7 @@ export function SimdTab() {
   const f = useJsons<Bench>({ ms: macBench('simd_scalar'), mn: macBench('simd_neon'), ks: kgBench('simd_scalar'), ka: kgBench('simd_avx2') })
   const al = useJson<Align>('bench/simd_alignment_apple_m1.json')
   const sizes = [100_000, ONE_M]
-  const pair = (a: Bench | null, b: Bench | null, la: string, lb: string, name: string) => ({ name, a, b, la, lb, rows: sizes.map((n) => ({ n: big(n), [la]: pt(a, n)?.wall_s.median, [lb]: pt(b, n)?.wall_s.median })), sp: sizes.map((n) => (pt(a, n) && pt(b, n) ? pt(a, n)!.wall_s.median / pt(b, n)!.wall_s.median : null)) })
+  const pair = (a: Bench | null, b: Bench | null, la: string, lb: string, name: string) => ({ name, a, b, la, lb, rows: sizes.map((n) => ({ n: big(n), [la]: tm(pt(a, n)?.wall_s), [`${la}_e`]: pt(a, n)?.wall_s.ci95 ?? 0, [lb]: tm(pt(b, n)?.wall_s), [`${lb}_e`]: pt(b, n)?.wall_s.ci95 ?? 0 })), sg: sizes.map((n) => significance(pt(a, n)?.wall_s, pt(b, n)?.wall_s)), sp: sizes.map((n) => (pt(a, n) && pt(b, n) ? pt(a, n)!.wall_s.median / pt(b, n)!.wall_s.median : null)) })
   const ps = [pair(okOf(f.ms), okOf(f.mn), 'scalar', 'NEON', 'Apple M1: scalar vs NEON'), pair(okOf(f.ks), okOf(f.ka), 'scalar', 'AVX2', 'Kaggle Xeon: scalar vs AVX2')]
   const a = okOf(al)
   const kernels = a ? [...new Set(a.rows.map((r) => r.kernel))] : []
@@ -244,13 +261,13 @@ export function SimdTab() {
         <Panel key={p.name} title={p.name} settings={p.a && p.b ? settingsOf(p.b, p.name.startsWith('Apple') ? M1 : XEON, '1 thread') : undefined}>
           {!p.a || !p.b ? <NotRun what={p.name} /> : (
             <>
-              <Chart h={200}><BarChart data={p.rows}>{grid}<Xax dataKey="n" /><Yax unit=" s" />{tip}{legend}<Bar dataKey={p.la} fill={C.D} isAnimationActive={false} /><Bar dataKey={p.lb} fill={C.S} isAnimationActive={false} /></BarChart></Chart>
-              <p className="note">Speedup of {p.lb} over scalar: {sizes.map((n, i) => `${x2(p.sp[i])} at ${big(n)}`).join(', ')}.</p>
+              <Chart h={200}><BarChart data={p.rows}>{grid}<Xax dataKey="n" /><Yax unit=" s" />{tip}{legend}<Bar dataKey={p.la} fill={C.D} isAnimationActive={false}><ErrorBar dataKey={`${p.la}_e`} stroke={C.line} /></Bar><Bar dataKey={p.lb} fill={C.S} isAnimationActive={false}><ErrorBar dataKey={`${p.lb}_e`} stroke={C.D} /></Bar></BarChart></Chart>
+              <p className="note">Speedup of {p.lb} over scalar: {sizes.map((n, i) => `${x2(p.sp[i])} at ${big(n)} (${sigText(p.sg[i])})`).join(', ')}.</p>
             </>
           )}
         </Panel>
       ))}
-      <Finding>{ps.map((p) => p.a && p.b ? `${p.lb}: ${x2(p.sp[1])} end-to-end at 1M` : `${p.lb}: not run`).join('; ')}. AVX2 was measured only on the Kaggle Xeon CPU, NEON only on the M1; they are different machines and not comparable with each other.{a ? ` Alignment changed kernel time by at most ${(effect * 100).toFixed(0)}%.` : ''}</Finding>
+      <Finding>{ps.map((p) => p.a && p.b ? `${p.lb}: ${x2(p.sp[1])} end-to-end at 1M (${sigText(p.sg[1])})` : `${p.lb}: not run`).join('; ')}. AVX2 was measured only on the Kaggle Xeon CPU, NEON only on the M1; they are different machines and not comparable with each other.{a ? ` Alignment changed kernel time by at most ${(effect * 100).toFixed(0)}%.` : ''}</Finding>
       <Need what="Alignment test (simd_alignment_apple_m1.json)" files={[al]}>
         {a && <Panel title="Alignment effect on the kernels alone (ns per element, lower is better)" settings={`${a.machine.cpu} · ${a.elements.toLocaleString()} elements · ${a.passes_per_sample} passes per sample · ${a.reps} reps · 1 thread`}>
           <Chart h={220}><BarChart data={alRows}>{grid}<Xax dataKey="k" /><Yax />{tip}{legend}{alKeys.map((k, i) => <Bar key={k} dataKey={k} fill={PAL[i]} isAnimationActive={false} />)}</BarChart></Chart>
@@ -295,6 +312,8 @@ export function MpiTab() {
           </>
         )}
       </Need>
+      <h2 className="lab-h">Weak scaling</h2>
+      <WeakMpiPanel />
     </>
   )
 }

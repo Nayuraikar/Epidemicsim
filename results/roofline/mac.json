@@ -1,0 +1,304 @@
+{
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "reps": 10,
+  "thermal_before": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "thermal_after": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "notes": [
+    "Roofs are measured (best repetition). Kernel bytes/ops per element are static tallies from the kernel source, not hardware counters.",
+    "Both SIMD kernels are integer kernels (no floating-point work), so they are placed against the integer roof, not the FP32 roof.",
+    "The 1M-element working sets fit in cache, so their achieved GB/s can exceed the DRAM triad bandwidth; the 32M-element rows are DRAM-resident.",
+    "Kernels run on one thread.",
+    "The FMA and integer roofs come from fixed-length dependent-chain loops (12 independent chains); they are measured achievable rates and may sit below the true hardware peak."
+  ],
+  "roofs": [
+    {
+      "name": "memory bandwidth (STREAM triad, f64)",
+      "threads": 1,
+      "peak": 48.81310287766514,
+      "unit": "GB/s",
+      "value": {
+        "median": 45.60422915120067,
+        "min": 16.419521512869252,
+        "max": 48.81310287766514,
+        "mean": 42.91213490118068,
+        "std_dev": 9.55114985658943,
+        "ci95": 6.83200632497746,
+        "n": 10
+      },
+      "detail": "134 MB per array x 3, 24 B/element (no write-allocate counted)"
+    },
+    {
+      "name": "memory bandwidth (STREAM triad, f64)",
+      "threads": 4,
+      "peak": 49.58910080455263,
+      "unit": "GB/s",
+      "value": {
+        "median": 45.0948742177242,
+        "min": 28.752554183479617,
+        "max": 49.58910080455263,
+        "mean": 44.011383007376146,
+        "std_dev": 5.815387659906064,
+        "ci95": 4.159788703060026,
+        "n": 10
+      },
+      "detail": "134 MB per array x 3, 24 B/element (no write-allocate counted)"
+    },
+    {
+      "name": "memory bandwidth (STREAM triad, f64)",
+      "threads": 8,
+      "peak": 30.952785863225362,
+      "unit": "GB/s",
+      "value": {
+        "median": 19.688495434285556,
+        "min": 14.272471574469972,
+        "max": 30.952785863225362,
+        "mean": 20.35159060866735,
+        "std_dev": 4.82512910516545,
+        "ci95": 3.451449622327944,
+        "n": 10
+      },
+      "detail": "134 MB per array x 3, 24 B/element (no write-allocate counted)"
+    },
+    {
+      "name": "peak FP32 FMA",
+      "threads": 1,
+      "peak": 39.279025307353265,
+      "unit": "GFLOP/s",
+      "value": {
+        "median": 37.908965603035334,
+        "min": 30.4835291680982,
+        "max": 39.279025307353265,
+        "mean": 36.82333307398768,
+        "std_dev": 3.004983364781228,
+        "ci95": 2.1494862569320397,
+        "n": 10
+      },
+      "detail": "NEON vfmaq_f32, 12 independent accumulators"
+    },
+    {
+      "name": "peak FP32 FMA",
+      "threads": 8,
+      "peak": 90.57898006214413,
+      "unit": "GFLOP/s",
+      "value": {
+        "median": 83.64853720622544,
+        "min": 66.52503152519897,
+        "max": 90.57898006214413,
+        "mean": 83.43657849655611,
+        "std_dev": 6.85370732377659,
+        "ci95": 4.902506241516175,
+        "n": 10
+      },
+      "detail": "NEON vfmaq_f32, 12 independent accumulators"
+    },
+    {
+      "name": "peak scalar integer mul+add (u64)",
+      "threads": 1,
+      "peak": 3.900728095278535,
+      "unit": "Gop/s",
+      "value": {
+        "median": 3.875149788263503,
+        "min": 3.8411738627324516,
+        "max": 3.900728095278535,
+        "mean": 3.870378076371865,
+        "std_dev": 0.020913632802300818,
+        "ci95": 0.014959672262392526,
+        "n": 10
+      },
+      "detail": "12 independent wrapping_mul+wrapping_add chains"
+    },
+    {
+      "name": "peak scalar integer mul+add (u64)",
+      "threads": 8,
+      "peak": 24.221062610816094,
+      "unit": "Gop/s",
+      "value": {
+        "median": 21.30810570701813,
+        "min": 15.797461197580555,
+        "max": 24.221062610816094,
+        "mean": 20.91051616865722,
+        "std_dev": 3.142591974107454,
+        "ci95": 2.247918686891194,
+        "n": 10
+      },
+      "detail": "12 independent wrapping_mul+wrapping_add chains"
+    }
+  ],
+  "kernels": [
+    {
+      "kernel": "timer_recovery",
+      "variant": "scalar",
+      "elements": 1048576,
+      "working_set_mb": 5.24288,
+      "ns_per_element": {
+        "median": 1.352389669418335,
+        "min": 1.190557098388672,
+        "max": 1.3893643856048583,
+        "mean": 1.3275410652160646,
+        "std_dev": 0.06398136942567263,
+        "ci95": 0.04576633464664371,
+        "n": 10
+      },
+      "bytes_per_element": 5.0,
+      "int_ops_per_element": 5.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 1.0,
+      "achieved_gb_s": 3.697159267824419,
+      "achieved_gops": 3.697159267824419
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "scalar",
+      "elements": 1048576,
+      "working_set_mb": 8.388608,
+      "ns_per_element": {
+        "median": 16.1149263381958,
+        "min": 15.070923137664796,
+        "max": 19.97794313430786,
+        "mean": 16.501588425636292,
+        "std_dev": 1.4344133316637193,
+        "ci95": 1.0260461935687735,
+        "n": 10
+      },
+      "bytes_per_element": 8.0,
+      "int_ops_per_element": 98.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 12.25,
+      "achieved_gb_s": 0.49643416495415804,
+      "achieved_gops": 6.081318520688436
+    },
+    {
+      "kernel": "timer_recovery",
+      "variant": "neon",
+      "elements": 1048576,
+      "working_set_mb": 5.24288,
+      "ns_per_element": {
+        "median": 0.462302565574646,
+        "min": 0.24111270904541016,
+        "max": 0.6424407005310059,
+        "mean": 0.46088754653930664,
+        "std_dev": 0.12819479082365068,
+        "ci95": 0.0916986577414134,
+        "n": 10
+      },
+      "bytes_per_element": 5.0,
+      "int_ops_per_element": 5.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 1.0,
+      "achieved_gb_s": 10.815427757328056,
+      "achieved_gops": 10.815427757328056
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "neon",
+      "elements": 1048576,
+      "working_set_mb": 8.388608,
+      "ns_per_element": {
+        "median": 7.210370874404907,
+        "min": 6.544526433944702,
+        "max": 8.848893642425537,
+        "mean": 7.245605187416077,
+        "std_dev": 0.6364040154462867,
+        "ci95": 0.4552243786406947,
+        "n": 10
+      },
+      "bytes_per_element": 8.0,
+      "int_ops_per_element": 98.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 12.25,
+      "achieved_gb_s": 1.1095129694920531,
+      "achieved_gops": 13.591533876277651
+    },
+    {
+      "kernel": "timer_recovery",
+      "variant": "scalar",
+      "elements": 33554432,
+      "working_set_mb": 167.77216,
+      "ns_per_element": {
+        "median": 1.5250599682331085,
+        "min": 1.4094561338424683,
+        "max": 1.6265437006950378,
+        "mean": 1.5170414000749588,
+        "std_dev": 0.06735138221545081,
+        "ci95": 0.048176929081944604,
+        "n": 10
+      },
+      "bytes_per_element": 5.0,
+      "int_ops_per_element": 5.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 1.0,
+      "achieved_gb_s": 3.278559600376147,
+      "achieved_gops": 3.278559600376147
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "scalar",
+      "elements": 33554432,
+      "working_set_mb": 268.435456,
+      "ns_per_element": {
+        "median": 16.75316847115755,
+        "min": 15.910515561699867,
+        "max": 23.042223110795025,
+        "mean": 17.86708807349205,
+        "std_dev": 2.4930940906301085,
+        "ci95": 1.78332817008391,
+        "n": 10
+      },
+      "bytes_per_element": 8.0,
+      "int_ops_per_element": 98.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 12.25,
+      "achieved_gb_s": 0.4775216111371943,
+      "achieved_gops": 5.84963973643063
+    },
+    {
+      "kernel": "timer_recovery",
+      "variant": "neon",
+      "elements": 33554432,
+      "working_set_mb": 167.77216,
+      "ns_per_element": {
+        "median": 0.25767242908477783,
+        "min": 0.2509988844394684,
+        "max": 0.2651202231645584,
+        "mean": 0.25829275548458097,
+        "std_dev": 0.004893340163310077,
+        "ci95": 0.0035002414837974802,
+        "n": 10
+      },
+      "bytes_per_element": 5.0,
+      "int_ops_per_element": 5.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 1.0,
+      "achieved_gb_s": 19.40448195315041,
+      "achieved_gops": 19.40448195315041
+    },
+    {
+      "kernel": "philox_stream",
+      "variant": "neon",
+      "elements": 33554432,
+      "working_set_mb": 268.435456,
+      "ns_per_element": {
+        "median": 7.255304612219334,
+        "min": 6.629199415445328,
+        "max": 8.530950173735619,
+        "mean": 7.352904668450355,
+        "std_dev": 0.6090032389747696,
+        "ci95": 0.43562440576061834,
+        "n": 10
+      },
+      "bytes_per_element": 8.0,
+      "int_ops_per_element": 98.0,
+      "flops_per_element": 0.0,
+      "arithmetic_intensity": 12.25,
+      "achieved_gb_s": 1.1026415054340317,
+      "achieved_gops": 13.50735844156689
+    }
+  ],
+  "gpu": null
+}

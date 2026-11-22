@@ -33,18 +33,23 @@ Imbalance runs: 1M agents, 30 simulated days, median of 3 repetitions after one 
 - Imbalance is not what limits speedup. Wall time barely changes between schedules (see below); at 8 threads the 4 efficiency
   cores and shared memory bandwidth dominate.
 
-## 1M agents, 80 steps: speedup / efficiency vs 1 thread (median of 5)
-| backend / schedule | 2 threads | 4 threads | 8 threads |
-|---|---|---|---|
-| rayon static | 1.72 / 0.86 | 2.00 / 0.50 | 2.24 / 0.28 |
-| rayon dynamic (1024) | 1.54 / 0.77 | 1.76 / 0.44 | 1.87 / 0.23 |
-| rayon guided (min 64) | 1.70 / 0.85 | 2.19 / 0.55 | 2.63 / 0.33 |
-| openmp static | 1.89 / 0.94 | 2.58 / 0.65 | 3.10 / 0.39 |
-| openmp dynamic (1024) | 1.89 / 0.95 | 2.50 / 0.62 | 3.32 / 0.42 |
-| openmp guided (min 64) | 1.90 / 0.95 | 2.69 / 0.67 | 3.34 / 0.42 |
+## 1M agents, 80 steps: speedup vs own 1 thread (mean of 10, 95% interval in brackets; re-measured)
+Delta-method interval from the 95% CIs of the 1-thread and N-thread mean times. Run: `scripts/bench_stats.sh`, 20 days, 1 warm-up.
+| backend / schedule | 2 threads | 4 threads | 8 threads | 1-thread s | 8-thread s (mean +/- CI) |
+|---|---|---|---|---|---|
+| rayon static | 1.70 [1.66-1.74] | 2.16 [2.03-2.29] | 2.75 [2.65-2.86] | 1.605 | 0.583 +/- 0.019 |
+| rayon dynamic (1024) | 1.36 [1.12-1.60] | 1.95 [1.81-2.10] | 2.28 [2.22-2.34] | 1.631 | 0.715 +/- 0.004 |
+| rayon guided (min 64) | 1.70 [1.69-1.70] | 2.19 [2.07-2.32] | 2.93 [2.89-2.98] | 1.577 | 0.537 +/- 0.008 |
+| openmp static | 1.52 [1.22-1.82] | 2.63 [2.36-2.91] | 3.24 [2.92-3.55] | 2.148 | 0.664 +/- 0.026 |
+| openmp dynamic (1024) | 1.86 [1.79-1.93] | 2.39 [2.27-2.50] | 3.40 [3.37-3.42] | 1.993 | 0.587 +/- 0.003 |
+| openmp guided (min 64) | 1.90 [1.90-1.91] | 2.64 [2.54-2.73] | 3.42 [3.41-3.43] | 1.986 | 0.581 +/- 0.001 |
 
-Single-thread times: rayon ~1.6 s, openmp ~2.0 s (the literal C code is slower than the Rust optimised kernels single-threaded),
-so absolute 8-thread times are close (rayon guided 0.60 s, openmp guided 0.60 s).
+Updated TLP finding (significance by non-overlapping 95% intervals):
+- Highest 8-thread speedup is OpenMP guided (3.42x), but it is **not significantly better than OpenMP dynamic** (3.40x; intervals overlap). OpenMP static overlaps both.
+- Among rayon schedules guided (2.93x) is significantly better than static (2.75x) and dynamic (2.28x).
+- OpenMP's higher speedup is mostly its slower 1-thread baseline (1.99 s vs 1.58 s). In absolute time rayon guided is the fastest at 8 threads (0.537 +/- 0.008 s vs 0.581 +/- 0.001 s for OpenMP guided; non-overlapping), so "OpenMP scales better" holds for speedup only, not for time.
+- The earlier 5-rep medians (rayon guided 2.63x, OpenMP dynamic 3.32x) were from single sessions; the re-measured values differ by up to 0.3x.
+- Imbalance table above is from the earlier 3-rep runs and was not re-measured.
 
 ## Race demo (8 threads, 200 runs each, ~32.7k infectious agents near the epidemic peak)
 Unsynchronised counting was wrong in 200/200 rayon runs (up to 1397 lost increments) and 108/200 OpenMP runs (up to 4 lost) on the

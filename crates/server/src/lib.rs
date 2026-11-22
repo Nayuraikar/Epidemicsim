@@ -495,7 +495,9 @@ async fn ws_session(mut socket: WebSocket, app: Shared) {
 // ---------- PAGP Lab: read-only access to measured result files ----------
 
 /// Result sub-folders the Lab may read, and the file types it may return.
-const LAB_ROOTS: [&str; 7] = ["bench", "ilp", "tlp", "gpu", "mpi", "ptx", "kaggle"];
+const LAB_ROOTS: [&str; 10] = [
+    "bench", "ilp", "tlp", "gpu", "mpi", "ptx", "kaggle", "scaling", "roofline", "layout",
+];
 const LAB_EXTS: [&str; 8] = ["json", "md", "asm", "ptx", "tsv", "csv", "log", "txt"];
 
 fn lab_walk(base: &Path, dir: &Path, out: &mut Vec<Value>) {

@@ -23,5 +23,3 @@ ncu_branch_part0	1	1s
 ncu_pred_part0	1	2s
 ncu_branch_part4	1	1s
 ptx	0	13s
-openacc_build	1	0s
-openacc_run	127	0s

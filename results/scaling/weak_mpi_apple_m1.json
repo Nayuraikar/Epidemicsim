@@ -1,0 +1,77 @@
+{
+  "machine": "Apple M1",
+  "backend": "sequential",
+  "mode": "static",
+  "agents": 50000,
+  "days": 90,
+  "tasks_per_rank": 8,
+  "reps": 5,
+  "note": "work per rank fixed: runs per scenario = procs x tasks_per_rank / scenarios; wall_s = rank-0 dispatch-to-gather time; ranks beyond the 4P+4E cores of this machine share cores.",
+  "points": [
+    {
+      "procs": 1,
+      "tasks": 8,
+      "wall_s": {
+        "median": 4.760829083,
+        "min": 4.70592925,
+        "max": 7.417663083,
+        "mean": 5.4449766916,
+        "std_dev": 1.1693205468115364,
+        "ci95": 1.4516704637836217,
+        "n": 5
+      },
+      "weak_efficiency": 1.0,
+      "scaled_speedup": 1.0,
+      "comm_fraction": 0.0
+    },
+    {
+      "procs": 2,
+      "tasks": 16,
+      "wall_s": {
+        "median": 6.474996417,
+        "min": 6.368825208,
+        "max": 7.464230583,
+        "mean": 6.696663000000001,
+        "std_dev": 0.44588335055379164,
+        "ci95": 0.5535485475362485,
+        "n": 5
+      },
+      "weak_efficiency": 0.7352635857064753,
+      "scaled_speedup": 1.4705271714129506,
+      "comm_fraction": 0.00024461352386117094
+    },
+    {
+      "procs": 4,
+      "tasks": 32,
+      "wall_s": {
+        "median": 9.037136333,
+        "min": 8.578330333,
+        "max": 11.00657075,
+        "mean": 9.445153216600001,
+        "std_dev": 0.990937966826864,
+        "ci95": 1.230214744628278,
+        "n": 5
+      },
+      "weak_efficiency": 0.5268072658830387,
+      "scaled_speedup": 2.107229063532155,
+      "comm_fraction": 0.0003489917535824837
+    },
+    {
+      "procs": 8,
+      "tasks": 64,
+      "wall_s": {
+        "median": 14.389078875,
+        "min": 10.696193875,
+        "max": 24.831866,
+        "mean": 15.813521533400001,
+        "std_dev": 5.313645408597379,
+        "ci95": 6.596704484252518,
+        "n": 5
+      },
+      "weak_efficiency": 0.3308640618595539,
+      "scaled_speedup": 2.6469124948764313,
+      "comm_fraction": 0.001940569014720734
+    }
+  ],
+  "gustafson_serial_fraction": 0.7403287826077214
+}

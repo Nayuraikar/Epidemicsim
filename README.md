@@ -19,7 +19,7 @@ flowchart LR
   BE --> CPU[rayon / OpenMP / SIMD]
   BE --> GPU[Metal / CUDA]
   BE --> MPI[MPI ranks]
-  KC[kernels-c: OpenMP, CUDA, OpenACC] --> BE
+  KC[kernels-c: OpenMP, CUDA] --> BE
   BE --> RES[(results/ json, parquet, frames)]
   BENCH[bench crate + scripts/kaggle_run.sh] --> RES
   RES --> SRV[server: REST + WebSocket]
@@ -43,7 +43,7 @@ Crates (`crates/`): `core`, `data`, `scenarios`, `backends`, `bench`, `mpi`, `se
 
 Follow `docs/KAGGLE.md`: upload the repo as a private dataset, enable a GPU and Internet, run `scripts/kaggle_run.sh`
 (builds with `--features cuda`, runs tests, benchmarks, PTX and ncu, writes `results/kaggle/`). Copy `results/kaggle/` back into this repo's `results/`.
-Nsight Compute counters and OpenACC were unavailable on Kaggle (see `docs/REPORT.md`, Limitations).
+Nsight Compute counters were unavailable on Kaggle (see `docs/REPORT.md`, Limitations).
 
 ## Run the server and web
 
@@ -62,4 +62,4 @@ Regenerate the report: `python3 -I scripts/gen_report.py` (writes `docs/REPORT.m
 3. **2:00** Press **Run live** (100k agents, rayon). Pause, click an agent in the inspector to see its infection history.
 4. **3:00** Open the **Lab**. *Performance*: speedup, efficiency, Amdahl serial fraction. *ILP*: naive vs optimised and the assembly diff.
 5. **3:45** *GPU*: Metal and CUDA vs CPU with the time breakdown; *Warps* and *PTX*: branchy vs predicated, and the identical PTX across -O levels.
-6. **4:30** *Summary*: backend x hardware matrix with golden-test status; point out the "not run" cards (ncu, OpenACC) and Metal 10M "not checked against sequential".
+6. **4:30** *Summary*: backend x hardware matrix with golden-test status; point out the "not run" cards (ncu) and Metal 10M "not checked against sequential".

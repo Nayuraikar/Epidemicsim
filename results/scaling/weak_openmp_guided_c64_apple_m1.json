@@ -1,0 +1,83 @@
+{
+  "backend": "openmp_guided_c64",
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "per_thread_agents": 125000,
+  "days": 20,
+  "steps": 80,
+  "warmup": 1,
+  "reps": 10,
+  "seed": 42,
+  "thermal_before": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "thermal_after": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "points": [
+    {
+      "threads": 1,
+      "agents": 125000,
+      "wall_s": {
+        "median": 0.2472910835,
+        "min": 0.246420833,
+        "max": 0.247976375,
+        "mean": 0.2472142711,
+        "std_dev": 0.0005701415053540949,
+        "ci95": 0.0004078263276357247,
+        "n": 10
+      },
+      "weak_efficiency": 1.0,
+      "scaled_speedup": 1.0
+    },
+    {
+      "threads": 2,
+      "agents": 250000,
+      "wall_s": {
+        "median": 0.267241146,
+        "min": 0.266502917,
+        "max": 0.267769458,
+        "mean": 0.26713345,
+        "std_dev": 0.000386133536862863,
+        "ci95": 0.0002762041016781838,
+        "n": 10
+      },
+      "weak_efficiency": 0.9253480880522793,
+      "scaled_speedup": 1.8506961761045586
+    },
+    {
+      "threads": 4,
+      "agents": 500000,
+      "wall_s": {
+        "median": 0.3718759585,
+        "min": 0.290067459,
+        "max": 0.401297792,
+        "mean": 0.3569869211,
+        "std_dev": 0.03761240198628726,
+        "ci95": 0.026904422203220327,
+        "n": 10
+      },
+      "weak_efficiency": 0.6649827122395169,
+      "scaled_speedup": 2.6599308489580675
+    },
+    {
+      "threads": 8,
+      "agents": 1000000,
+      "wall_s": {
+        "median": 0.6265368954999999,
+        "min": 0.612707958,
+        "max": 0.874603208,
+        "mean": 0.6628185207,
+        "std_dev": 0.08303093681424761,
+        "ci95": 0.05939262748478184,
+        "n": 10
+      },
+      "weak_efficiency": 0.39469516524266696,
+      "scaled_speedup": 3.1575613219413357
+    }
+  ],
+  "gustafson": {
+    "serial_fraction": 0.6451963054818964
+  }
+}

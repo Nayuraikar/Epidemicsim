@@ -42,6 +42,11 @@ pub struct Median {
     pub median: f64,
     pub min: f64,
     pub max: f64,
+    pub mean: f64,
+    pub std_dev: f64,
+    /// Half-width of the 95% CI of the mean (Student t).
+    pub ci95: f64,
+    pub n: usize,
 }
 
 #[derive(Serialize)]
@@ -59,11 +64,34 @@ pub struct Scaling {
 }
 
 fn med(v: &mut [f64]) -> Median {
+    const T: [f64; 12] = [
+        12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228, 2.201, 2.179,
+    ];
     v.sort_by(f64::total_cmp);
+    let n = v.len();
+    let mean = v.iter().sum::<f64>() / n as f64;
+    let std_dev = if n < 2 {
+        0.0
+    } else {
+        (v.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / (n - 1) as f64).sqrt()
+    };
+    let t = if n < 2 {
+        0.0
+    } else {
+        T.get(n - 2).copied().unwrap_or(1.96)
+    };
     Median {
-        median: v[v.len() / 2],
+        median: if n % 2 == 1 {
+            v[n / 2]
+        } else {
+            (v[n / 2 - 1] + v[n / 2]) / 2.0
+        },
         min: v[0],
-        max: v[v.len() - 1],
+        max: v[n - 1],
+        mean,
+        std_dev,
+        ci95: t * std_dev / (n as f64).sqrt(),
+        n,
     }
 }
 
@@ -206,6 +234,110 @@ pub fn run(o: &Opts, machine: &str, scenarios: usize) -> Result<Scaling, Box<dyn
         reps: o.reps,
         note: "wall_s = rank-0 time from first dispatch until all results are gathered (excludes aggregation and file output). dynamic uses rank 0 as a pure master, so it has procs-1 workers.",
         points,
+    })
+}
+
+#[derive(Serialize)]
+pub struct WeakPoint {
+    pub procs: usize,
+    pub tasks: usize,
+    pub wall_s: Median,
+    pub weak_efficiency: f64,
+    pub scaled_speedup: f64,
+    pub comm_fraction: f64,
+}
+
+#[derive(Serialize)]
+pub struct WeakScaling {
+    pub machine: String,
+    pub backend: String,
+    pub mode: &'static str,
+    pub agents: usize,
+    pub days: u32,
+    pub tasks_per_rank: usize,
+    pub reps: usize,
+    pub note: &'static str,
+    pub points: Vec<WeakPoint>,
+    pub gustafson_serial_fraction: Option<f64>,
+}
+
+/// Weak scaling: static mode, tasks per rank fixed (`scenarios` x runs / procs), so runs per
+/// scenario = procs x tasks_per_rank / scenarios. `o.runs` is ignored.
+pub fn run_weak(
+    o: &Opts,
+    machine: &str,
+    scenarios: usize,
+    tasks_per_rank: usize,
+) -> Result<WeakScaling, Box<dyn Error>> {
+    std::fs::create_dir_all(&o.work_dir)?;
+    let mut points: Vec<WeakPoint> = Vec::new();
+    let mut base = 0.0;
+    for &p in &o.procs {
+        let runs = (p * tasks_per_rank).div_ceil(scenarios).max(1);
+        let oo = Opts {
+            runs,
+            procs: o.procs.clone(),
+            exe: o.exe.clone(),
+            scenarios_dir: o.scenarios_dir.clone(),
+            backend: o.backend.clone(),
+            work_dir: o.work_dir.clone(),
+            ..*o
+        };
+        let mut reps = Vec::new();
+        for r in 0..o.reps + 1 {
+            let rep = one(&oo, p, "static", &format!("weak_{p}_{r}"))?;
+            if r > 0 {
+                reps.push(rep);
+            }
+        }
+        let mut walls: Vec<f64> = reps.iter().map(|r| r.run_s).collect();
+        let wall = med(&mut walls);
+        if base == 0.0 {
+            base = wall.median;
+        }
+        let comm: f64 = reps
+            .iter()
+            .map(|r| r.per_rank.iter().map(|x| x.comm_s).sum::<f64>() / (p as f64 * r.run_s))
+            .sum::<f64>()
+            / reps.len() as f64;
+        let eff = base / wall.median;
+        eprintln!(
+            "mpi weak n={p} tasks={}: median {:.3}s +-{:.3} efficiency {eff:.2}",
+            scenarios * runs,
+            wall.median,
+            wall.ci95
+        );
+        points.push(WeakPoint {
+            procs: p,
+            tasks: scenarios * runs,
+            wall_s: wall,
+            weak_efficiency: eff,
+            scaled_speedup: eff * p as f64 / o.procs[0] as f64,
+            comm_fraction: comm,
+        });
+    }
+    let g = {
+        let (mut num, mut den) = (0.0, 0.0);
+        for q in &points {
+            let t = q.procs as f64 / o.procs[0] as f64;
+            if t > 1.0 {
+                num += (t - q.scaled_speedup) * (t - 1.0);
+                den += (t - 1.0) * (t - 1.0);
+            }
+        }
+        (den > 0.0).then(|| (num / den).clamp(0.0, 1.0))
+    };
+    Ok(WeakScaling {
+        machine: machine.into(),
+        backend: o.backend.clone(),
+        mode: "static",
+        agents: o.agents,
+        days: o.days,
+        tasks_per_rank,
+        reps: o.reps,
+        note: "work per rank fixed: runs per scenario = procs x tasks_per_rank / scenarios; wall_s = rank-0 dispatch-to-gather time; ranks beyond the 4P+4E cores of this machine share cores.",
+        points,
+        gustafson_serial_fraction: g,
     })
 }
 

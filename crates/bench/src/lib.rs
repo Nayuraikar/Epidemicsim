@@ -1,4 +1,7 @@
 //! Backend benchmark harness: warmup + repetitions per (agents, threads), JSON report.
+pub mod layout;
+pub mod roofline;
+pub mod scaling;
 pub mod tlp;
 
 use epidemicsim_core::world::STEPS_PER_DAY;
@@ -38,6 +41,26 @@ pub struct Timing {
     pub median: f64,
     pub min: f64,
     pub max: f64,
+    pub mean: f64,
+    /// Sample standard deviation (n - 1); 0 with fewer than two samples.
+    pub std_dev: f64,
+    /// Half-width of the 95% confidence interval of the mean (Student t); 0 with n < 2.
+    pub ci95: f64,
+    pub n: usize,
+}
+
+/// Two-sided 95% Student-t critical value for `df` degrees of freedom.
+pub fn t_crit95(df: usize) -> f64 {
+    const T: [f64; 30] = [
+        12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365, 2.306, 2.262, 2.228, 2.201, 2.179, 2.160,
+        2.145, 2.131, 2.120, 2.110, 2.101, 2.093, 2.086, 2.080, 2.074, 2.069, 2.064, 2.060, 2.056,
+        2.052, 2.048, 2.045, 2.042,
+    ];
+    match df {
+        0 => 0.0,
+        1..=30 => T[df - 1],
+        _ => 1.96,
+    }
 }
 
 #[derive(Clone, Debug, Serialize)]
@@ -74,6 +97,20 @@ pub struct Machine {
     pub memory_gb: Option<f64>,
 }
 
+/// Thermal state from `pmset -g therm` (macOS) at one moment; `None` where not detectable.
+pub fn thermal_note() -> Option<String> {
+    let t = cmd("pmset", &["-g", "therm"])?;
+    let lines: Vec<&str> = t
+        .lines()
+        .filter(|l| !l.starts_with("Note:") && !l.contains("***"))
+        .collect();
+    Some(if lines.is_empty() {
+        "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo".into()
+    } else {
+        lines.join("; ")
+    })
+}
+
 #[derive(Clone, Debug, Serialize)]
 pub struct Report {
     pub backend: String,
@@ -82,6 +119,9 @@ pub struct Report {
     pub warmup: usize,
     pub reps: usize,
     pub seed: u64,
+    /// Thermal state before / after the run; throttling is only detectable as a recorded warning.
+    pub thermal_before: Option<String>,
+    pub thermal_after: Option<String>,
     pub points: Vec<Point>,
     /// Empty unless at least two thread counts (reference + one more) were measured.
     pub amdahl: Vec<Amdahl>,
@@ -155,10 +195,29 @@ pub fn timing(samples: &[f64]) -> Timing {
     } else {
         (v[n / 2 - 1] + v[n / 2]) / 2.0
     };
+    let mean = if n == 0 {
+        0.0
+    } else {
+        v.iter().sum::<f64>() / n as f64
+    };
+    let std_dev = if n < 2 {
+        0.0
+    } else {
+        (v.iter().map(|x| (x - mean).powi(2)).sum::<f64>() / (n - 1) as f64).sqrt()
+    };
+    let ci95 = if n < 2 {
+        0.0
+    } else {
+        t_crit95(n - 1) * std_dev / (n as f64).sqrt()
+    };
     Timing {
         median,
         min: v.first().copied().unwrap_or(0.0),
         max: v.last().copied().unwrap_or(0.0),
+        mean,
+        std_dev,
+        ci95,
+        n,
     }
 }
 
@@ -179,6 +238,7 @@ pub fn amdahl_fit(points: &[(f64, f64)]) -> Option<f64> {
 
 pub fn run(name: &str, factory: Factory, o: &BenchOpts) -> Result<Report, Box<dyn Error>> {
     let steps = o.days * STEPS_PER_DAY;
+    let thermal_before = thermal_note();
     let mut points: Vec<Point> = Vec::new();
     let mut amdahl = Vec::new();
     for &n in &o.agents {
@@ -248,6 +308,8 @@ pub fn run(name: &str, factory: Factory, o: &BenchOpts) -> Result<Report, Box<dy
         warmup: o.warmup,
         reps: o.reps,
         seed: o.seed,
+        thermal_before,
+        thermal_after: thermal_note(),
         points,
         amdahl,
     })
@@ -271,6 +333,9 @@ mod tests {
     fn median_min_max() {
         let t = timing(&[3.0, 1.0, 2.0, 10.0]);
         assert_eq!((t.median, t.min, t.max), (2.5, 1.0, 10.0));
+        assert_eq!(t.mean, 4.0);
+        assert!((t.std_dev - 4.0825).abs() < 1e-3);
+        assert!((t.ci95 - 3.182 * t.std_dev / 2.0).abs() < 1e-9);
         assert_eq!(timing(&[5.0, 1.0, 3.0]).median, 3.0);
     }
 

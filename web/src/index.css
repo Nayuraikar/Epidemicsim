@@ -98,6 +98,7 @@ a.btn.primary { color: #fff; }
 .landing-card p { margin: 0; color: var(--muted); }
 .landing-card b { color: var(--accent); margin-top: auto; }
 .lab-main { display: flex; flex-direction: column; gap: 16px; }
+.lab-h { margin: 18px 0 0; font-size: 18px; }
 .lab-explain { margin: 0; color: var(--muted); max-width: 900px; }
 .lab-finding { display: flex; gap: 12px; align-items: baseline; background: #eff6ff; border-left: 4px solid var(--accent); border-radius: 10px; padding: 10px 14px; }
 .lab-finding b { color: var(--accent); white-space: nowrap; }

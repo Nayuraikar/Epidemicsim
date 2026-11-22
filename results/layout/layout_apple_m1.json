@@ -1,0 +1,111 @@
+{
+  "machine": {
+    "os": "macos",
+    "arch": "aarch64",
+    "cpu": "Apple M1",
+    "logical_cores": 8,
+    "memory_gb": 8.6
+  },
+  "agents": 1000000,
+  "locations": 320850,
+  "passes_per_sample": 4,
+  "warmup": 1,
+  "reps": 10,
+  "threads": 1,
+  "thermal_before": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "thermal_after": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "checksums_match": true,
+  "note": "Update kernel = infection of susceptibles (random gather of lambda by location, Philox) + progression of E/A/I/H, 4 steps per sample from the same initial state (data rebuilt untimed each rep). SoA touches 15 B/agent in 7 arrays, AoS a 16 B record. Single thread.",
+  "rows": [
+    {
+      "layout": "soa",
+      "order": "generated",
+      "pass_s": {
+        "median": 0.012030526125,
+        "min": 0.011792698,
+        "max": 0.01346036475,
+        "mean": 0.012372333424999998,
+        "std_dev": 0.000702441375625872,
+        "ci95": 0.0005024613782905826,
+        "n": 10
+      },
+      "ns_per_agent": 12.030526125,
+      "bytes_per_agent": 15
+    },
+    {
+      "layout": "aos",
+      "order": "generated",
+      "pass_s": {
+        "median": 0.01929536975,
+        "min": 0.0142546355,
+        "max": 0.0315135105,
+        "mean": 0.021093968775000003,
+        "std_dev": 0.0063898605899732445,
+        "ci95": 0.004570713330008429,
+        "n": 10
+      },
+      "ns_per_agent": 19.29536975,
+      "bytes_per_agent": 16
+    },
+    {
+      "layout": "soa",
+      "order": "sorted_by_location",
+      "pass_s": {
+        "median": 0.011551297,
+        "min": 0.01115586475,
+        "max": 0.0200883645,
+        "mean": 0.013291703174999999,
+        "std_dev": 0.003058855088401975,
+        "ci95": 0.0021880210890769312,
+        "n": 10
+      },
+      "ns_per_agent": 11.551297,
+      "bytes_per_agent": 15
+    },
+    {
+      "layout": "aos",
+      "order": "sorted_by_location",
+      "pass_s": {
+        "median": 0.017356625,
+        "min": 0.01615071875,
+        "max": 0.02404315625,
+        "mean": 0.018051079174999998,
+        "std_dev": 0.002471069868988321,
+        "ci95": 0.001767574085620919,
+        "n": 10
+      },
+      "ns_per_agent": 17.356625,
+      "bytes_per_agent": 16
+    },
+    {
+      "layout": "soa",
+      "order": "shuffled",
+      "pass_s": {
+        "median": 0.027912166625,
+        "min": 0.02225097925,
+        "max": 0.04627396875,
+        "mean": 0.030589989574999997,
+        "std_dev": 0.008033911010783086,
+        "ci95": 0.0057467144442413425,
+        "n": 10
+      },
+      "ns_per_agent": 27.912166625,
+      "bytes_per_agent": 15
+    },
+    {
+      "layout": "aos",
+      "order": "shuffled",
+      "pass_s": {
+        "median": 0.032675828125,
+        "min": 0.02783358325,
+        "max": 0.045952927,
+        "mean": 0.0346866614,
+        "std_dev": 0.005947430461112322,
+        "ci95": 0.0042542398703596905,
+        "n": 10
+      },
+      "ns_per_agent": 32.675828125,
+      "bytes_per_agent": 16
+    }
+  ]
+}

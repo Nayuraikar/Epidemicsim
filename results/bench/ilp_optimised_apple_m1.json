@@ -9,20 +9,26 @@
   },
   "days": 20,
   "warmup": 1,
-  "reps": 5,
+  "reps": 10,
   "seed": 42,
+  "thermal_before": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "thermal_after": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
   "points": [
     {
       "agents": 100000,
       "threads": 1,
       "steps": 80,
       "wall_s": {
-        "median": 0.157621458,
-        "min": 0.157211542,
-        "max": 0.158775792
+        "median": 0.1569021665,
+        "min": 0.156490916,
+        "max": 0.157301,
+        "mean": 0.15691246650000001,
+        "std_dev": 0.00025356116598400195,
+        "ci95": 0.0001813741293752405,
+        "n": 10
       },
-      "agents_per_sec": 50754510.84838969,
-      "contacts_per_sec": 50754510.84838969,
+      "agents_per_sec": 50987186.336907595,
+      "contacts_per_sec": 50987186.336907595,
       "speedup": 1.0,
       "efficiency": 1.0
     },
@@ -31,12 +37,16 @@
       "threads": 1,
       "steps": 80,
       "wall_s": {
-        "median": 1.7069522080000001,
-        "min": 1.574197708,
-        "max": 2.508352
+        "median": 1.567321333,
+        "min": 1.563876958,
+        "max": 1.629256541,
+        "mean": 1.5743531624,
+        "std_dev": 0.01998418692957277,
+        "ci95": 0.01429483293136462,
+        "n": 10
       },
-      "agents_per_sec": 46867158.68497239,
-      "contacts_per_sec": 46867122.362924404,
+      "agents_per_sec": 51042500.548928596,
+      "contacts_per_sec": 51042460.99099067,
       "speedup": 1.0,
       "efficiency": 1.0
     }

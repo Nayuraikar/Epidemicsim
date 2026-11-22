@@ -341,7 +341,8 @@ struct BenchArgs {
     days: u32,
     #[arg(long, default_value_t = 1)]
     warmup: usize,
-    #[arg(long, default_value_t = 5)]
+    /// Timed repetitions per point (mean, median, std dev and 95% CI are reported)
+    #[arg(long, default_value_t = 10)]
     reps: usize,
     #[arg(long, default_value_t = 42)]
     seed: u64,
@@ -362,12 +363,101 @@ struct BenchArgs {
     /// Output directory for race / imbalance results
     #[arg(long, default_value = "results/tlp")]
     tlp_out: PathBuf,
+    /// Agents per thread for --suite weak
+    #[arg(long, default_value_t = 125_000)]
+    per_thread: usize,
+    /// Tasks (scenario runs) per rank for --suite weak-mpi
+    #[arg(long, default_value_t = 8)]
+    tasks_per_rank: usize,
+    /// Output directory for scaling / roofline / layout results
+    #[arg(long, default_value = "results")]
+    results_root: PathBuf,
 }
 
 fn bench_suite(a: &BenchArgs) -> Result<bool, Box<dyn std::error::Error>> {
     use epidemicsim_bench::tlp;
     match a.suite.as_str() {
         "scaling" => Ok(false),
+        "weak" => {
+            use epidemicsim_bench::scaling;
+            let bopts = a.flags.opts(1)?;
+            epidemicsim_backends::make_with(&a.backend, &bopts)?;
+            let backend = a.backend.clone();
+            let b2 = bopts.clone();
+            let factory = move |t: usize| {
+                let mut o = b2.clone();
+                o.threads = t;
+                epidemicsim_backends::make_with(&backend, &o)
+            };
+            let o = scaling::WeakOpts {
+                per_thread: a.per_thread,
+                threads: if a.threads == [1] {
+                    vec![1, 2, 4, 8]
+                } else {
+                    a.threads.clone()
+                },
+                days: a.days,
+                warmup: a.warmup,
+                reps: a.reps.max(1),
+                seed: a.seed,
+            };
+            let label = epidemicsim_backends::label(&a.backend, &bopts);
+            let r = scaling::weak(&label, &factory, &o)?;
+            let path = a.results_root.join("scaling").join(format!(
+                "weak_{}_{}.json",
+                label,
+                epidemicsim_bench::hardware_tag(&r.machine)
+            ));
+            tlp::write_json(&path, &r)?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        #[cfg(feature = "mpi")]
+        "weak-mpi" => {
+            let procs = if a.threads == [1] {
+                vec![1, 2, 4, 8]
+            } else {
+                a.threads.clone()
+            };
+            let o = epidemicsim_mpi::scaling::Opts {
+                exe: std::env::current_exe()?,
+                procs,
+                reps: a.reps.max(1),
+                agents: 50_000,
+                days: 90,
+                runs: 1,
+                scenarios_dir: "scenarios".into(),
+                backend: "sequential".into(),
+                work_dir: std::env::temp_dir().join("epidemicsim_mpi_weak"),
+            };
+            let n_scen = epidemicsim_scenarios::load_all(std::path::Path::new("scenarios"))?.len();
+            let machine = epidemicsim_bench::machine_info();
+            let w = epidemicsim_mpi::scaling::run_weak(&o, &machine.cpu, n_scen, a.tasks_per_rank)?;
+            let path = a.results_root.join(format!(
+                "scaling/weak_mpi_{}.json",
+                epidemicsim_bench::hardware_tag(&machine)
+            ));
+            epidemicsim_mpi::scaling::write(&path, &w)?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        "roofline" => {
+            let path =
+                epidemicsim_bench::roofline::run(&a.results_root.join("roofline"), a.reps.max(1))?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
+        "layout" => {
+            let n = if a.agents == [10_000, 100_000, 1_000_000] {
+                1_000_000
+            } else {
+                *a.agents.last().unwrap_or(&1_000_000)
+            };
+            let path =
+                epidemicsim_bench::layout::run(&a.results_root.join("layout"), n, a.reps.max(1))?;
+            println!("wrote {}", path.display());
+            Ok(true)
+        }
         "race" => {
             let o = tlp::RaceOpts {
                 threads: *a.threads.last().unwrap_or(&8),
@@ -439,6 +529,10 @@ fn bench_suite(a: &BenchArgs) -> Result<bool, Box<dyn std::error::Error>> {
                                 median: p.wall_s.median,
                                 min: p.wall_s.min,
                                 max: p.wall_s.max,
+                                mean: p.wall_s.median,
+                                std_dev: 0.0,
+                                ci95: 0.0,
+                                n: o.reps,
                             },
                             agents_per_sec: work / p.wall_s.median,
                             contacts_per_sec: work / p.wall_s.median,
@@ -467,6 +561,8 @@ fn bench_suite(a: &BenchArgs) -> Result<bool, Box<dyn std::error::Error>> {
                     warmup: 1,
                     reps: o.reps,
                     seed: 42,
+                    thermal_before: None,
+                    thermal_after: epidemicsim_bench::thermal_note(),
                     points,
                     amdahl,
                 };

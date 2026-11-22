@@ -60,8 +60,24 @@ export const kgBench = (name: string) => `kaggle/bench/${name}_${X}.json`
 
 // ---- types of the result files ----
 export interface Machine { os: string; arch: string; cpu: string; logical_cores: number; memory_gb: number }
-export interface BPoint { agents: number; threads: number; steps: number; wall_s: { median: number; min: number; max: number }; agents_per_sec: number; contacts_per_sec: number; speedup: number; efficiency: number }
-export interface Bench { backend: string; machine: Machine; days: number; warmup: number; reps: number; seed: number; points: BPoint[]; amdahl: { agents: number; serial_fraction: number; max_speedup: number }[] }
+export interface BPoint { agents: number; threads: number; steps: number; wall_s: { median: number; min: number; max: number; mean?: number; std_dev?: number; ci95?: number; n?: number }; agents_per_sec: number; contacts_per_sec: number; speedup: number; efficiency: number }
+export interface Bench { backend: string; machine: Machine; days: number; warmup: number; reps: number; seed: number; thermal_before?: string | null; thermal_after?: string | null; points: BPoint[]; amdahl: { agents: number; serial_fraction: number; max_speedup: number }[] }
 export const pt = (b: Bench | null, agents: number, threads = 1): BPoint | undefined => b?.points.find((p) => p.agents === agents && p.threads === threads)
 export const settingsOf = (b: Bench | null, hw: string, extra = ''): string =>
   b ? `${hw} · ${b.days} days (${b.points[0]?.steps ?? '?'} steps) · ${b.reps} reps (+${b.warmup} warm-up), median · seed ${b.seed}${extra ? ' · ' + extra : ''}` : hw
+
+// ---- statistics: error bars and significance ----
+export type W = { median: number; mean?: number; ci95?: number }
+/** Mean time (falls back to the median for older files without statistics). */
+export const tm = (w?: W): number | undefined => (w ? w.mean ?? w.median : undefined)
+export const hasCi = (w?: W): boolean => w?.ci95 != null
+/** 'sig' / 'ns' (95% CIs of the mean times overlap) / 'unknown' (no CI recorded for one of them). */
+export function significance(a?: W, b?: W): 'sig' | 'ns' | 'unknown' {
+  if (!a || !b || !hasCi(a) || !hasCi(b)) return 'unknown'
+  const [ma, mb] = [tm(a)!, tm(b)!]
+  return Math.abs(ma - mb) > (a.ci95 ?? 0) + (b.ci95 ?? 0) ? 'sig' : 'ns'
+}
+export const sigText = (s: 'sig' | 'ns' | 'unknown'): string =>
+  s === 'sig' ? 'significant: 95% CIs do not overlap' : s === 'ns' ? 'not significant: 95% CIs overlap the runner-up' : 'significance unknown: no CI recorded (older run)'
+/** "0.158 s +/- 0.004" style label. */
+export const withCi = (w?: W, f: (v: number) => string = (v) => v.toFixed(3)): string => (w ? `${f(tm(w)!)}${hasCi(w) ? ` ± ${f(w.ci95!)}` : ''}` : 'n/a')

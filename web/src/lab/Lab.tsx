@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { IlpTab, MpiTab, PerformanceTab, SimdTab, TlpTab } from './CpuTabs'
-import { GpuTab, OpenAccTab, PtxTab, WarpTab } from './GpuTabs'
+import { GpuTab, PtxTab, WarpTab } from './GpuTabs'
+import { MemoryTab } from './MemTabs'
 import { SummaryTab } from './Summary'
 
 const TABS: { id: string; label: string; el: () => React.ReactElement }[] = [
   { id: 'perf', label: 'Performance', el: PerformanceTab }, { id: 'ilp', label: 'ILP', el: IlpTab }, { id: 'tlp', label: 'TLP', el: TlpTab },
   { id: 'simd', label: 'SIMD', el: SimdTab }, { id: 'gpu', label: 'GPU', el: GpuTab }, { id: 'warps', label: 'Warps', el: WarpTab },
-  { id: 'ptx', label: 'PTX', el: PtxTab }, { id: 'mpi', label: 'MPI', el: MpiTab }, { id: 'acc', label: 'OpenACC', el: OpenAccTab }, { id: 'sum', label: 'Summary', el: SummaryTab },
+  { id: 'ptx', label: 'PTX', el: PtxTab }, { id: 'mem', label: 'Memory', el: MemoryTab }, { id: 'mpi', label: 'MPI', el: MpiTab }, { id: 'sum', label: 'Summary', el: SummaryTab },
 ]
 export default function Lab() {
   const [tab, setTab] = useState(() => { try { return localStorage.getItem('lab-tab') || 'perf' } catch { return 'perf' } })

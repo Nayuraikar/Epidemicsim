@@ -183,22 +183,3 @@ export function PtxTab() {
     </>
   )
 }
-
-// ------------------------------------------------------------------ OpenACC
-export function OpenAccTab() {
-  const notes = useText('kaggle/openacc_notes.md'), bl = useText('kaggle/logs/openacc_build.log'), rl = useText('kaggle/logs/openacc_run.log'), steps = useText('kaggle/steps.tsv')
-  const code = (n: string) => (steps.s === 'ok' ? steps.d.split('\n').map((l) => l.split('\t')).find((c) => c[0] === n)?.[1] : undefined)
-  const bc = code('openacc_build'), rc = code('openacc_run')
-  return (
-    <>
-      <Explain>OpenACC annotates C loops with pragmas so the compiler generates GPU code. It needs a compiler built with NVIDIA offload support (nvc or gcc with nvptx).</Explain>
-      <Explain>This card shows the documented attempt on Kaggle: the build and run exit codes and the compiler's message. No OpenACC timings exist.</Explain>
-      <Finding>OpenACC was attempted but not measured: build exit code {bc ?? 'n/a'}, run exit code {rc ?? 'n/a'} (127 = binary not found). {bl.s === 'ok' ? `The compiler said: “${bl.d.split('\n')[0].slice(0, 140)}”.` : ''}</Finding>
-      <Panel title="OpenACC attempt (Kaggle)" settings={`${T4} host · gcc, source crates/kernels-c/openacc/acc_bench.c`}>
-        {notes.s === 'ok' ? <Pre text={notes.d} max={200} /> : <NotRun what="openacc_notes.md" f={notes} />}
-        {bl.s === 'ok' && <><b className="note">build log</b><Pre text={bl.d} max={200} /></>}
-        {rl.s === 'ok' && <><b className="note">run log</b><Pre text={rl.d} max={120} /></>}
-      </Panel>
-    </>
-  )
-}

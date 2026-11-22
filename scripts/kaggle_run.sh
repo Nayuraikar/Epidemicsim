@@ -133,38 +133,7 @@ fi
 step ptx env OUT="$OUT/ptx" bash scripts/ptx.sh
 cp results/ptx/analysis.md "$OUT/ptx/analysis.md" 2>/dev/null
 
-# ---- 8. OpenACC (bonus): try only if a compiler is present or TRY_NVHPC=1 ----
-{
-  echo "# OpenACC attempt"; echo; echo "Source: crates/kernels-c/openacc/acc_bench.c"; echo
-} > "$OUT/openacc_notes.md"
-ACC=""
-if command -v nvc >/dev/null 2>&1; then
-  ACC=nvc; ACCCMD=(nvc -acc -gpu=cc75 -O3 -Minfo=accel crates/kernels-c/openacc/acc_bench.c -o "$OUT/acc_bench")
-elif [ "${TRY_NVHPC:-0}" = 1 ]; then
-  echo "TRY_NVHPC=1: attempting the NVHPC apt repository install (large download)." >> "$OUT/openacc_notes.md"
-  sh_step nvhpc_install 'curl -fsSL https://developer.download.nvidia.com/hpc-sdk/ubuntu/DEB-GPG-KEY-NVIDIA-HPC-SDK | gpg --dearmor -o /usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg &&
-    echo "deb [signed-by=/usr/share/keyrings/nvidia-hpcsdk-archive-keyring.gpg] https://developer.download.nvidia.com/hpc-sdk/ubuntu/amd64 /" > /etc/apt/sources.list.d/nvhpc.list &&
-    apt-get update -qq && apt-get install -y -qq nvhpc-24-11'
-  NVC=$(ls /opt/nvidia/hpc_sdk/Linux_x86_64/*/compilers/bin/nvc 2>/dev/null | head -1)
-  [ -n "$NVC" ] && { ACC=nvc; ACCCMD=("$NVC" -acc -gpu=cc75 -O3 -Minfo=accel crates/kernels-c/openacc/acc_bench.c -o "$OUT/acc_bench"); }
-fi
-if [ -z "$ACC" ] && gcc -fopenacc -foffload=nvptx-none -x c /dev/null -c -o /dev/null 2>/dev/null; then
-  ACC=gcc; ACCCMD=(gcc -O3 -fopenacc -foffload=nvptx-none crates/kernels-c/openacc/acc_bench.c -o "$OUT/acc_bench")
-fi
-if [ -n "$ACC" ]; then
-  step openacc_build "${ACCCMD[@]}"
-  step openacc_run "$OUT/acc_bench" 1000000 80
-  { echo "Compiler: $ACC. Build/run logs: logs/openacc_build.log, logs/openacc_run.log (exit codes in steps.tsv)."; } >> "$OUT/openacc_notes.md"
-else
-  {
-    echo "SKIPPED: no OpenACC compiler available. \`nvc\` (NVHPC) is not installed on the Kaggle image and"
-    echo "the GCC nvptx offload compiler (apt \`gcc-offload-nvptx\`) was not usable. NVHPC is a multi-GB"
-    echo "download; re-run with TRY_NVHPC=1 to attempt it. The source was only checked on the host"
-    echo "(pragmas ignored): it compiles and matches its serial reference. No GPU result exists."
-  } >> "$OUT/openacc_notes.md"
-fi
-
-# ---- 9. zip ----
+# ---- 8. zip ----
 rm -f results/kaggle.zip
 if command -v zip >/dev/null 2>&1; then
   zip -qr results/kaggle.zip "$OUT"

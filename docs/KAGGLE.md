@@ -27,14 +27,11 @@ Zip-only dataset (nothing extracted):
 !mkdir -p /kaggle/working/src && unzip -q /kaggle/input/*/epidemicsim.zip -d /kaggle/working/src && bash /kaggle/working/src/scripts/kaggle_run.sh
 ```
 Git variant: `!REPO_URL=... bash <(curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/main/scripts/kaggle_run.sh)`.
-Then the full run (drop `QUICK=1`; 1M agents, 5 reps): the same command. Optional: `TRY_NVHPC=1`
-to attempt the NVHPC install for the OpenACC bonus (multi-GB; may exceed disk/time).
-
+Then the full run (drop `QUICK=1`; 1M agents, 5 reps): the same command. 
 The script (see its header): installs rustup, builds `--features cuda` (no MPI), runs the golden
 tests (`EPI_REQUIRE_CUDA=1`: a missing GPU or any non-matching variant fails loudly), a 200k-agent
 synthetic run on `sequential` vs `cuda`, then `bench --suite cuda | cuda-variants | warp`, CPU
-baselines on the same machine, AVX2 (`simd_avx2_<cpu>.json`), `ncu` if installed, `scripts/ptx.sh`,
-and the OpenACC attempt. Each step logs to `results/kaggle/logs/<step>.log`; the exit code of every
+baselines on the same machine, AVX2 (`simd_avx2_<cpu>.json`), `ncu` if installed, and `scripts/ptx.sh`. Each step logs to `results/kaggle/logs/<step>.log`; the exit code of every
 step is in `results/kaggle/steps.tsv`; one failure never stops the rest.
 
 ## 4. Collect results
@@ -44,7 +41,7 @@ step is in `results/kaggle/steps.tsv`; one failure never stops the rest.
   split, same shape as `results/gpu/metal_breakdown.json`), `kaggle/gpu/cuda_variants.json`
   (atomics vs segmented, branch/pred/smem/pairs, AoS vs SoA), `kaggle/gpu/cuda_warp.json`
   (divergence variants x prevalence), `kaggle/bench/simd_avx2_*.json`, `kaggle/ptx/summary.json`,
-  `kaggle/ncu_*.csv`, `kaggle/openacc_notes.md`.
+  `kaggle/ncu_*.csv`.
 - Every row has `matches_sequential`; a `false` is a correctness bug in that variant, not a result.
 - Fill `results/ptx/analysis.md` (template) with the timings.
 

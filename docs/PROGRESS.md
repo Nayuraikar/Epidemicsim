@@ -35,12 +35,18 @@
   - Infection chains recorded in the server (flag, no engine change): sources = co-located infectious agents, not a unique infector; inspector works in live runs only.
   - Tested headless Chrome (CDP): replay, live, pause, inspector click, 2-run compare, JSON/PNG export, not-built city. Untested: real GPU/Metal backend live, other browsers, touch, phone layout.
 - [x] Phase 8: PAGP Lab, landing, report, README
+  - OpenACC removed (Lab tab, kernels-c/openacc, kaggle step, report section); noted under Limitations. Lab now has 9 tabs (8 concepts + Summary).
   - server `/api/lab/index` + `/api/lab/file/<path>` (whitelisted results roots); web `#/` landing, `#/studio`, `#/lab` (10 tabs, all from results files), `#/demo` (auto-replay).
-  - `scripts/gen_report.py` -> `docs/REPORT.md` (9 PAGP sections + Limitations); README with mermaid, setup, demo script; golden_table skips NEON off aarch64.
-  - Tested headless Chrome: all 10 tabs render without console errors, demo replay starts. Untested: Safari/Firefox, phone layout, PTX diff on the largest pairs (-G vs -O3 aligns only if <30M cells).
+  - `scripts/gen_report.py` -> `docs/REPORT.md` (8 PAGP sections + Limitations); README with mermaid, setup, demo script; golden_table skips NEON off aarch64.
+  - Tested headless Chrome: all tabs rendered (10 before OpenACC removal) without console errors, demo replay starts. Untested: Safari/Firefox, phone layout, PTX diff on the largest pairs (-G vs -O3 aligns only if <30M cells).
   - Notes: kaggle/ptx/analysis.md and ptx/analysis.md are unfilled templates (not used); Mac golden status comes from this file (logs not saved).
+- [x] Phase 9: statistical rigour + extra analyses (golden/all tests still pass; no simulation change)
+  - `bench --reps` default 10; mean/median/std/95% CI (Student t) + `pmset` thermal note in every report; `scripts/bench_stats.sh` re-ran seq/ILP/rayon x3/OpenMP x3/NEON/Metal; Lab shows error bars and "not significant" when CIs overlap.
+  - `bench --suite weak|weak-mpi` (125k agents/thread, 8 runs/rank) -> results/scaling/; Gustafson fit next to Amdahl. `--suite roofline` -> results/roofline/mac.json (GPU placeholder); `--suite layout` -> results/layout/. New Lab "Memory" tab; REPORT.md section 9 + Threats to validity.
+  - Caveats: Kaggle files still 5 reps/no CI; 1-thread kernel results vary run to run (P/E core placement); roofs are simple-loop measurements.
 
 ## Findings
+
 
 - Phase 4: load imbalance is small on both cities (max/mean <= 1.15) and Mumbai/Chennai gave no measurable dense-vs-sparse difference; speedup is limited by cores (4P+4E) and memory, not scheduling.
 - Phase 5 Metal vs best CPU (rayon guided 8t, same session, 80 steps): 100k 0.079 s vs 0.071 s (0.90x, Metal slower); 1M 0.233 vs 0.636 s (2.73x); 10M 1.666 vs 6.743 s (4.05x). results/gpu/metal_vs_cpu.json.
@@ -48,3 +54,7 @@
 - Phase 5 shared vs private and tg 32/64/128/256 differ by <=13% at 1M (best: shared tg64 0.218 s; others 0.227-0.247 s), close to run-to-run noise; unified memory makes private no faster.
 - Phase 5 MPI (50k agents, 8 scenarios x 6 runs, sequential backend, 1 core per rank): static 1/2/4/8 procs speedup 1.00/1.90/2.88/4.26 (30.3 s -> 7.1 s); dynamic 1.00/0.98/1.84/3.42 (pure master => procs-1 workers). Comm <0.1% of run time for static; dynamic comm figures include the master waiting on requests.
 - Phase 5 caveats: 10M Metal/CPU results are not checked against sequential (too slow); 100k and 1M are (identical per-step stats).
+- Phase 9 TLP (10 reps, 1M): OpenMP guided 3.42x vs OpenMP dynamic 3.40x is not significant; rayon guided 2.93x beats static/dynamic significantly; rayon guided is fastest in absolute 8-thread time (0.537 s vs 0.581 s OpenMP) because OpenMP's 1-thread baseline is slower. Older 5-rep rayon guided 2.63x / OpenMP dynamic 3.32x differ by up to 0.3x.
+- Phase 9 NEON (10 reps, 1M): whole run 1.02x (scalar 1.579 +/- 0.001 s vs NEON 1.541 +/- 0.023 s; barely significant), 100k not significant (NEON 0.159 +/- 0.008 vs 0.157 s). Timer kernel is <=6.7% of a step, so Amdahl caps the gain at 1.05x; kernel ratio itself is unstable (6.5x then 2.9x across two runs).
+- Phase 9 weak scaling (efficiency 1/2/4/8): rayon 1.00/0.84/0.60/0.36, OpenMP 1.00/0.93/0.66/0.39; Gustafson alpha 0.69 (rayon), 0.65 (OpenMP) vs Amdahl s 0.24/0.16. MPI static (8 runs/rank) 1.00/0.74/0.53/0.33, alpha 0.74. Memory-bound growth and E-cores, not a serial fraction.
+- Phase 9 layout (1M, 1 thread): SoA 1.5-1.6x faster than AoS when ordered (significant), not significant when shuffled; shuffled is 2.4x (SoA) / 1.9x (AoS) slower than sorted by location. Roofline: triad 49 GB/s (1 thread, 25 in an earlier run), NEON FP32 39 GFLOP/s (1 thread).

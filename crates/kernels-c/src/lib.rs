@@ -1,4 +1,4 @@
-//! FFI to the C kernels (OpenMP today; CUDA/OpenACC folders are placeholders).
+//! FFI to the C kernels (OpenMP today; the CUDA folder is a placeholder).
 //! `HAS_OPENMP` is false when libomp was not found at build time; the wrappers then panic.
 
 /// True when the OpenMP kernels were compiled and linked.

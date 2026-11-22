@@ -9,20 +9,26 @@
   },
   "days": 20,
   "warmup": 1,
-  "reps": 5,
+  "reps": 10,
   "seed": 42,
+  "thermal_before": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
+  "thermal_after": "no thermal/performance warning recorded (pmset -g therm); no die temperature available without sudo",
   "points": [
     {
       "agents": 1000000,
       "threads": 1,
       "steps": 80,
       "wall_s": {
-        "median": 1.618166167,
-        "min": 1.586679042,
-        "max": 1.913538458
+        "median": 1.5917227705,
+        "min": 1.5742993749999998,
+        "max": 1.724427542,
+        "mean": 1.6048292791999998,
+        "std_dev": 0.04547047842463113,
+        "ci95": 0.032525360910603596,
+        "n": 10
       },
-      "agents_per_sec": 49438680.42199649,
-      "contacts_per_sec": 49438642.107019156,
+      "agents_per_sec": 50260008.51572286,
+      "contacts_per_sec": 50259969.56421627,
       "speedup": 1.0,
       "efficiency": 1.0
     },
@@ -31,49 +37,61 @@
       "threads": 2,
       "steps": 80,
       "wall_s": {
-        "median": 0.940921417,
-        "min": 0.935811042,
-        "max": 1.413362834
+        "median": 0.940895958,
+        "min": 0.930956,
+        "max": 0.978099167,
+        "mean": 0.9433945416,
+        "std_dev": 0.014544190270095193,
+        "ci95": 0.010403564116252708,
+        "n": 10
       },
-      "agents_per_sec": 85023040.77110831,
-      "contacts_per_sec": 85022974.87825172,
-      "speedup": 1.7197675998908633,
-      "efficiency": 0.8598837999454316
+      "agents_per_sec": 85025341.34597695,
+      "contacts_per_sec": 85025275.45133741,
+      "speedup": 1.691709648624083,
+      "efficiency": 0.8458548243120415
     },
     {
       "agents": 1000000,
       "threads": 4,
       "steps": 80,
       "wall_s": {
-        "median": 0.808308583,
-        "min": 0.794384375,
-        "max": 0.850036917
+        "median": 0.7264118955000001,
+        "min": 0.676652958,
+        "max": 0.844756458,
+        "mean": 0.7430811499,
+        "std_dev": 0.057680516327292174,
+        "ci95": 0.04125928901682457,
+        "n": 10
       },
-      "agents_per_sec": 98972102.58869663,
-      "contacts_per_sec": 98972025.88531712,
-      "speedup": 2.001916348573525,
-      "efficiency": 0.5004790871433813
+      "agents_per_sec": 110130355.09961578,
+      "contacts_per_sec": 110130269.74859057,
+      "speedup": 2.1912124241913657,
+      "efficiency": 0.5478031060478414
     },
     {
       "agents": 1000000,
       "threads": 8,
       "steps": 80,
       "wall_s": {
-        "median": 0.721712791,
-        "min": 0.61982075,
-        "max": 0.923223625
+        "median": 0.5718208954999999,
+        "min": 0.564315208,
+        "max": 0.650447834,
+        "mean": 0.5826866709,
+        "std_dev": 0.0268047924846,
+        "ci95": 0.019173661239138863,
+        "n": 10
       },
-      "agents_per_sec": 110847418.80374959,
-      "contacts_per_sec": 110847332.89700003,
-      "speedup": 2.2421192850938403,
-      "efficiency": 0.28026491063673004
+      "agents_per_sec": 139903946.54964128,
+      "contacts_per_sec": 139903838.1240827,
+      "speedup": 2.7836037175734867,
+      "efficiency": 0.34795046469668583
     }
   ],
   "amdahl": [
     {
       "agents": 1000000,
-      "serial_fraction": 0.3223817895721547,
-      "max_speedup": 3.101912180980007
+      "serial_fraction": 0.256824381494613,
+      "max_speedup": 3.8937113142467568
     }
   ]
 }

@@ -10,7 +10,7 @@ export default function Landing() {
       </section>
       <div className="landing-cards">
         <a className="card landing-card" href="#/studio"><h2>Studio</h2><p>Pick a city, build an intervention scenario (masks, vaccination, isolation, closures, lockdown), run it live or replay it, and compare runs on maps and SEIR curves.</p><b>Open the Studio →</b></a>
-        <a className="card landing-card" href="#/lab"><h2>PAGP Lab</h2><p>Measured results for ten parallel-computing topics: speedup and Amdahl, ILP, threads and schedules, SIMD, GPUs, warps, PTX, MPI, OpenACC, and a backend x hardware matrix.</p><b>Open the Lab →</b></a>
+        <a className="card landing-card" href="#/lab"><h2>PAGP Lab</h2><p>Measured results for eight parallel-computing topics: speedup and Amdahl, ILP, threads and schedules, SIMD, GPUs, warps, PTX, and MPI, plus a backend x hardware matrix.</p><b>Open the Lab →</b></a>
       </div>
     </div>
   )

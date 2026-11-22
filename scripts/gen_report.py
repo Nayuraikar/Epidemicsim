@@ -69,7 +69,7 @@ def settings(b, hw):
     if not b:
         return f"{hw}: not run"
     p = b["points"][0]
-    return f"{hw}; {b['days']} days ({p['steps']} steps), {b['reps']} reps + {b['warmup']} warm-up, median, seed {b['seed']}"
+    return f"{hw}; {b['days']} days ({p['steps']} steps), {b['reps']} reps + {b['warmup']} warm-up, median shown (mean, std dev and 95% CI of the mean are in the JSON), seed {b['seed']}"
 
 
 def table(head, rows):
@@ -219,21 +219,62 @@ sec("8. MPI", "Monte Carlo workload (scenario runs) split over MPI ranks, static
     (table(["mode", "procs", "median s", "speedup", "efficiency", "comm share", "idle s (total)", "bytes sent"], rows) if rows else NOT_RUN) + "\n\n" + fig("MPI"),
     "Communication is a negligible share of static runs; dynamic mode loses a rank to the master and counts the master's waiting as communication.")
 
-# 9 OpenACC
-notes, bl, rl, steps = txt("kaggle/openacc_notes.md"), txt("kaggle/logs/openacc_build.log"), txt("kaggle/logs/openacc_run.log"), txt("kaggle/steps.tsv")
-codes = dict(l.split("\t")[:2] for l in (steps or "").splitlines() if "\t" in l)
-sec("9. OpenACC", "An OpenACC version of the benchmark (`crates/kernels-c/openacc/acc_bench.c`) was built with gcc on the Kaggle machine.",
-    f"Exit codes: build {codes.get('openacc_build', 'n/a')}, run {codes.get('openacc_run', 'n/a')}.\n\n```\n{(bl or 'no build log').strip()[:600]}\n```\n\n" + (f"Notes:\n\n{notes.strip()}\n" if notes else ""),
-    "OpenACC was attempted and not measured: gcc there has no nvptx offload support, so no binary was produced and no timings exist.")
+# 9 added measurements: statistics, weak scaling, roofline, layout
+def ci(p):
+    w = (p or {}).get("wall_s") or {}
+    return f"{f(w.get('mean'))} +/- {f(w.get('ci95'))}" if w.get("ci95") is not None else "n/a"
+
+
+rows = []
+for k, l in [("sequential", "sequential"), ("ilp_naive", "ILP naive"), ("ilp_optimised", "ILP optimised"), ("simd_scalar", "SIMD scalar"), ("simd_neon", "SIMD NEON"),
+             ("rayon_guided_c64", "rayon guided, 8 threads"), ("openmp_guided_c64", "OpenMP guided, 8 threads"), ("metal", "Metal")]:
+    b = mac(k)
+    p = pt(b, 1_000_000, 8 if "8 threads" in l else 1)
+    if p:
+        rows.append([l, b["reps"], f(t(p)), ci(p), f(p["wall_s"].get("std_dev"))])
+body = "Mean +/- 95% CI (Student t) of the wall time at 1M agents, seconds, 20 days (80 steps), 1 warm-up. A 'winner' whose CI overlaps the runner-up is reported as not significant.\n\n" + (table(["benchmark", "reps", "median s", "mean +/- 95% CI s", "std dev s"], rows) if rows else NOT_RUN)
+ww = [(n, js(f"scaling/weak_{n}_apple_m1.json"), mac(n)) for n in ("rayon_guided_c64", "openmp_guided_c64")]
+r2 = []
+for n, w, sb in ww:
+    if w:
+        am = next((a for a in (sb or {}).get("amdahl", []) if a["agents"] == 1_000_000), {})
+        r2.append([n, f"{w['per_thread_agents']:,}", " / ".join(f(q["weak_efficiency"], 2) for q in w["points"]), f((w.get("gustafson") or {}).get("serial_fraction")), f(am.get("serial_fraction"))])
+wm = js("scaling/weak_mpi_apple_m1.json")
+if wm:
+    am = ((mac("mpi") or {}).get("amdahl") or [{}])[0]
+    r2.append(["mpi static (runs/rank " + str(wm["tasks_per_rank"]) + ")", "-", " / ".join(f(q["weak_efficiency"], 2) for q in wm["points"]), f(wm.get("gustafson_serial_fraction")), f(am.get("serial_fraction"))])
+body += "\n\nWeak scaling (work per thread/rank fixed; efficiency at 1/2/4/8 threads; Gustafson alpha vs the Amdahl s of the strong-scaling run):\n\n" + (table(["variant", "agents/thread", "efficiency 1/2/4/8", "Gustafson alpha", "Amdahl s (strong)"], r2) if r2 else NOT_RUN)
+rf = js("roofline/mac.json")
+if rf:
+    r3 = [[r["name"], r["threads"], f(r["peak"]) + " " + r["unit"]] for r in rf["roofs"]]
+    r4 = [[f"{k['kernel']} {k['variant']}", f"{k['elements'] >> 20}M", f(k["arithmetic_intensity"]), f(k["ns_per_element"]["median"]), f(k["achieved_gb_s"]), f(k["achieved_gops"])] for k in rf["kernels"]]
+    body += "\n\nRoofline (CPU; kernel bytes and ops per element are static source tallies, roofs are measured):\n\n" + table(["roof", "threads", "peak"], r3) + "\n\n" + table(["kernel", "elements", "ops/byte", "ns/element", "GB/s", "Gop/s"], r4) + "\n\nGPU roofline: not measured."
+else:
+    body += "\n\nRoofline: " + NOT_RUN
+ly = js("layout/layout_apple_m1.json")
+if ly:
+    r5 = [[r["layout"], r["order"], f(r["pass_s"]["mean"] * 1e3) + " +/- " + f(r["pass_s"]["ci95"] * 1e3), f(r["ns_per_agent"])] for r in ly["rows"]]
+    body += f"\n\nMemory layout (update kernel, {ly['agents']:,} agents, 1 thread, {ly['reps']} reps; checksums identical: {ly['checksums_match']}):\n\n" + table(["layout", "order", "ms/pass mean +/- 95% CI", "ns/agent"], r5)
+else:
+    body += "\n\nLayout: " + NOT_RUN
+sec("9. Statistics, weak scaling, roofline and memory layout", "Repeated measurements (10 reps) with confidence intervals; weak scaling; a measured CPU roofline; SoA vs AoS and agent ordering. Details and charts: Lab tabs Performance, MPI and Memory.",
+    body, "See the Lab for the data-derived findings text; where a CI overlap makes a ranking insignificant the Lab says so.")
 
 # summary + limitations
 mach = js("kaggle/machine.json") or {}
-lim = f"""## Limitations
+lim = f"""## Threats to validity
+
+- **Thermal throttling.** The M1 is passively cooled and was not monitored with a die-temperature sensor (that needs sudo). Each Mac result records `pmset -g therm` before and after the run; none reported a thermal or performance warning, which rules out only a flagged throttle, not mild frequency drops. Long multi-thread runs on the 4P+4E chip may run slower than short ones; the sequential 1M run shows a wide interval (std dev 0.50 s on a 2.3 s median), a sign of such variation or background load.
+- **Short runs.** Each timed run is 20 simulated days (80 steps), 0.02-3 s for the CPU backends; 10 repetitions after one warm-up. Confidence intervals describe run-to-run noise on one machine and session, not variation between days or boots; small differences (a few percent) between schedules or variants are inside that noise unless the CIs are disjoint.
+- **Single machines.** Mac results are one Apple M1 (8 GB, 4P+4E cores); Kaggle results are one shared Xeon + T4 session, with 5 reps and no confidence intervals. Nothing here generalises to other CPUs, core counts or memory systems, and the Mac and Kaggle numbers are not comparable.
+- **Core placement.** macOS gives no thread pinning, so a 'single-thread' run may land on a performance or an efficiency core. The 1M-element NEON timer kernel ranged 0.24-0.64 ns/element across 10 reps, and the same kernel measured 6.5x (scalar/NEON, median) in one roofline run and 2.9x in the next, and the 1-thread triad bandwidth was 25 GB/s in one run and 49 GB/s in the next. Single-thread kernel ratios and the roofs are therefore only indicative.\n- **Other caveats.** The weak-scaling and MPI runs use synthetic worlds and a CPU with unequal cores, so efficiency below 1 mixes algorithmic and hardware effects. Roofline ops/bytes per element are static tallies, not hardware-counter measurements; the roofs come from simple loops and may be below the true peak. Each MPI point has 5 reps and large intervals.
+
+## Limitations
 
 - **Epidemic parameters are uncalibrated.** Transmission, durations, severity and scenario effects are illustrative defaults, not fitted to any real outbreak; absolute epidemic numbers must not be read as forecasts.
 - **Kaggle run settings.** Kaggle numbers come from a shared notebook: {mach.get('gpu', 'GPU n/a').splitlines()[0] if mach.get('gpu') else 'GPU n/a'} (x2 listed), {mach.get('cpu', 'CPU n/a')} with {mach.get('cpu_cores', '?')} cores, {mach.get('os', '?')}, run {mach.get('date_utc', '?')}. Benchmarks use 20 days (80 steps), 5 reps + 1 warm-up, seed 42, 100k and 1M agents only; the Xeon thread sweep is 1 and 4 threads. Other tenants may add noise.
 - **ncu unavailable.** Nsight Compute could not read GPU counters ({err or 'no ncu output'}), so there is no measured branch efficiency.
-- **OpenACC unavailable.** Build failed (gcc without nvptx offload), so there are no OpenACC results.
+- OpenACC was attempted on Kaggle but no OpenACC-capable compiler (NVHPC) was available; no results.
 - **AVX2 only on the Kaggle CPU.** NEON was measured on the M1 and AVX2 on the Xeon; the two are different machines and not comparable.
 - **Mac vs Kaggle** are different hardware; cross-machine times are not like-for-like. Metal 10M results are not checked against sequential.
 - **Mac test logs were not saved**; Mac golden-test status is taken from docs/PROGRESS.md. The Kaggle golden-table run panicked on the NEON row after 8 PASS rows (since fixed to skip NEON on non-aarch64, not re-run there).
