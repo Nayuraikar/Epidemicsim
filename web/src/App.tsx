@@ -242,7 +242,7 @@ export default function App({ demo = false }: { demo?: boolean }) {
 
       <aside className="sidebar">
         <ScenarioBuilder b={b} ref0={presetB} base={baseB} set={setB} presets={presets.map((p) => p.name)} preset={preset} modified={modified} onPreset={onPreset}
-          disabled={!anyBuilt} canReplay={canReplay} replayHint={replayHint} liveAgents={liveAgents} maxAgents={cities.max_live_agents} setLiveAgents={setLiveAgents}
+          disabled={!anyBuilt} liveHint={anyBuilt && info && !info.has_agents ? info.build_command : ''} canReplay={canReplay} replayHint={replayHint} liveAgents={liveAgents} maxAgents={cities.max_live_agents} setLiveAgents={setLiveAgents}
           backend={backend} backends={cities.backends} setBackend={setBackend} chains={chains} setChains={setChains}
           onLive={startLive} onReplay={startReplay} onExport={() => exportScenarioJson(currentSpec())} />
       </aside>
@@ -251,7 +251,8 @@ export default function App({ demo = false }: { demo?: boolean }) {
         {!anyBuilt && info && (
           <div className="card empty fade-in">
             <h2>{info.name[0].toUpperCase() + info.name.slice(1)} is not built yet</h2>
-            <p>No agent data exists for this city. Build it with <code>epidemicsim pipeline {info.name}</code>, then reload.</p>
+            <p>No data exists for this city yet. Build it with this command, then reload:</p>
+            <pre className="lab-pre">{info.build_command}</pre>
           </div>
         )}
         {anyBuilt && (

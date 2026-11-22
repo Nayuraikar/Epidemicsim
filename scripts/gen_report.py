@@ -332,7 +332,10 @@ lim = f"""## Threats to validity
 - **Kaggle run settings.** Kaggle numbers come from a shared notebook: {mach.get('gpu', 'GPU n/a').splitlines()[0] if mach.get('gpu') else 'GPU n/a'} (x2 listed), {mach.get('cpu', 'CPU n/a')} with {mach.get('cpu_cores', '?')} cores, {mach.get('os', '?')}, run {mach.get('date_utc', '?')}. Benchmarks use 20 days (80 steps), 5 reps + 1 warm-up, seed 42, 100k and 1M agents only; the Xeon thread sweep is 1 and 4 threads. Other tenants may add noise.
 - **ncu unavailable.** Nsight Compute could not read GPU counters ({err or 'no ncu output'}), so there is no measured branch efficiency.
 - OpenACC was attempted on Kaggle but no OpenACC-capable compiler (NVHPC) was available; no results.
-- **AVX2 only on the Kaggle CPU.** NEON was measured on the M1 and AVX2 on the Xeon; the two are different machines and not comparable.
+- **AVX2 only on one shared Xeon.** NEON was measured on the M1 and AVX2 on the Xeon; the two are different machines and not comparable.
+- **Kaggle uses 5 repetitions and reports no confidence intervals**; the Mac suites use 10 repetitions with 95% intervals (section 9), so Kaggle differences smaller than run-to-run noise cannot be judged.
+- **Inter-city travel is CPU-only and uses assumed flows** (config/travel.toml, illustrative, not measured commuting data); GPU backends do not run the travel coupling and the effect found is small (section 10).
+- **The calibration target is assumed** (a 5-day doubling time), not fitted to observed case data.
 - **Mac vs Kaggle** are different hardware; cross-machine times are not like-for-like. Metal 10M results are not checked against sequential.
 - **Mac test logs were not saved**; Mac golden-test status is taken from docs/PROGRESS.md. The Kaggle golden-table run panicked on the NEON row after 8 PASS rows (since fixed to skip NEON on non-aarch64, not re-run there).
 - PTX analysis markdown files in results/ are unfilled templates; counts come from `summary.json`.

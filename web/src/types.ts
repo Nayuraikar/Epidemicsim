@@ -1,7 +1,7 @@
 export interface CityInfo {
   name: string; built: boolean; agents: number | null; total_beds: number | null
   bbox: [number, number, number, number] | null; centroid: [number, number] | null
-  has_comparison: boolean; baked_scenarios: string[]
+  has_comparison: boolean; baked_scenarios: string[]; has_agents: boolean; build_command: string
 }
 export interface CitiesResp { cities: CityInfo[]; max_live_agents: number; default_live_agents: number; backends: string[] }
 export type Trigger = { metric: 'infectious' | 'hospital' | 'cumulative'; above: number }

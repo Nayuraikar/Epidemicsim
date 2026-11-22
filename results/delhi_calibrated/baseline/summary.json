@@ -1,0 +1,76 @@
+{
+  "city": "delhi_calibrated",
+  "scenario": "baseline",
+  "description": "No interventions.",
+  "backend": "rayon",
+  "runs": 10,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 2000,
+  "interventions": [],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.7260177999999999,
+      "p05": 0.7249053000000001,
+      "p95": 0.72726175
+    },
+    "days_over_capacity": {
+      "mean": 46.825,
+      "p05": 46.3625,
+      "p95": 47.1375
+    },
+    "deaths": {
+      "mean": 7689.9,
+      "p05": 7589.1,
+      "p95": 7763.15
+    },
+    "peak_day": {
+      "mean": 53.4,
+      "p05": 52.45,
+      "p95": 54.0
+    },
+    "peak_hospital_load": {
+      "mean": 10491.7,
+      "p05": 10394.2,
+      "p95": 10607.7
+    },
+    "peak_hospital_ratio": {
+      "mean": 5.245850000000001,
+      "p05": 5.1971,
+      "p95": 5.30385
+    },
+    "peak_infections": {
+      "mean": 118207.4,
+      "p05": 116833.0,
+      "p95": 119244.9
+    },
+    "r_initial": {
+      "mean": 2.046265911503064,
+      "p05": 1.933058038992139,
+      "p95": 2.135413901454962
+    },
+    "r_max": {
+      "mean": 3.065035246813779,
+      "p05": 2.9137722768602865,
+      "p95": 3.2041579484716465
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "8aec466175def574",
+    "c047ba315f7dc04d",
+    "e8b6c6434aaa5e5f",
+    "d8f64e171c65f126",
+    "a3bfb120fdf1f933",
+    "d88efdf45e66899e",
+    "3102c7102e727a31",
+    "ddca9b9f594b55c8",
+    "6bf11d2c51b4188b",
+    "b2134248b7555a27"
+  ]
+}

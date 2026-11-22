@@ -33,6 +33,8 @@ interface Props {
   onPreset: (name: string) => void
   disabled: boolean
   canReplay: boolean
+  /** Non-empty when the city has no agent data: the command that builds it (Live is then blocked). */
+  liveHint: string
   replayHint: string
   liveAgents: number
   maxAgents: number
@@ -126,10 +128,11 @@ export function ScenarioBuilder(p: Props) {
 
       <div className="note diff">{diff ?? 'Same as baseline (no interventions).'}</div>
       <div className="row actions" style={{ marginTop: 8 }}>
-        <button className="btn primary" disabled={disabled} onClick={p.onLive}>Run live</button><Help h={HELP.runLive} />
+        <button className="btn primary" disabled={disabled || !!p.liveHint} onClick={p.onLive}>Run live</button><Help h={HELP.runLive} />
         <button className="btn" disabled={disabled || !p.canReplay} onClick={p.onReplay} title={p.replayHint}>Replay</button><Help h={HELP.replay} />
         <button className="btn" onClick={p.onExport}>Export JSON</button><Help h={HELP.exportJson} />
       </div>
+      {p.liveHint && <div className="note" style={{ marginTop: 6 }}>Run live needs this city's agent data (not in the repo). Build it with: <code>{p.liveHint}</code> (Replay and the Lab work without it).</div>}
       {!p.canReplay && !disabled && <div className="note" style={{ marginTop: 6 }}>{p.replayHint}</div>}
     </div>
   )

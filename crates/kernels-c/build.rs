@@ -34,9 +34,39 @@ fn main() {
         println!("cargo:rustc-link-search=native={lib}");
         println!("cargo:rustc-link-lib=omp");
     } else {
+        // Linux: skip (with a warning) when the compiler cannot build and link an OpenMP program.
+        if !linux_openmp_works(&b) {
+            println!(
+                "cargo:warning=compiler cannot link OpenMP (install gcc + libgomp); skipping OpenMP kernels"
+            );
+            return;
+        }
         b.flag("-fopenmp");
         println!("cargo:rustc-link-lib=gomp");
     }
     b.compile("epidemicsim_openmp");
     println!("cargo:rustc-cfg=has_openmp");
+}
+
+/// Compile and link a one-line OpenMP program with the build's C compiler.
+fn linux_openmp_works(b: &cc::Build) -> bool {
+    let out = std::env::var("OUT_DIR").unwrap_or_else(|_| ".".into());
+    let src = Path::new(&out).join("omp_probe.c");
+    let exe = Path::new(&out).join("omp_probe");
+    if std::fs::write(
+        &src,
+        "#include <omp.h>\nint main(void){return omp_get_max_threads()>0?0:1;}\n",
+    )
+    .is_err()
+    {
+        return false;
+    }
+    b.get_compiler()
+        .to_command()
+        .arg("-fopenmp")
+        .arg(&src)
+        .arg("-o")
+        .arg(&exe)
+        .output()
+        .is_ok_and(|o| o.status.success())
 }

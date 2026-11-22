@@ -1,0 +1,88 @@
+{
+  "city": "delhi_calibrated",
+  "scenario": "masks",
+  "description": "Masks adopted once 0.5% of the population is infectious: 60% compliance, 35% transmission reduction.",
+  "backend": "rayon",
+  "runs": 10,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 2000,
+  "interventions": [
+    {
+      "kind": "masks",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": null,
+      "compliance": 0.6,
+      "efficacy": 0.35
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.5793053,
+      "p05": 0.57784545,
+      "p95": 0.58105815
+    },
+    "days_over_capacity": {
+      "mean": 48.0,
+      "p05": 47.5,
+      "p95": 48.5
+    },
+    "deaths": {
+      "mean": 5508.2,
+      "p05": 5452.25,
+      "p95": 5605.8
+    },
+    "peak_day": {
+      "mean": 55.9,
+      "p05": 55.45,
+      "p95": 56.0
+    },
+    "peak_hospital_load": {
+      "mean": 5969.0,
+      "p05": 5866.9,
+      "p95": 6145.5
+    },
+    "peak_hospital_ratio": {
+      "mean": 2.9845,
+      "p05": 2.93345,
+      "p95": 3.0727499999999996
+    },
+    "peak_infections": {
+      "mean": 73762.6,
+      "p05": 73181.55,
+      "p95": 74694.4
+    },
+    "r_initial": {
+      "mean": 2.046265911503064,
+      "p05": 1.933058038992139,
+      "p95": 2.135413901454962
+    },
+    "r_max": {
+      "mean": 3.065035246813779,
+      "p05": 2.9137722768602865,
+      "p95": 3.2041579484716465
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "9e2eb980ca4cbf3c",
+    "7d8f54fb27fb8132",
+    "6443c3b990ad66c3",
+    "b51d87862333a3db",
+    "9bc2ab7cccd84a1c",
+    "9fb4a86a628b0ebd",
+    "acc437a3fe23597a",
+    "c57c8885c962e04d",
+    "2a1ef5b38dc04c55",
+    "53b8799b4f2785bb"
+  ]
+}

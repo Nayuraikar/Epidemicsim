@@ -1,0 +1,30 @@
+name: ci
+on:
+  push:
+  pull_request:
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # MPI crate (rsmpi) needs an MPI install and libclang to build; no mpirun-based tests are run here.
+      - run: sudo apt-get update && sudo apt-get install -y libopenmpi-dev openmpi-bin libclang-dev
+      - run: rustup show   # installs the toolchain pinned in rust-toolchain.toml
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo build --workspace -q
+      # Includes the golden tests. Metal tests are macOS-only, CUDA is behind a feature, MPI runs need mpirun.
+      - run: cargo test --workspace -q
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run build

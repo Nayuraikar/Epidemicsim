@@ -1,0 +1,92 @@
+{
+  "city": "delhi",
+  "scenario": "vax_targeted",
+  "description": "Same doses as vax_random (40% of the population), but only to ages 40+ (age groups 2-4).",
+  "backend": "rayon",
+  "runs": 10,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 2000,
+  "interventions": [
+    {
+      "kind": "vaccination",
+      "start_day": 10,
+      "trigger": null,
+      "duration_days": null,
+      "strategy": "age",
+      "coverage": 0.4,
+      "rate_per_day": 0.01,
+      "ages": [
+        2,
+        3,
+        4
+      ],
+      "block_homes": 1000
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.27117979999999997,
+      "p05": 0.2689851,
+      "p95": 0.27303675
+    },
+    "days_over_capacity": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    },
+    "deaths": {
+      "mean": 459.2,
+      "p05": 422.95,
+      "p95": 484.55
+    },
+    "peak_day": {
+      "mean": 75.9,
+      "p05": 72.7,
+      "p95": 77.0
+    },
+    "peak_hospital_load": {
+      "mean": 638.3,
+      "p05": 606.9,
+      "p95": 669.25
+    },
+    "peak_hospital_ratio": {
+      "mean": 0.31915000000000004,
+      "p05": 0.30345,
+      "p95": 0.334625
+    },
+    "peak_infections": {
+      "mean": 25174.6,
+      "p05": 24751.15,
+      "p95": 25965.65
+    },
+    "r_initial": {
+      "mean": 1.3497155124848117,
+      "p05": 1.250878831356238,
+      "p95": 1.4252152452727571
+    },
+    "r_max": {
+      "mean": 2.195733405331996,
+      "p05": 2.0888535275014632,
+      "p95": 2.2550001870536165
+    },
+    "vaccine_doses": {
+      "mean": 400000.0,
+      "p05": 400000.0,
+      "p95": 400000.0
+    }
+  },
+  "run_hashes": [
+    "c83a7dfb57ad878b",
+    "4c75a701c3f91ff2",
+    "437efa655c9627ff",
+    "eef1a10c378b6785",
+    "d1546b3a5d3f705a",
+    "30adecac6a00465f",
+    "7c185a15d397423b",
+    "b340b2697ed7e670",
+    "cf9d5b289b7c3751",
+    "8514fad781546df1"
+  ]
+}

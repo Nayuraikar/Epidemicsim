@@ -376,7 +376,10 @@ Transfer to the real city graphs (1M agents, 5 seeds each): mumbai doubling 4.65
 - **Kaggle run settings.** Kaggle numbers come from a shared notebook: Tesla T4, 15360 MiB, 580.178.04, 7.5 (x2 listed), Intel(R) Xeon(R) CPU @ 2.00GHz with 4 cores, Linux-6.18.55+-x86_64-with-glibc2.39, run 2026-11-22T05:41:11Z. Benchmarks use 20 days (80 steps), 5 reps + 1 warm-up, seed 42, 100k and 1M agents only; the Xeon thread sweep is 1 and 4 threads. Other tenants may add noise.
 - **ncu unavailable.** Nsight Compute could not read GPU counters (==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling pe), so there is no measured branch efficiency.
 - OpenACC was attempted on Kaggle but no OpenACC-capable compiler (NVHPC) was available; no results.
-- **AVX2 only on the Kaggle CPU.** NEON was measured on the M1 and AVX2 on the Xeon; the two are different machines and not comparable.
+- **AVX2 only on one shared Xeon.** NEON was measured on the M1 and AVX2 on the Xeon; the two are different machines and not comparable.
+- **Kaggle uses 5 repetitions and reports no confidence intervals**; the Mac suites use 10 repetitions with 95% intervals (section 9), so Kaggle differences smaller than run-to-run noise cannot be judged.
+- **Inter-city travel is CPU-only and uses assumed flows** (config/travel.toml, illustrative, not measured commuting data); GPU backends do not run the travel coupling and the effect found is small (section 10).
+- **The calibration target is assumed** (a 5-day doubling time), not fitted to observed case data.
 - **Mac vs Kaggle** are different hardware; cross-machine times are not like-for-like. Metal 10M results are not checked against sequential.
 - **Mac test logs were not saved**; Mac golden-test status is taken from docs/PROGRESS.md. The Kaggle golden-table run panicked on the NEON row after 8 PASS rows (since fixed to skip NEON on non-aarch64, not re-run there).
 - PTX analysis markdown files in results/ are unfilled templates; counts come from `summary.json`.

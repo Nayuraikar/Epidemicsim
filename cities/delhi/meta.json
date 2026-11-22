@@ -1,0 +1,32 @@
+{
+  "name": "delhi",
+  "source_url": "https://download.geofabrik.de/asia/india/northern-zone/northern-zone-latest.osm.pbf",
+  "bbox": [
+    76.84,
+    28.4,
+    77.35,
+    28.88
+  ],
+  "seed": 42,
+  "target_agents": 1000000,
+  "agents": 1000000,
+  "pop_weight": "building_density",
+  "hospital_beds_per_1000": 2.0,
+  "total_beds": 2000.0,
+  "counts": {
+    "homes": 300473,
+    "schools": 1301,
+    "colleges": 168,
+    "offices": 15894,
+    "markets": 2000,
+    "hospitals": 858
+  },
+  "synthetic": {
+    "homes": 0,
+    "schools": 0,
+    "colleges": 0,
+    "offices": 12435,
+    "markets": 1371,
+    "hospitals": 0
+  }
+}

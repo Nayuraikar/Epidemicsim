@@ -1,0 +1,95 @@
+{
+  "city": "delhi",
+  "scenario": "closures",
+  "description": "Colleges and markets close once 0.5% of the population is infectious, for 30 days.",
+  "backend": "rayon",
+  "runs": 10,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 2000,
+  "interventions": [
+    {
+      "kind": "college_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    },
+    {
+      "kind": "market_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.33367549999999996,
+      "p05": 0.32359344999999995,
+      "p95": 0.33910665
+    },
+    "days_over_capacity": {
+      "mean": 20.575,
+      "p05": 16.7125,
+      "p95": 22.4375
+    },
+    "deaths": {
+      "mean": 1804.0,
+      "p05": 1659.35,
+      "p95": 1896.25
+    },
+    "peak_day": {
+      "mean": 101.0,
+      "p05": 98.0,
+      "p95": 104.0
+    },
+    "peak_hospital_load": {
+      "mean": 2452.1,
+      "p05": 2364.35,
+      "p95": 2546.5
+    },
+    "peak_hospital_ratio": {
+      "mean": 1.2260500000000003,
+      "p05": 1.182175,
+      "p95": 1.27325
+    },
+    "peak_infections": {
+      "mean": 30387.9,
+      "p05": 29300.15,
+      "p95": 31191.7
+    },
+    "r_initial": {
+      "mean": 1.3497155124848117,
+      "p05": 1.250878831356238,
+      "p95": 1.4252152452727571
+    },
+    "r_max": {
+      "mean": 2.2090033080733327,
+      "p05": 2.1037612199236624,
+      "p95": 2.271301055816687
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "e1971b3a7374e172",
+    "3d04947996d14ac8",
+    "69e013124f4bd872",
+    "4792f66b447e012d",
+    "cf45e00c35c034fe",
+    "167de47e348a930b",
+    "8bd963a52333f27e",
+    "c27884ed52656b40",
+    "47c99ea87caea387",
+    "ae47810ea4a0db6c"
+  ]
+}

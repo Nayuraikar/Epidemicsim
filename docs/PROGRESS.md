@@ -55,6 +55,8 @@
   - Screenshots at 1280 px for Landing, all Lab tabs, Studio; no horizontal overflow at 390 px on all routes. `#/lab?tab=<id>` deep-links a tab.
 - Studio hover help (web/ only): `<Help>` (hover/focus/tap, Escape/outside click, portalled and clamped to viewport), copy in `web/src/helptext.ts` checked against spec.rs/engine.rs/schedule.rs, live "preset -> now" hints, "Differs from baseline" line, Guide toggle.
   - Headless Chrome at 1280 px: all 27 help panels inside the viewport, Escape/outside click close, no console errors. Untested: touch device, Safari/Firefox, 390 px layout.
+- Reproducibility: Delhi `compare` (calibrated, 10 runs, 5:23 on 8 threads) -> results/delhi_calibrated; default-params compare (5:23) + baked baseline/combo -> results/delhi so Studio replay works (`bake` has no --params). `scripts/setup.sh`, `scripts/run.sh`, `.github/workflows/ci.yml`; server reports `has_agents`, Run live blocked with the build command; OpenMP/MPI optional.
+  - Fresh copy of the repo tree (not the git history: uncommitted work overlaid): setup 4:14, Lab/Replay endpoints OK with no agents.parquet, 100k Chennai built in 16 s and Live streams, `cargo test --workspace` passes, `cargo check --no-default-features` (no MPI) OK. Untested: Linux, the CI run, Intel Mac, an actual build without MPI/libomp, the Linux OpenMP probe in build.rs.
 
 ## Findings
 

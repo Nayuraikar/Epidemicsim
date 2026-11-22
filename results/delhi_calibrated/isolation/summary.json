@@ -1,0 +1,84 @@
+{
+  "city": "delhi_calibrated",
+  "scenario": "isolation",
+  "description": "From day 7, 60% of symptomatic agents stay home.",
+  "backend": "rayon",
+  "runs": 10,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 2000,
+  "interventions": [
+    {
+      "kind": "isolation",
+      "start_day": 7,
+      "trigger": null,
+      "duration_days": null,
+      "compliance": 0.6
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.4764571999999999,
+      "p05": 0.4740651,
+      "p95": 0.4785238
+    },
+    "days_over_capacity": {
+      "mean": 46.65,
+      "p05": 45.45,
+      "p95": 48.074999999999996
+    },
+    "deaths": {
+      "mean": 4255.3,
+      "p05": 4182.8,
+      "p95": 4323.9
+    },
+    "peak_day": {
+      "mean": 71.8,
+      "p05": 70.0,
+      "p95": 76.0
+    },
+    "peak_hospital_load": {
+      "mean": 3963.5,
+      "p05": 3871.8,
+      "p95": 4063.6
+    },
+    "peak_hospital_ratio": {
+      "mean": 1.9817500000000003,
+      "p05": 1.9359,
+      "p95": 2.0318
+    },
+    "peak_infections": {
+      "mean": 47802.7,
+      "p05": 47327.85,
+      "p95": 48317.55
+    },
+    "r_initial": {
+      "mean": 2.046265911503064,
+      "p05": 1.933058038992139,
+      "p95": 2.135413901454962
+    },
+    "r_max": {
+      "mean": 2.4210307730263114,
+      "p05": 2.1345799344191425,
+      "p95": 2.7693996493304676
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "62341013a0cb93aa",
+    "111dca12db632540",
+    "d181e5ea9a0c29e8",
+    "0af95cca573ed324",
+    "d21f056658de2ff1",
+    "6065485936cd1599",
+    "d3fbdd2fd0158cc9",
+    "9347e2bb1d267eb7",
+    "45fdc839d5a13f1a",
+    "a192a940053f59c3"
+  ]
+}

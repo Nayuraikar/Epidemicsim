@@ -104,6 +104,11 @@ impl App {
         if let Some(w) = ctx.worlds.lock().unwrap().get(&k) {
             return Ok((w.clone(), k));
         }
+        if !self.dirs.cities.join(name).join("agents.parquet").exists() {
+            return Err(format!(
+                "city '{name}' has no agent data (agents.parquet is not in the repo). Build it with: ./target/release/epidemicsim pipeline {name}"
+            ));
+        }
         let cfg = epidemicsim_core::Config::default();
         let full_world = epidemicsim_data::load_world(&self.dirs.cities.join(name), &cfg)
             .map_err(|e| e.to_string())?;
@@ -161,6 +166,8 @@ async fn list_cities(State(app): State<Shared>) -> Result<Json<Value>, ApiErr> {
             .unwrap_or_default();
         out.push(json!({
             "name": name, "built": built, "agents": agents, "total_beds": beds,
+            "has_agents": dir.join("agents.parquet").exists(),
+            "build_command": format!("./target/release/epidemicsim pipeline {name}"),
             "bbox": bbox, "centroid": centroid,
             "has_comparison": res.join("comparison.json").exists(),
             "baked_scenarios": frames,
