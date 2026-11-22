@@ -1,0 +1,102 @@
+{
+  "city": "mumbai_calibrated",
+  "scenario": "vax_targeted",
+  "description": "Same doses as vax_random (40% of the population), but only to ages 40+ (age groups 2-4).",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [
+    {
+      "kind": "vaccination",
+      "start_day": 10,
+      "trigger": null,
+      "duration_days": null,
+      "strategy": "age",
+      "coverage": 0.4,
+      "rate_per_day": 0.01,
+      "ages": [
+        2,
+        3,
+        4
+      ],
+      "block_homes": 1000
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.5311327,
+      "p05": 0.5279918,
+      "p95": 0.5335053
+    },
+    "days_over_capacity": {
+      "mean": 27.975,
+      "p05": 27.2125,
+      "p95": 28.7625
+    },
+    "deaths": {
+      "mean": 1550.2,
+      "p05": 1488.0,
+      "p95": 1609.85
+    },
+    "peak_day": {
+      "mean": 49.0,
+      "p05": 49.0,
+      "p95": 49.0
+    },
+    "peak_hospital_load": {
+      "mean": 2783.7,
+      "p05": 2694.8,
+      "p95": 2906.25
+    },
+    "peak_hospital_ratio": {
+      "mean": 1.8558,
+      "p05": 1.7965333333333333,
+      "p95": 1.9375
+    },
+    "peak_infections": {
+      "mean": 93791.95,
+      "p05": 92171.4,
+      "p95": 95470.75
+    },
+    "r_initial": {
+      "mean": 2.055597212809909,
+      "p05": 1.8722208715058124,
+      "p95": 2.2063451319777374
+    },
+    "r_max": {
+      "mean": 2.9806564431437645,
+      "p05": 2.8579476876061984,
+      "p95": 3.0947068699762768
+    },
+    "vaccine_doses": {
+      "mean": 400000.0,
+      "p05": 400000.0,
+      "p95": 400000.0
+    }
+  },
+  "run_hashes": [
+    "955d738c900558f2",
+    "2d4949fa6d06b5d1",
+    "bfb17e84b9484b66",
+    "1432566194537ef9",
+    "a0488dd1d9bbe7be",
+    "fb0b4fecc4fc6ff4",
+    "f77aae10fe44ee39",
+    "c168609260cab67d",
+    "7fe6cdb1f6cb08e9",
+    "b6491116a654f5cf",
+    "5a95a65ac3f786c0",
+    "8592e01b5258cb7b",
+    "705fab19bec13391",
+    "b8c42d2e11cc54e1",
+    "fb401a5238b5843c",
+    "b6185618ab0a3249",
+    "48c732d9191bbae1",
+    "a3898a3f6aa7b165",
+    "d511fee41a71371b",
+    "0ac1bff39feb6302"
+  ]
+}

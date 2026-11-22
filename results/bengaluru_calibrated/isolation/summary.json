@@ -1,0 +1,94 @@
+{
+  "city": "bengaluru_calibrated",
+  "scenario": "isolation",
+  "description": "From day 7, 60% of symptomatic agents stay home.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1200,
+  "interventions": [
+    {
+      "kind": "isolation",
+      "start_day": 7,
+      "trigger": null,
+      "duration_days": null,
+      "compliance": 0.6
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.37850880000000003,
+      "p05": 0.36358955000000004,
+      "p95": 0.3874733
+    },
+    "days_over_capacity": {
+      "mean": 48.2125,
+      "p05": 44.6625,
+      "p95": 50.575
+    },
+    "deaths": {
+      "mean": 2829.8,
+      "p05": 2537.0,
+      "p95": 3006.5
+    },
+    "peak_day": {
+      "mean": 92.2,
+      "p05": 90.0,
+      "p95": 97.0
+    },
+    "peak_hospital_load": {
+      "mean": 2884.4,
+      "p05": 2765.0,
+      "p95": 2974.4
+    },
+    "peak_hospital_ratio": {
+      "mean": 2.4036666666666666,
+      "p05": 2.3041666666666667,
+      "p95": 2.478666666666667
+    },
+    "peak_infections": {
+      "mean": 33822.2,
+      "p05": 33239.9,
+      "p95": 34614.05
+    },
+    "r_initial": {
+      "mean": 1.9565725122934718,
+      "p05": 1.7923871236782594,
+      "p95": 2.1876016502429776
+    },
+    "r_max": {
+      "mean": 2.152623530700406,
+      "p05": 1.9410216754917042,
+      "p95": 2.442032884105486
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "55eddda386981b3a",
+    "9edda36c8b1f5991",
+    "6cfacd8766dfdb4e",
+    "5ccf4fdc38afa91c",
+    "e6510f81416fc468",
+    "818fc7481b834c2d",
+    "6bf516b3ecd687a5",
+    "8c222a174e083bc7",
+    "9f8e3493dd3f888c",
+    "6e8b131eb6b02383",
+    "07d4581371b10584",
+    "e5b1b40dd3591f0c",
+    "d08fa31ddb125d4e",
+    "7eb1c5240ddb534e",
+    "b28dcc842c84b8c2",
+    "91b783a8ab42b262",
+    "4b7f08cb0e664032",
+    "7d5538d9a60664f8",
+    "fb6fcb0e806a17ea",
+    "9eaf0782ac100db8"
+  ]
+}

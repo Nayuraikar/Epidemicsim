@@ -1,4 +1,5 @@
 //! Interventions, scenario files, Monte Carlo ensembles and scenario comparison.
+pub mod calibrate;
 pub mod compare;
 pub mod engine;
 pub mod ensemble;

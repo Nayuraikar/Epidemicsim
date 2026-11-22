@@ -1,0 +1,98 @@
+{
+  "city": "mumbai_calibrated",
+  "scenario": "masks",
+  "description": "Masks adopted once 0.5% of the population is infectious: 60% compliance, 35% transmission reduction.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [
+    {
+      "kind": "masks",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": null,
+      "compliance": 0.6,
+      "efficacy": 0.35
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.5858613,
+      "p05": 0.58458355,
+      "p95": 0.5874068
+    },
+    "days_over_capacity": {
+      "mean": 53.7375,
+      "p05": 53.2375,
+      "p95": 54.025
+    },
+    "deaths": {
+      "mean": 5546.95,
+      "p05": 5456.3,
+      "p95": 5675.4
+    },
+    "peak_day": {
+      "mean": 55.8,
+      "p05": 55.0,
+      "p95": 56.0
+    },
+    "peak_hospital_load": {
+      "mean": 6272.65,
+      "p05": 6171.95,
+      "p95": 6372.25
+    },
+    "peak_hospital_ratio": {
+      "mean": 4.181766666666666,
+      "p05": 4.114633333333333,
+      "p95": 4.248166666666667
+    },
+    "peak_infections": {
+      "mean": 78507.6,
+      "p05": 77544.75,
+      "p95": 79019.35
+    },
+    "r_initial": {
+      "mean": 2.055597212809909,
+      "p05": 1.8722208715058124,
+      "p95": 2.2063451319777374
+    },
+    "r_max": {
+      "mean": 2.9932176177187566,
+      "p05": 2.875805596628641,
+      "p95": 3.100001396230343
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "0b1dc742b23785c9",
+    "50eebd392fbe5053",
+    "3419180986535e93",
+    "8e01e074fc011880",
+    "9288da33f87f7411",
+    "f4ce084d0feb01d0",
+    "05a23c1bd106a9e6",
+    "6d3af42645e89e71",
+    "0b9faac965dd0cfb",
+    "036f402c882ad931",
+    "307e85e4d5c759b1",
+    "3299525e262d34da",
+    "055b9dbb0eeb3482",
+    "8b3d084997ad6390",
+    "ef928fc00288a6d6",
+    "1e1f7b8c5b35cfeb",
+    "e45d97d0a2dfc9e8",
+    "e4f3ac6592a3032d",
+    "30f69d067af16804",
+    "cf7892aa78c3c88c"
+  ]
+}

@@ -318,6 +318,42 @@ Memory layout (update kernel, 1,000,000 agents, 1 thread, 10 reps; checksums ide
 
 **Analysis.** See the Lab for the data-derived findings text; where a CI overlap makes a ranking insignificant the Lab says so.
 
+## 10. Calibration (rough)
+
+**Method.** Grid search of the beta scale and asymptomatic fraction against the assumed target above, early growth fitted by log-linear regression on daily new infections; calibrated values live in config/calibrated.toml, selected with `--params calibrated`; defaults (and golden hashes) untouched. Details: docs/CALIBRATION.md.
+
+Target (ASSUMED, illustrative, not a citation): early doubling time 5.0 days and asymptomatic share 0.4. Grid on 100,000 synthetic agents, 5 runs per point, base seed 42, 8 beta scales x 6 asymptomatic scales (coarse) + 11 x 6 (fine). Default parameters double in 12.1 days. Fitted: beta x1.6, P(asymptomatic) x1.1 (share 0.407), doubling 4.98 +/- 0.209 d (sd over runs).
+
+| city | params | runs | R initial (first 7 d) | baseline attack rate | baseline peak A+I | isolation attack rate |
+|---|---|---|---|---|---|---|
+| mumbai | default | 50 | 1.33 | 41.7% | 42,582 | 2.2% |
+| mumbai | calibrated | 20 | 2.06 | 72.9% | 123,107 | 48.8% |
+| bengaluru | calibrated | 20 | 1.96 | 71.2% | 108,691 | 37.9% |
+
+Transfer to the real city graphs (1M agents, 5 seeds each): mumbai doubling 4.65 d (range 4.59-4.72); bengaluru doubling 5.51 d (range 5.4-5.56).
+
+**Analysis.** What it shows: the model can reproduce an assumed 5-day doubling time with beta x1.6, and that fit transfers approximately (within the 4-6 day band) to the two city graphs even though it was fitted on synthetic cities. What it does not show: the target is an assumption, only growth rate was fitted (no deaths, hospital load or timing of a peak), the two parameters are only weakly identified by one growth rate, attack rates near 70% follow from the 5-day doubling and the model's SEIR structure, and nothing here is a forecast.
+
+## 11. Sensitivity
+
+**Method.** One-at-a-time -20% / +20% of each parameter, 10 runs per setting (paired seeds from 42), 100,000 synthetic agents, 120 days, sequential backend, parameter set calibrated. Each parameter is exercised in the scenario named in its row; deltas are vs that scenario's own central run (percentage points of the population). Tornado chart: Lab tab Model.
+
+| parameter | scenario | -20% / +20% value | d attack rate pp (-20%) | (+20%) | d peak A+I pp (-20%) | (+20%) |
+|---|---|---|---|---|---|---|
+| beta (home/work/market) | baseline | 0.0299 / 0.0448 | -14.95 | +9.04 | -4.40 | +4.16 |
+| asymptomatic fraction | baseline | 0.326 / 0.488 | +2.81 | -3.25 | +1.17 | -1.26 |
+| hospitalisation rate | baseline | 0.096 / 0.144 | -0.03 | +0.03 | -0.00 | +0.00 |
+| fatality rate (given hospitalised) | baseline | 0.134 / 0.202 | -0.00 | +0.00 | -0.00 | +0.00 |
+| vaccine efficacy (infection) | vax_random | 0.56 / 0.84 | +5.92 | -6.66 | +1.01 | -0.97 |
+| mask efficacy | masks | 0.28 / 0.42 | +3.76 | -4.16 | +0.91 | -0.91 |
+| isolation compliance | isolation | 0.48 / 0.72 | +8.24 | -12.12 | +1.49 | -1.57 |
+
+**Analysis.** Largest attack-rate swing: beta (home/work/market). Attack-rate change under 0.5 pp either way (not distinguishable from noise at this run count): hospitalisation rate, fatality rate (given hospitalised). In the state machine H follows I (hospitalisation happens at the end of the symptomatic period), so these parameters have no direct route into transmission; they change deaths and hospital load, which this table does not show. Only the calibrated set was varied; parameters were not varied jointly.
+
+## 12. Inter-city travel
+
+_Not run: file missing or empty._ Not implemented yet (deferred; see docs/PROGRESS.md).
+
 ## Threats to validity
 
 - **Thermal throttling.** The M1 is passively cooled and was not monitored with a die-temperature sensor (that needs sudo). Each Mac result records `pmset -g therm` before and after the run; none reported a thermal or performance warning, which rules out only a flagged throttle, not mild frequency drops. Long multi-thread runs on the 4P+4E chip may run slower than short ones; the sequential 1M run shows a wide interval (std dev 0.50 s on a 2.3 s median), a sign of such variation or background load.
@@ -328,7 +364,7 @@ Memory layout (update kernel, 1,000,000 agents, 1 thread, 10 reps; checksums ide
 
 ## Limitations
 
-- **Epidemic parameters are uncalibrated.** Transmission, durations, severity and scenario effects are illustrative defaults, not fitted to any real outbreak; absolute epidemic numbers must not be read as forecasts.
+- **Epidemic parameters are illustrative.** The built-in defaults are hand-tuned. config/calibrated.toml is a rough fit of beta and the asymptomatic fraction to an assumed doubling time (section 10); durations, severity and scenario effects are not fitted to any real outbreak, and no number here is a forecast.
 - **Kaggle run settings.** Kaggle numbers come from a shared notebook: Tesla T4, 15360 MiB, 580.178.04, 7.5 (x2 listed), Intel(R) Xeon(R) CPU @ 2.00GHz with 4 cores, Linux-6.18.55+-x86_64-with-glibc2.39, run 2026-11-22T05:41:11Z. Benchmarks use 20 days (80 steps), 5 reps + 1 warm-up, seed 42, 100k and 1M agents only; the Xeon thread sweep is 1 and 4 threads. Other tenants may add noise.
 - **ncu unavailable.** Nsight Compute could not read GPU counters (==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling pe), so there is no measured branch efficiency.
 - OpenACC was attempted on Kaggle but no OpenACC-capable compiler (NVHPC) was available; no results.

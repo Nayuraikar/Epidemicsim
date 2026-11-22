@@ -1,0 +1,105 @@
+{
+  "city": "mumbai_calibrated",
+  "scenario": "closures",
+  "description": "Colleges and markets close once 0.5% of the population is infectious, for 30 days.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [
+    {
+      "kind": "college_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    },
+    {
+      "kind": "market_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.69250045,
+      "p05": 0.69071515,
+      "p95": 0.69451875
+    },
+    "days_over_capacity": {
+      "mean": 57.725,
+      "p05": 56.9875,
+      "p95": 58.5125
+    },
+    "deaths": {
+      "mean": 6949.5,
+      "p05": 6807.65,
+      "p95": 7042.8
+    },
+    "peak_day": {
+      "mean": 66.2,
+      "p05": 63.0,
+      "p95": 68.0
+    },
+    "peak_hospital_load": {
+      "mean": 8218.95,
+      "p05": 7993.3,
+      "p95": 8379.05
+    },
+    "peak_hospital_ratio": {
+      "mean": 5.4793,
+      "p05": 5.328866666666666,
+      "p95": 5.586033333333334
+    },
+    "peak_infections": {
+      "mean": 85028.1,
+      "p05": 83171.65,
+      "p95": 87038.0
+    },
+    "r_initial": {
+      "mean": 2.055597212809909,
+      "p05": 1.8722208715058124,
+      "p95": 2.2063451319777374
+    },
+    "r_max": {
+      "mean": 2.9932176177187566,
+      "p05": 2.875805596628641,
+      "p95": 3.100001396230343
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "93e98dfcf41e0fa8",
+    "bbb3458869a958e4",
+    "7e5d6a16a9beb256",
+    "c69c5d777f7e8fad",
+    "113767aa599d446f",
+    "81c8d0979d566bc3",
+    "626233ea5bb63c2c",
+    "4d4cb19bea8d2db5",
+    "3327bf1c548338ae",
+    "9a5c90558a103246",
+    "56b1af3ea1561294",
+    "6b525610f67cee79",
+    "34d71238ff0c0829",
+    "2f446bc76bb5a1ef",
+    "27f8c4f51557be33",
+    "458aa182824fe9db",
+    "d990a5cc399b9f64",
+    "2ddd2296d2369cee",
+    "5e543389d7f6b14d",
+    "5ebbc388a92825ac"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "city": "mumbai_calibrated",
+  "scenario": "baseline",
+  "description": "No interventions.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.7285112499999999,
+      "p05": 0.7277227000000001,
+      "p95": 0.7295141
+    },
+    "days_over_capacity": {
+      "mean": 50.45,
+      "p05": 49.9875,
+      "p95": 51.0125
+    },
+    "deaths": {
+      "mean": 7656.4,
+      "p05": 7560.05,
+      "p95": 7778.6
+    },
+    "peak_day": {
+      "mean": 53.15,
+      "p05": 52.85,
+      "p95": 54.0
+    },
+    "peak_hospital_load": {
+      "mean": 10789.2,
+      "p05": 10646.4,
+      "p95": 10890.4
+    },
+    "peak_hospital_ratio": {
+      "mean": 7.1928,
+      "p05": 7.0976,
+      "p95": 7.260266666666666
+    },
+    "peak_infections": {
+      "mean": 123106.55,
+      "p05": 121854.85,
+      "p95": 124248.3
+    },
+    "r_initial": {
+      "mean": 2.055597212809909,
+      "p05": 1.8722208715058124,
+      "p95": 2.2063451319777374
+    },
+    "r_max": {
+      "mean": 2.995735355468443,
+      "p05": 2.875805596628641,
+      "p95": 3.100001396230343
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "983bd2e46f394c00",
+    "58a54c69f0b3873e",
+    "8d2b8df632bb3e30",
+    "1d133dc8a2ea31c3",
+    "89ee9d5d84d0b9aa",
+    "9e5c634edf56f91a",
+    "52a9c7b83f07bbef",
+    "cd362294818b2201",
+    "5f2160425e160979",
+    "d7605c9680cf1572",
+    "64993e12e216c904",
+    "1f5495e92386567e",
+    "ce0a7cdb4b46f147",
+    "c90ee55530e18cb4",
+    "4397b37a56e44b15",
+    "26ea69aa11446a5f",
+    "6de3dab57de32a3a",
+    "fa23db71d3f10994",
+    "b0a01cfd7229686b",
+    "4587fd78e56c8bea"
+  ]
+}

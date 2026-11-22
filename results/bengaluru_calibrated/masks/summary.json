@@ -1,0 +1,98 @@
+{
+  "city": "bengaluru_calibrated",
+  "scenario": "masks",
+  "description": "Masks adopted once 0.5% of the population is infectious: 60% compliance, 35% transmission reduction.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1200,
+  "interventions": [
+    {
+      "kind": "masks",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": null,
+      "compliance": 0.6,
+      "efficacy": 0.35
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.5480037499999999,
+      "p05": 0.54650765,
+      "p95": 0.54958395
+    },
+    "days_over_capacity": {
+      "mean": 63.875,
+      "p05": 62.9875,
+      "p95": 64.7625
+    },
+    "deaths": {
+      "mean": 5160.3,
+      "p05": 5052.75,
+      "p95": 5223.15
+    },
+    "peak_day": {
+      "mean": 66.25,
+      "p05": 63.0,
+      "p95": 69.0
+    },
+    "peak_hospital_load": {
+      "mean": 5092.95,
+      "p05": 4948.2,
+      "p95": 5174.9
+    },
+    "peak_hospital_ratio": {
+      "mean": 4.244125,
+      "p05": 4.1235,
+      "p95": 4.312416666666667
+    },
+    "peak_infections": {
+      "mean": 60568.7,
+      "p05": 59730.5,
+      "p95": 61053.25
+    },
+    "r_initial": {
+      "mean": 1.9565725122934718,
+      "p05": 1.7923871236782594,
+      "p95": 2.1876016502429776
+    },
+    "r_max": {
+      "mean": 2.440203053489889,
+      "p05": 2.3513156257195664,
+      "p95": 2.5468229548492762
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "7ef86fe753678047",
+    "9e3d58632b2df123",
+    "24a2b133083e9139",
+    "c64678fbcdec7c96",
+    "449c9c72cf5fe75a",
+    "4872c5ece4fa5e36",
+    "5874720beaf4f50a",
+    "9b40a803dca1411b",
+    "d1f8536ec347b086",
+    "f7d010127c202ac2",
+    "3f35fd583c5f5820",
+    "5b458a601cae0e26",
+    "6b5c9f51d85c2af4",
+    "29b4dd733b8d07e9",
+    "707af449a2bbdfc0",
+    "9c66958ae88cf9ee",
+    "57c6b22870e6790f",
+    "5064c9de50c41769",
+    "65876ea9c0bdd763",
+    "b988e2cc7530f735"
+  ]
+}

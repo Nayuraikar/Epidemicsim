@@ -1,0 +1,96 @@
+{
+  "city": "mumbai_calibrated",
+  "scenario": "lockdown",
+  "description": "Full lockdown (work, school, college, markets) for 28 days once 1% of the population is infectious.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [
+    {
+      "kind": "lockdown",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.01
+      },
+      "duration_days": 28
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.39297215,
+      "p05": 0.3632972,
+      "p95": 0.4312508
+    },
+    "days_over_capacity": {
+      "mean": 9.4875,
+      "p05": 8.1375,
+      "p95": 11.325000000000001
+    },
+    "deaths": {
+      "mean": 921.75,
+      "p05": 806.75,
+      "p95": 1071.3
+    },
+    "peak_day": {
+      "mean": 119.0,
+      "p05": 119.0,
+      "p95": 119.0
+    },
+    "peak_hospital_load": {
+      "mean": 4241.7,
+      "p05": 3696.75,
+      "p95": 4955.85
+    },
+    "peak_hospital_ratio": {
+      "mean": 2.8278000000000003,
+      "p05": 2.4644999999999997,
+      "p95": 3.3039000000000005
+    },
+    "peak_infections": {
+      "mean": 95950.75,
+      "p05": 90729.3,
+      "p95": 102088.40000000001
+    },
+    "r_initial": {
+      "mean": 2.055597212809909,
+      "p05": 1.8722208715058124,
+      "p95": 2.2063451319777374
+    },
+    "r_max": {
+      "mean": 3.081405354472246,
+      "p05": 2.9253162495678637,
+      "p95": 3.2424449241493782
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "00e167fd53cd5a76",
+    "f763ad506879acbd",
+    "ea7c302fbd9cf76e",
+    "0d80d4c991b3af06",
+    "48841fdd01d96a46",
+    "d32912d9dca1ed79",
+    "84b10ae234f30bcd",
+    "736defa8d8e5d04f",
+    "59edf0411d7eca68",
+    "cfaf1472cd28153f",
+    "2c94d51fcb1dc7bd",
+    "ea62a7369f7c49c2",
+    "7b7a246dfb3faf6e",
+    "3aaa7643cb05c0e4",
+    "ec004f277d8a2f7a",
+    "16c9ce923bd21746",
+    "0dd99ba069c3dda6",
+    "5129fff463c503e7",
+    "2c01c501359993f4",
+    "bc4d087ac4eeed73"
+  ]
+}

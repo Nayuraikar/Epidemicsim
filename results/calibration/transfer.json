@@ -1,0 +1,35 @@
+{
+ "note": "Doubling time of daily new infections (same fit as calibration: from day 6, up to day 30 or 5% cumulative attack) in the full 1M-agent city graphs under --params calibrated; `epidemicsim run --city <c> --params calibrated --days 40 --seed <s>` (sequential, 1 thread).",
+ "mumbai": {
+  "seeds": [
+   42,
+   43,
+   44,
+   45,
+   46
+  ],
+  "doubling_days": [
+   4.61,
+   4.59,
+   4.72,
+   4.59,
+   4.72
+  ]
+ },
+ "bengaluru": {
+  "seeds": [
+   42,
+   43,
+   44,
+   45,
+   46
+  ],
+  "doubling_days": [
+   5.4,
+   5.53,
+   5.54,
+   5.52,
+   5.56
+  ]
+ }
+}

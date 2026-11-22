@@ -1,0 +1,101 @@
+{
+  "city": "mumbai_calibrated",
+  "scenario": "vax_random",
+  "description": "From day 10, vaccinate 1% of the population per day at random until 40% are covered.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1500,
+  "interventions": [
+    {
+      "kind": "vaccination",
+      "start_day": 10,
+      "trigger": null,
+      "duration_days": null,
+      "strategy": "random",
+      "coverage": 0.4,
+      "rate_per_day": 0.01,
+      "ages": [
+        3,
+        4
+      ],
+      "block_homes": 1000
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.5310371,
+      "p05": 0.5267789,
+      "p95": 0.53347555
+    },
+    "days_over_capacity": {
+      "mean": 44.2,
+      "p05": 43.75,
+      "p95": 44.75
+    },
+    "deaths": {
+      "mean": 4053.8,
+      "p05": 3964.45,
+      "p95": 4128.2
+    },
+    "peak_day": {
+      "mean": 50.5,
+      "p05": 49.0,
+      "p95": 54.05
+    },
+    "peak_hospital_load": {
+      "mean": 4928.75,
+      "p05": 4822.9,
+      "p95": 5035.7
+    },
+    "peak_hospital_ratio": {
+      "mean": 3.2858333333333336,
+      "p05": 3.215266666666667,
+      "p95": 3.3571333333333335
+    },
+    "peak_infections": {
+      "mean": 79043.4,
+      "p05": 77590.7,
+      "p95": 80668.7
+    },
+    "r_initial": {
+      "mean": 2.055597212809909,
+      "p05": 1.8722208715058124,
+      "p95": 2.2063451319777374
+    },
+    "r_max": {
+      "mean": 2.940306946716295,
+      "p05": 2.803048035510169,
+      "p95": 3.0824630888202456
+    },
+    "vaccine_doses": {
+      "mean": 400000.0,
+      "p05": 400000.0,
+      "p95": 400000.0
+    }
+  },
+  "run_hashes": [
+    "47e73e4e559639da",
+    "179e916a30e75692",
+    "4ce43e3899c132a6",
+    "c55582a4c98594bc",
+    "9fa0b90ffa19021b",
+    "d9c560aa00490196",
+    "55e3d7213decd45b",
+    "764fd981f1243eb0",
+    "d12f6336a4595faf",
+    "ad27c9aee7b62ee7",
+    "fbe742a145ff1c8a",
+    "a54ba25775388b3e",
+    "f28bd4c553481452",
+    "eeb7a3be5ce1e4d1",
+    "efea593ae9d697da",
+    "172cc986a5817e64",
+    "5bebc2ac083dc562",
+    "aae7604843b3a558",
+    "03e36d6359a955fd",
+    "dc57f1e62cef4d95"
+  ]
+}

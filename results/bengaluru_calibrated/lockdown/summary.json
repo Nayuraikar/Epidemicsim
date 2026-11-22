@@ -1,0 +1,96 @@
+{
+  "city": "bengaluru_calibrated",
+  "scenario": "lockdown",
+  "description": "Full lockdown (work, school, college, markets) for 28 days once 1% of the population is infectious.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1200,
+  "interventions": [
+    {
+      "kind": "lockdown",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.01
+      },
+      "duration_days": 28
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.17528135,
+      "p05": 0.14055815000000002,
+      "p95": 0.21175535
+    },
+    "days_over_capacity": {
+      "mean": 1.325,
+      "p05": 0.0,
+      "p95": 3.7875000000000005
+    },
+    "deaths": {
+      "mean": 662.2,
+      "p05": 592.9,
+      "p95": 725.35
+    },
+    "peak_day": {
+      "mean": 119.0,
+      "p05": 119.0,
+      "p95": 119.0
+    },
+    "peak_hospital_load": {
+      "mean": 1329.8,
+      "p05": 1037.65,
+      "p95": 1739.5500000000002
+    },
+    "peak_hospital_ratio": {
+      "mean": 1.108166666666667,
+      "p05": 0.8647083333333334,
+      "p95": 1.449625
+    },
+    "peak_infections": {
+      "mean": 35955.45,
+      "p05": 26486.2,
+      "p95": 45428.4
+    },
+    "r_initial": {
+      "mean": 1.9565725122934718,
+      "p05": 1.7923871236782594,
+      "p95": 2.1876016502429776
+    },
+    "r_max": {
+      "mean": 2.733438085136626,
+      "p05": 2.428049670219349,
+      "p95": 3.150846620876498
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "afe3feb5e73cb67a",
+    "2afa44ca8f73b487",
+    "47de973676b72822",
+    "31b1fc0c970f70b1",
+    "c27d2aeec65f39a3",
+    "463265d764ce5d2f",
+    "94348a1866a5a990",
+    "8ad75f48a9ee74e3",
+    "b075250b5a5e10e8",
+    "5d88aca6e87b48c0",
+    "e6c0befb59f6d86e",
+    "65b63d2ae0460b42",
+    "a4dd481ca933dce6",
+    "d83065a04a70742f",
+    "5b32c80f7aa83723",
+    "9c50e6485b4c039c",
+    "6d2e5af397760640",
+    "8bae9740dfe8d772",
+    "f161979450fc995f",
+    "65acddd106c62995"
+  ]
+}

@@ -66,6 +66,15 @@ impl BackendFlags {
     }
 }
 
+/// `--config` wins; else `--params default` = built-in defaults, otherwise config/<params>.toml.
+fn load_cfg(config: &Option<PathBuf>, params: &str) -> Result<Config, Box<dyn std::error::Error>> {
+    match (config, params) {
+        (Some(p), _) => Config::from_file(p),
+        (None, "default") => Ok(Config::default()),
+        (None, name) => Config::from_file(&PathBuf::from(format!("config/{name}.toml"))),
+    }
+}
+
 #[derive(Args)]
 struct RunArgs {
     #[arg(long, default_value = "sequential")]
@@ -78,6 +87,9 @@ struct RunArgs {
     /// TOML config (all fields optional); flags below override it
     #[arg(long)]
     config: Option<PathBuf>,
+    /// Named parameter set: `default` (built-in) or a file config/<name>.toml, e.g. `calibrated`
+    #[arg(long, default_value = "default")]
+    params: String,
     /// Load a prebuilt city from <cities-dir>/<city>/ (see `pipeline`); ignores --agents
     #[arg(long)]
     city: Option<String>,
@@ -95,10 +107,7 @@ struct RunArgs {
 }
 
 fn run(a: RunArgs) -> Result<(), Box<dyn std::error::Error>> {
-    let mut cfg = match &a.config {
-        Some(p) => Config::from_file(p)?,
-        None => Config::default(),
-    };
+    let mut cfg = load_cfg(&a.config, &a.params)?;
     cfg.agents = a.agents.unwrap_or(cfg.agents);
     cfg.days = a.days.unwrap_or(cfg.days);
     cfg.seed = a.seed.unwrap_or(cfg.seed);
@@ -116,9 +125,10 @@ fn run(a: RunArgs) -> Result<(), Box<dyn std::error::Error>> {
     out.summary.write_json(&a.out.join("summary.json"))?;
     let s = &out.summary;
     println!(
-        "agents={} days={} seed={} peak_inf={}@d{} peak_hosp={}@d{} attack={:.1}% deaths={} hash={}",
+        "agents={} days={} seed={} peak_inf={}@d{} peak_hosp={}@d{} attack={:.1}% deaths={} hash={} doubling_d={:.2}",
         s.agents, s.days, s.seed, s.peak_infectious, s.peak_infectious_day,
-        s.peak_hospital_load, s.peak_hospital_day, s.attack_rate * 100.0, s.total_deaths, s.hash
+        s.peak_hospital_load, s.peak_hospital_day, s.attack_rate * 100.0, s.total_deaths, s.hash,
+        std::f64::consts::LN_2 / epidemicsim_scenarios::calibrate::growth_rate(&out.stats)
     );
     Ok(())
 }
@@ -188,6 +198,9 @@ struct CompareArgs {
     /// TOML config (all fields optional); flags below override it
     #[arg(long)]
     config: Option<PathBuf>,
+    /// Named parameter set: `default` (built-in) or a file config/<name>.toml, e.g. `calibrated`
+    #[arg(long, default_value = "default")]
+    params: String,
     /// Synthetic city size (ignored with --city)
     #[arg(long)]
     agents: Option<usize>,
@@ -212,10 +225,7 @@ struct CompareArgs {
 
 fn compare(a: CompareArgs) -> Result<(), Box<dyn std::error::Error>> {
     use epidemicsim_scenarios::{compare::CompareOpts, EnsembleOpts, WorldSource};
-    let mut cfg = match &a.config {
-        Some(p) => Config::from_file(p)?,
-        None => Config::default(),
-    };
+    let mut cfg = load_cfg(&a.config, &a.params)?;
     cfg.agents = a.agents.unwrap_or(cfg.agents);
     cfg.days = a.days.unwrap_or(cfg.days);
     cfg.seed = a.seed.unwrap_or(cfg.seed);
@@ -248,13 +258,21 @@ fn compare(a: CompareArgs) -> Result<(), Box<dyn std::error::Error>> {
                     world: Box::new(world),
                     infected_frac: frac,
                 },
-                name.clone(),
+                if a.params == "default" {
+                    name.clone()
+                } else {
+                    format!("{name}_{}", a.params)
+                },
                 beds,
             )
         }
         None => (
             WorldSource::Synth(Box::new(cfg.clone())),
-            "synthetic".to_string(),
+            if a.params == "default" {
+                "synthetic".to_string()
+            } else {
+                format!("synthetic_{}", a.params)
+            },
             a.beds_per_1000 * cfg.agents as f64 / 1000.0,
         ),
     };
@@ -789,12 +807,126 @@ enum Command {
     Serve(ServeArgs),
     /// Pre-bake replay frames under results/<city>/<scenario>/frames
     Bake(BakeArgs),
+    /// Rough calibration of beta / asymptomatic fraction to early growth (writes config/calibrated.toml)
+    Calibrate(CalibrateArgs),
+    /// One-at-a-time +-20% sensitivity on a synthetic sample (writes results/sensitivity/synthetic.json)
+    Sensitivity(SensitivityArgs),
     /// Run everything (stub)
     All,
 }
 
+#[derive(Args)]
+struct CalibrateArgs {
+    #[arg(long, default_value_t = 100_000)]
+    agents: usize,
+    #[arg(long, default_value_t = 5)]
+    runs: usize,
+    #[arg(long, default_value_t = 40)]
+    days: u32,
+    #[arg(long, default_value_t = 42)]
+    seed: u64,
+    /// ASSUMED illustrative target (not a citation): early doubling time in days
+    #[arg(long, default_value_t = 5.0)]
+    target_doubling: f64,
+    /// ASSUMED illustrative target (not a citation): asymptomatic share of infections
+    #[arg(long, default_value_t = 0.40)]
+    target_asym: f64,
+    #[arg(long, default_value = "config/calibrated.toml")]
+    out: PathBuf,
+    #[arg(long, default_value = "results/calibration/grid.json")]
+    grid_out: PathBuf,
+}
+
+fn calibrate(a: CalibrateArgs) -> Result<(), Box<dyn std::error::Error>> {
+    use epidemicsim_scenarios::calibrate::{run_calibration, CalibrateOpts, Targets};
+    let base = Config {
+        agents: a.agents,
+        seed: a.seed,
+        ..Config::default()
+    };
+    let b = run_calibration(
+        &base,
+        &CalibrateOpts {
+            runs: a.runs,
+            days: a.days,
+            targets: Targets {
+                doubling_days: a.target_doubling,
+                asym_share: a.target_asym,
+                doubling_tol: 0.5,
+                share_tol: 0.05,
+            },
+            toml_out: a.out.clone(),
+            json_out: a.grid_out,
+        },
+    )?;
+    println!(
+        "best: beta x{} asym x{} (share {:.3}) doubling {:.2}+-{:.2} d, loss {:.3}; wrote {}",
+        b.beta_scale,
+        b.asym_scale,
+        b.asym_share,
+        b.doubling_days_mean,
+        b.doubling_days_sd,
+        b.loss,
+        a.out.display()
+    );
+    Ok(())
+}
+
+#[derive(Args)]
+struct SensitivityArgs {
+    #[arg(long, default_value = "calibrated")]
+    params: String,
+    #[arg(long, default_value_t = 100_000)]
+    agents: usize,
+    #[arg(long, default_value_t = 10)]
+    runs: usize,
+    #[arg(long, default_value_t = 120)]
+    days: u32,
+    #[arg(long, default_value_t = 42)]
+    seed: u64,
+    #[arg(long, default_value_t = 0.2)]
+    delta: f64,
+    #[arg(long, default_value = "scenarios")]
+    scenarios_dir: PathBuf,
+    #[arg(long, default_value = "results/sensitivity/synthetic.json")]
+    out: PathBuf,
+}
+
+fn sensitivity(a: SensitivityArgs) -> Result<(), Box<dyn std::error::Error>> {
+    let mut cfg = load_cfg(&None, &a.params)?;
+    cfg.agents = a.agents;
+    cfg.seed = a.seed;
+    cfg.days = a.days;
+    let scs = epidemicsim_scenarios::load_all(&a.scenarios_dir)?;
+    let o = epidemicsim_scenarios::EnsembleOpts {
+        runs: a.runs,
+        days: a.days,
+        base_seed: a.seed,
+        hospital_capacity: (2.0 * a.agents as f64 / 1000.0).ceil() as u32,
+    };
+    let rows = epidemicsim_scenarios::calibrate::run_sensitivity(
+        &cfg, &scs, a.delta, &o, &a.params, &a.out,
+    )?;
+    println!("wrote {} ({} parameters)", a.out.display(), rows.len());
+    Ok(())
+}
+
 fn main() {
     let cli = Cli::parse();
+    if let Some(Command::Calibrate(a)) = cli.command {
+        if let Err(e) = calibrate(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
+    if let Some(Command::Sensitivity(a)) = cli.command {
+        if let Err(e) = sensitivity(a) {
+            eprintln!("error: {e}");
+            std::process::exit(1);
+        }
+        return;
+    }
     if let Some(Command::Run(a)) = cli.command {
         if let Err(e) = run(a) {
             eprintln!("error: {e}");
@@ -844,7 +976,10 @@ fn main() {
             Command::Compare(_) => "compare",
             Command::Bench(_) => "bench",
             Command::Pipeline(_) => "pipeline",
-            Command::Serve(_) | Command::Bake(_) => unreachable!(),
+            Command::Serve(_)
+            | Command::Bake(_)
+            | Command::Calibrate(_)
+            | Command::Sensitivity(_) => unreachable!(),
             Command::All => "all",
         };
         println!("{name}: not implemented yet");

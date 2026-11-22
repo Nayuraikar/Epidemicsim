@@ -260,6 +260,51 @@ else:
 sec("9. Statistics, weak scaling, roofline and memory layout", "Repeated measurements (10 reps) with confidence intervals; weak scaling; a measured CPU roofline; SoA vs AoS and agent ordering. Details and charts: Lab tabs Performance, MPI and Memory.",
     body, "See the Lab for the data-derived findings text; where a CI overlap makes a ranking insignificant the Lab says so.")
 
+# 10 calibration, 11 sensitivity, 12 inter-city
+cg, tr = js("calibration/grid.json"), js("calibration/transfer.json")
+if cg:
+    b = cg["best"]
+    cmp_ = {c: js(f"{c}/comparison.json") for c in ("mumbai", "mumbai_calibrated", "bengaluru", "bengaluru_calibrated")}
+    def sc(c, name, m):
+        d = cmp_.get(c)
+        r = next((r for r in d["scenarios"] if r["scenario"] == name), None) if d else None
+        return r["metrics"][m]["mean"] if r else None
+    rows = []
+    for c in ("mumbai", "bengaluru"):
+        for lab, k in (("default", c), ("calibrated", c + "_calibrated")):
+            d = cmp_.get(k)
+            if not d:
+                continue
+            ba, ia = sc(k, "baseline", "attack_rate"), sc(k, "isolation", "attack_rate")
+            rows.append([c, lab, d["runs"], f(sc(k, "baseline", "r_initial")), f"{ba * 100:.1f}%" if ba is not None else "n/a", f(sc(k, "baseline", "peak_infections"), 0), f"{ia * 100:.1f}%" if ia is not None else "n/a"])
+    body = (f"Target (ASSUMED, illustrative, not a citation): early doubling time {cg['target_doubling_days']} days and asymptomatic share {cg['target_asym_share']}. "
+            f"Grid on {cg['agents']:,} synthetic agents, {cg['runs_per_point']} runs per point, base seed {cg['base_seed']}, 8 beta scales x 6 asymptomatic scales (coarse) + 11 x 6 (fine). "
+            f"Default parameters double in {f(cg['default_doubling_days'])} days. Fitted: beta x{b['beta_scale']}, P(asymptomatic) x{b['asym_scale']} (share {f(b['asym_share'])}), doubling {f(b['doubling_days_mean'])} +/- {f(b['doubling_days_sd'])} d (sd over runs).\n\n"
+            + table(["city", "params", "runs", "R initial (first 7 d)", "baseline attack rate", "baseline peak A+I", "isolation attack rate"], rows))
+    if tr:
+        body += "\n\nTransfer to the real city graphs (1M agents, 5 seeds each): " + "; ".join(f"{c} doubling {f(sum(tr[c]['doubling_days']) / len(tr[c]['doubling_days']))} d (range {min(tr[c]['doubling_days'])}-{max(tr[c]['doubling_days'])})" for c in ("mumbai", "bengaluru")) + "."
+    sec("10. Calibration (rough)", "Grid search of the beta scale and asymptomatic fraction against the assumed target above, early growth fitted by log-linear regression on daily new infections; calibrated values live in config/calibrated.toml, selected with `--params calibrated`; defaults (and golden hashes) untouched. Details: docs/CALIBRATION.md.",
+        body, "What it shows: the model can reproduce an assumed 5-day doubling time with beta x1.6, and that fit transfers approximately (within the 4-6 day band) to the two city graphs even though it was fitted on synthetic cities. What it does not show: the target is an assumption, only growth rate was fitted (no deaths, hospital load or timing of a peak), the two parameters are only weakly identified by one growth rate, attack rates near 70% follow from the 5-day doubling and the model's SEIR structure, and nothing here is a forecast.")
+else:
+    S.append("## 10. Calibration (rough)\n\n" + NOT_RUN + "\n")
+
+sn = js("sensitivity/synthetic.json")
+if sn:
+    n = sn["agents"]
+    rows = []
+    for r in sn["rows"]:
+        d = lambda k, m: (r[k][m] - r["base"][m])
+        rows.append([r["parameter"], r["scenario"], f"{f(r['low_value'])} / {f(r['high_value'])}", f"{d('low', 'attack_rate') * 100:+.2f}", f"{d('high', 'attack_rate') * 100:+.2f}", f"{d('low', 'peak_infections') / n * 100:+.2f}", f"{d('high', 'peak_infections') / n * 100:+.2f}"])
+    big_ = max(sn["rows"], key=lambda r: max(abs(r["low"]["attack_rate"] - r["base"]["attack_rate"]), abs(r["high"]["attack_rate"] - r["base"]["attack_rate"])))
+    zero = [r["parameter"] for r in sn["rows"] if max(abs(r[k]["attack_rate"] - r["base"]["attack_rate"]) for k in ("low", "high")) < 0.005]
+    sec("11. Sensitivity", f"One-at-a-time -20% / +20% of each parameter, {sn['runs']} runs per setting (paired seeds from {sn['base_seed']}), {n:,} synthetic agents, {sn['days']} days, {sn['backend']} backend, parameter set {sn['params']}. Each parameter is exercised in the scenario named in its row; deltas are vs that scenario's own central run (percentage points of the population). Tornado chart: Lab tab Model.",
+        table(["parameter", "scenario", "-20% / +20% value", "d attack rate pp (-20%)", "(+20%)", "d peak A+I pp (-20%)", "(+20%)"], rows),
+        f"Largest attack-rate swing: {big_['parameter']}. Attack-rate change under 0.5 pp either way (not distinguishable from noise at this run count): {', '.join(zero) if zero else 'none'}. In the state machine H follows I (hospitalisation happens at the end of the symptomatic period), so these parameters have no direct route into transmission; they change deaths and hospital load, which this table does not show. Only the calibrated set was varied; parameters were not varied jointly.")
+else:
+    S.append("## 11. Sensitivity\n\n" + NOT_RUN + "\n")
+
+S.append("## 12. Inter-city travel\n\n" + NOT_RUN + " Not implemented yet (deferred; see docs/PROGRESS.md).\n")
+
 # summary + limitations
 mach = js("kaggle/machine.json") or {}
 lim = f"""## Threats to validity
@@ -271,7 +316,7 @@ lim = f"""## Threats to validity
 
 ## Limitations
 
-- **Epidemic parameters are uncalibrated.** Transmission, durations, severity and scenario effects are illustrative defaults, not fitted to any real outbreak; absolute epidemic numbers must not be read as forecasts.
+- **Epidemic parameters are illustrative.** The built-in defaults are hand-tuned. config/calibrated.toml is a rough fit of beta and the asymptomatic fraction to an assumed doubling time (section 10); durations, severity and scenario effects are not fitted to any real outbreak, and no number here is a forecast.
 - **Kaggle run settings.** Kaggle numbers come from a shared notebook: {mach.get('gpu', 'GPU n/a').splitlines()[0] if mach.get('gpu') else 'GPU n/a'} (x2 listed), {mach.get('cpu', 'CPU n/a')} with {mach.get('cpu_cores', '?')} cores, {mach.get('os', '?')}, run {mach.get('date_utc', '?')}. Benchmarks use 20 days (80 steps), 5 reps + 1 warm-up, seed 42, 100k and 1M agents only; the Xeon thread sweep is 1 and 4 threads. Other tenants may add noise.
 - **ncu unavailable.** Nsight Compute could not read GPU counters ({err or 'no ncu output'}), so there is no measured branch efficiency.
 - OpenACC was attempted on Kaggle but no OpenACC-capable compiler (NVHPC) was available; no results.

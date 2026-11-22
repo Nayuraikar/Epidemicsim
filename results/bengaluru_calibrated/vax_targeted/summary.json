@@ -1,0 +1,102 @@
+{
+  "city": "bengaluru_calibrated",
+  "scenario": "vax_targeted",
+  "description": "Same doses as vax_random (40% of the population), but only to ages 40+ (age groups 2-4).",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1200,
+  "interventions": [
+    {
+      "kind": "vaccination",
+      "start_day": 10,
+      "trigger": null,
+      "duration_days": null,
+      "strategy": "age",
+      "coverage": 0.4,
+      "rate_per_day": 0.01,
+      "ages": [
+        2,
+        3,
+        4
+      ],
+      "block_homes": 1000
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.49259439999999993,
+      "p05": 0.4906672,
+      "p95": 0.4946011
+    },
+    "days_over_capacity": {
+      "mean": 32.2125,
+      "p05": 30.975,
+      "p95": 33.275
+    },
+    "deaths": {
+      "mean": 1285.0,
+      "p05": 1210.85,
+      "p95": 1353.25
+    },
+    "peak_day": {
+      "mean": 55.95,
+      "p05": 55.95,
+      "p95": 56.0
+    },
+    "peak_hospital_load": {
+      "mean": 1850.6,
+      "p05": 1773.7,
+      "p95": 1959.75
+    },
+    "peak_hospital_ratio": {
+      "mean": 1.5421666666666665,
+      "p05": 1.4780833333333334,
+      "p95": 1.6331250000000002
+    },
+    "peak_infections": {
+      "mean": 70858.4,
+      "p05": 69039.7,
+      "p95": 72419.1
+    },
+    "r_initial": {
+      "mean": 1.9565725122934718,
+      "p05": 1.7923871236782594,
+      "p95": 2.1876016502429776
+    },
+    "r_max": {
+      "mean": 2.427153691916028,
+      "p05": 2.3332681428218036,
+      "p95": 2.536932036260728
+    },
+    "vaccine_doses": {
+      "mean": 400000.0,
+      "p05": 400000.0,
+      "p95": 400000.0
+    }
+  },
+  "run_hashes": [
+    "feaf5b49ae70bd89",
+    "7e0d8ffc38b1b029",
+    "90008c6812b348a7",
+    "61fb8cd89e76c094",
+    "b9e1a409859b2c10",
+    "77c96c10ac9d3288",
+    "dce4b35a3f02d462",
+    "5a41526562c0dc1b",
+    "ead3fcb5324e2800",
+    "2c96de1a7aaee03f",
+    "2c73719d210445da",
+    "475dcf1af9a433e5",
+    "e7e5fc2c26419a60",
+    "af55479d76c5df57",
+    "90808c3448bb1840",
+    "3e6964cd1e0bb406",
+    "ecbdc9bb8bfa2a9f",
+    "9eed27ef0132fe96",
+    "71813454aafbdc89",
+    "e911ad16f90693e1"
+  ]
+}

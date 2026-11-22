@@ -44,6 +44,10 @@
   - `bench --reps` default 10; mean/median/std/95% CI (Student t) + `pmset` thermal note in every report; `scripts/bench_stats.sh` re-ran seq/ILP/rayon x3/OpenMP x3/NEON/Metal; Lab shows error bars and "not significant" when CIs overlap.
   - `bench --suite weak|weak-mpi` (125k agents/thread, 8 runs/rank) -> results/scaling/; Gustafson fit next to Amdahl. `--suite roofline` -> results/roofline/mac.json (GPU placeholder); `--suite layout` -> results/layout/. New Lab "Memory" tab; REPORT.md section 9 + Threats to validity.
   - Caveats: Kaggle files still 5 reps/no CI; 1-thread kernel results vary run to run (P/E core placement); roofs are simple-loop measurements.
+- [x] Phase 10 (items 1-2 of 3): calibration + sensitivity; defaults/golden untouched. `--params calibrated` (config/calibrated.toml), `calibrate`, `sensitivity`, Lab "Model" tab, docs/CALIBRATION.md.
+  - Fit to an ASSUMED 5-day doubling (beta x1.6, asym x1.1; 4.98 +/- 0.21 d on 100k synthetic); real cities 4.6 (Mumbai) / 5.5 d (Bengaluru). Isolation attack 72.9% -> 48.8% (Mumbai calibrated): model structure, not compliance.
+  - Sensitivity (calibrated, 100k synthetic, 10 runs): beta dominates; hospitalisation/fatality rates change attack rate < 0.5 pp.
+  - NOT DONE: item 3 inter-city travel (matrix, ensemble seeding, MPI rank per city, hash check, Lab view); say "continue".
 
 ## Findings
 

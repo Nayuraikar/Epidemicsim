@@ -1,0 +1,6 @@
+# Rough calibration, NOT a forecast. See docs/CALIBRATION.md.
+# Fitted on 100000 synthetic agents, 5 runs per grid point, early growth from day 6 (up to day 30 or 5% cumulative attack).
+# beta_scale 1.6 and asym_scale 1.1 multiply the built-in defaults.
+[disease]
+beta = [0.04800, 0.03200, 0.03200, 0.00000]
+p_asymptomatic = [0.5500, 0.4400, 0.3300, 0.2750, 0.2200]

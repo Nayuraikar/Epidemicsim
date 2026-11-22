@@ -1,0 +1,1177 @@
+{
+  "note": "Rough calibration to an assumed, illustrative target; not a forecast.",
+  "agents": 100000,
+  "days": 40,
+  "runs_per_point": 5,
+  "base_seed": 42,
+  "fit_window_days": [
+    6,
+    30
+  ],
+  "target_doubling_days": 5.0,
+  "target_asym_share": 0.4,
+  "default_asym_share": 0.37,
+  "stages": [
+    [
+      "coarse",
+      [
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.08677767304940383,
+          "doubling_days_mean": 8.101829130652707,
+          "doubling_days_sd": 1.0297684247160388,
+          "attack_rate_at_horizon": 0.02580400000000003,
+          "loss": 51.15897582306292
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.07464703334512199,
+          "doubling_days_mean": 9.874494120946775,
+          "doubling_days_sd": 2.896159068193562,
+          "attack_rate_at_horizon": 0.020503999999999988,
+          "loss": 99.36917174057866
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.06404811265867252,
+          "doubling_days_mean": 12.13392974485202,
+          "doubling_days_sd": 4.4389515368852965,
+          "attack_rate_at_horizon": 0.015279999999999983,
+          "loss": 203.93181441793766
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.05905952907501897,
+          "doubling_days_mean": 13.678556980913688,
+          "doubling_days_sd": 5.810438458329983,
+          "attack_rate_at_horizon": 0.01371,
+          "loss": 301.2890050838629
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.054707545965691884,
+          "doubling_days_mean": 15.162877327429579,
+          "doubling_days_sd": 6.957745800828847,
+          "attack_rate_at_horizon": 0.012356000000000011,
+          "loss": 413.91070228952873
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.042170230322169995,
+          "doubling_days_mean": 25.034986074265873,
+          "doubling_days_sd": 17.29547105811279,
+          "attack_rate_at_horizon": 0.008954000000000018,
+          "loss": 1611.17226798411
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.14995937271004828,
+          "doubling_days_mean": 4.625590346403078,
+          "doubling_days_sd": 0.13961135767322416,
+          "attack_rate_at_horizon": 0.176552,
+          "loss": 13.234330354826277
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.1429858407027293,
+          "doubling_days_mean": 4.852165479284956,
+          "doubling_days_sd": 0.16381419494814203,
+          "attack_rate_at_horizon": 0.14285200000000003,
+          "loss": 4.413820182060186
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.13431135818422063,
+          "doubling_days_mean": 5.171214999841884,
+          "doubling_days_sd": 0.2598831212216907,
+          "attack_rate_at_horizon": 0.10934999999999999,
+          "loss": 0.4772583046834259
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.13040232710748043,
+          "doubling_days_mean": 5.331016717922798,
+          "doubling_days_sd": 0.3251027291601692,
+          "attack_rate_at_horizon": 0.09761,
+          "loss": 0.4578882701775233
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.12556212520362778,
+          "doubling_days_mean": 5.542798878158263,
+          "doubling_days_sd": 0.4025190594031311,
+          "attack_rate_at_horizon": 0.082752,
+          "loss": 1.9529224885194725
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.1160358442891958,
+          "doubling_days_mean": 5.991002022694017,
+          "doubling_days_sd": 0.35985380017105156,
+          "attack_rate_at_horizon": 0.06280000000000001,
+          "loss": 9.497940035934533
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.20073964178411546,
+          "doubling_days_mean": 3.4538749615416733,
+          "doubling_days_sd": 0.06261382437796519,
+          "attack_rate_at_horizon": 0.48725199999999996,
+          "loss": 22.235610538191057
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.1895365992277646,
+          "doubling_days_mean": 3.659367366595742,
+          "doubling_days_sd": 0.10181482653966124,
+          "attack_rate_at_horizon": 0.419492,
+          "loss": 11.515583430993743
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.18103204137139753,
+          "doubling_days_mean": 3.833930466370451,
+          "doubling_days_sd": 0.1529314896878528,
+          "attack_rate_at_horizon": 0.3522,
+          "loss": 5.798872629036134
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.17712385450344967,
+          "doubling_days_mean": 3.9185119110889,
+          "doubling_days_sd": 0.15589988601316507,
+          "attack_rate_at_horizon": 0.321716,
+          "loss": 4.698065945826333
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.17139107033451673,
+          "doubling_days_mean": 4.049656721215694,
+          "doubling_days_sd": 0.16139045017761128,
+          "attack_rate_at_horizon": 0.284014,
+          "loss": 4.387009390122018
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.15920405152765246,
+          "doubling_days_mean": 4.367368121604924,
+          "doubling_days_sd": 0.2685947783207166,
+          "attack_rate_at_horizon": 0.22042799999999999,
+          "loss": 7.170492374246727
+        },
+        {
+          "beta_scale": 2.5,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.24255758698940583,
+          "doubling_days_mean": 2.859075200165909,
+          "doubling_days_sd": 0.07118274427045539,
+          "attack_rate_at_horizon": 0.7582500000000001,
+          "loss": 31.007835994178578
+        },
+        {
+          "beta_scale": 2.5,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.23024207559226348,
+          "doubling_days_mean": 3.011335835768059,
+          "doubling_days_sd": 0.055953915197197945,
+          "attack_rate_at_horizon": 0.705976,
+          "loss": 20.145540632401296
+        },
+        {
+          "beta_scale": 2.5,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.2180804660150188,
+          "doubling_days_mean": 3.180252217251007,
+          "doubling_days_sd": 0.08556216323417401,
+          "attack_rate_at_horizon": 0.6417379999999999,
+          "loss": 13.60592797127951
+        },
+        {
+          "beta_scale": 2.5,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.21184708291645987,
+          "doubling_days_mean": 3.2756179381078034,
+          "doubling_days_sd": 0.12387164514670698,
+          "attack_rate_at_horizon": 0.607094,
+          "loss": 11.913573981502331
+        },
+        {
+          "beta_scale": 2.5,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.20859999113270158,
+          "doubling_days_mean": 3.326921225602318,
+          "doubling_days_sd": 0.13130378694932812,
+          "attack_rate_at_horizon": 0.57284,
+          "loss": 11.971170341360194
+        },
+        {
+          "beta_scale": 2.5,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.2023392683027486,
+          "doubling_days_mean": 3.42873632936528,
+          "doubling_days_sd": 0.1149475280969105,
+          "attack_rate_at_horizon": 0.488236,
+          "loss": 15.445078090625973
+        },
+        {
+          "beta_scale": 3.0,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.2754815561404239,
+          "doubling_days_mean": 2.5171403875033955,
+          "doubling_days_sd": 0.05616096161076355,
+          "attack_rate_at_horizon": 0.895776,
+          "loss": 37.33196742146716
+        },
+        {
+          "beta_scale": 3.0,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.26394188111602424,
+          "doubling_days_mean": 2.6271982492228947,
+          "doubling_days_sd": 0.059055836765920446,
+          "attack_rate_at_horizon": 0.867072,
+          "loss": 26.847152593963585
+        },
+        {
+          "beta_scale": 3.0,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.2520222837404442,
+          "doubling_days_mean": 2.7520734099365654,
+          "doubling_days_sd": 0.07712912996840676,
+          "attack_rate_at_horizon": 0.828496,
+          "loss": 20.572695817256882
+        },
+        {
+          "beta_scale": 3.0,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.2464034507668092,
+          "doubling_days_mean": 2.8158076461414376,
+          "doubling_days_sd": 0.0979281301005215,
+          "attack_rate_at_horizon": 0.8063480000000001,
+          "loss": 19.10238495461683
+        },
+        {
+          "beta_scale": 3.0,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.2426042372889285,
+          "doubling_days_mean": 2.8594756875715097,
+          "doubling_days_sd": 0.0918083586072163,
+          "attack_rate_at_horizon": 0.782882,
+          "loss": 19.10177732838984
+        },
+        {
+          "beta_scale": 3.0,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.22834578471141764,
+          "doubling_days_mean": 3.0372925347217516,
+          "doubling_days_sd": 0.08219916867517978,
+          "attack_rate_at_horizon": 0.7155900000000001,
+          "loss": 20.978482377035867
+        },
+        {
+          "beta_scale": 3.5,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.30335309950709244,
+          "doubling_days_mean": 2.2866419625038374,
+          "doubling_days_sd": 0.06991142878597956,
+          "attack_rate_at_horizon": 0.9524779999999999,
+          "loss": 42.12284735858012
+        },
+        {
+          "beta_scale": 3.5,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.2932573852047339,
+          "doubling_days_mean": 2.3657597151827896,
+          "doubling_days_sd": 0.08057034297344554,
+          "attack_rate_at_horizon": 0.9402760000000001,
+          "loss": 32.08328751261543
+        },
+        {
+          "beta_scale": 3.5,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.28467875319054387,
+          "doubling_days_mean": 2.436707912947768,
+          "doubling_days_sd": 0.0761343378946563,
+          "attack_rate_at_horizon": 0.9217700000000001,
+          "loss": 26.641865294178352
+        },
+        {
+          "beta_scale": 3.5,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.27904405979007524,
+          "doubling_days_mean": 2.4860947145056373,
+          "doubling_days_sd": 0.08132980434810627,
+          "attack_rate_at_horizon": 0.911526,
+          "loss": 25.29847913774597
+        },
+        {
+          "beta_scale": 3.5,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.2730448451531705,
+          "doubling_days_mean": 2.5411646121633007,
+          "doubling_days_sd": 0.0912236167747767,
+          "attack_rate_at_horizon": 0.899178,
+          "loss": 24.957885857912203
+        },
+        {
+          "beta_scale": 3.5,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.25898462706409114,
+          "doubling_days_mean": 2.678087723754457,
+          "doubling_days_sd": 0.07546571617461492,
+          "attack_rate_at_horizon": 0.8625700000000001,
+          "loss": 27.13470647431904
+        },
+        {
+          "beta_scale": 4.0,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.3177879795509092,
+          "doubling_days_mean": 2.1827763183748115,
+          "doubling_days_sd": 0.06677888229265361,
+          "attack_rate_at_horizon": 0.9742520000000001,
+          "loss": 44.42059708923914
+        },
+        {
+          "beta_scale": 4.0,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.31461720587077485,
+          "doubling_days_mean": 2.2035799703691508,
+          "doubling_days_sd": 0.03461900551917679,
+          "attack_rate_at_horizon": 0.9681960000000001,
+          "loss": 35.606259928482395
+        },
+        {
+          "beta_scale": 4.0,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.30529477675994743,
+          "doubling_days_mean": 2.2714974381227555,
+          "doubling_days_sd": 0.05558409202176512,
+          "attack_rate_at_horizon": 0.959428,
+          "loss": 30.138904920682744
+        },
+        {
+          "beta_scale": 4.0,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.2991520779113238,
+          "doubling_days_mean": 2.318705109862338,
+          "doubling_days_sd": 0.06956964784924621,
+          "attack_rate_at_horizon": 0.9545440000000001,
+          "loss": 28.77696915151335
+        },
+        {
+          "beta_scale": 4.0,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.293991722203887,
+          "doubling_days_mean": 2.358287859273237,
+          "doubling_days_sd": 0.04125943935172424,
+          "attack_rate_at_horizon": 0.9481819999999999,
+          "loss": 28.68897213785271
+        },
+        {
+          "beta_scale": 4.0,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.28365213205755324,
+          "doubling_days_mean": 2.4446812675291634,
+          "doubling_days_sd": 0.05583066669715058,
+          "attack_rate_at_horizon": 0.9303000000000001,
+          "loss": 31.68821529806545
+        },
+        {
+          "beta_scale": 5.0,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.35814115275423863,
+          "doubling_days_mean": 1.93639787597117,
+          "doubling_days_sd": 0.04887638111752687,
+          "attack_rate_at_horizon": 0.9895719999999999,
+          "loss": 50.216231897415845
+        },
+        {
+          "beta_scale": 5.0,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.3523600515981699,
+          "doubling_days_mean": 1.9679925650653296,
+          "doubling_days_sd": 0.04536343024877234,
+          "attack_rate_at_horizon": 0.9876579999999999,
+          "loss": 41.09867634199648
+        },
+        {
+          "beta_scale": 5.0,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.3425597150005082,
+          "doubling_days_mean": 2.0256899980160057,
+          "doubling_days_sd": 0.07535587093587524,
+          "attack_rate_at_horizon": 0.984746,
+          "loss": 35.74607995160811
+        },
+        {
+          "beta_scale": 5.0,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.3332159109032635,
+          "doubling_days_mean": 2.080862993461374,
+          "doubling_days_sd": 0.04236075623041134,
+          "attack_rate_at_horizon": 0.9831860000000001,
+          "loss": 34.10504345177316
+        },
+        {
+          "beta_scale": 5.0,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.32873208719931546,
+          "doubling_days_mean": 2.1100916841538195,
+          "doubling_days_sd": 0.06409559402468981,
+          "attack_rate_at_horizon": 0.9814019999999999,
+          "loss": 34.18068029598763
+        },
+        {
+          "beta_scale": 5.0,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.324748081618225,
+          "doubling_days_mean": 2.134628480201085,
+          "doubling_days_sd": 0.02379194163353085,
+          "attack_rate_at_horizon": 0.976362,
+          "loss": 38.41101578589898
+        }
+      ]
+    ],
+    [
+      "fine",
+      [
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.08677767304940383,
+          "doubling_days_mean": 8.101829130652707,
+          "doubling_days_sd": 1.0297684247160388,
+          "attack_rate_at_horizon": 0.02580400000000003,
+          "loss": 51.15897582306292
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.07464703334512199,
+          "doubling_days_mean": 9.874494120946775,
+          "doubling_days_sd": 2.896159068193562,
+          "attack_rate_at_horizon": 0.020503999999999988,
+          "loss": 99.36917174057866
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.06404811265867252,
+          "doubling_days_mean": 12.13392974485202,
+          "doubling_days_sd": 4.4389515368852965,
+          "attack_rate_at_horizon": 0.015279999999999983,
+          "loss": 203.93181441793766
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.05905952907501897,
+          "doubling_days_mean": 13.678556980913688,
+          "doubling_days_sd": 5.810438458329983,
+          "attack_rate_at_horizon": 0.01371,
+          "loss": 301.2890050838629
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.054707545965691884,
+          "doubling_days_mean": 15.162877327429579,
+          "doubling_days_sd": 6.957745800828847,
+          "attack_rate_at_horizon": 0.012356000000000011,
+          "loss": 413.91070228952873
+        },
+        {
+          "beta_scale": 1.0,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.042170230322169995,
+          "doubling_days_mean": 25.034986074265873,
+          "doubling_days_sd": 17.29547105811279,
+          "attack_rate_at_horizon": 0.008954000000000018,
+          "loss": 1611.17226798411
+        },
+        {
+          "beta_scale": 1.1,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.10344018198996616,
+          "doubling_days_mean": 6.752733913649597,
+          "doubling_days_sd": 0.6405300271333467,
+          "attack_rate_at_horizon": 0.041226000000000006,
+          "loss": 24.961904688229737
+        },
+        {
+          "beta_scale": 1.1,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.09280818193826132,
+          "doubling_days_mean": 7.645542263420443,
+          "doubling_days_sd": 1.3305087806569806,
+          "attack_rate_at_horizon": 0.033109999999999994,
+          "loss": 32.32197547017503
+        },
+        {
+          "beta_scale": 1.1,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.08408959408105177,
+          "doubling_days_mean": 8.507471308881062,
+          "doubling_days_sd": 1.6001642142468249,
+          "attack_rate_at_horizon": 0.024950000000000007,
+          "loss": 49.569419930495314
+        },
+        {
+          "beta_scale": 1.1,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.07915661926317304,
+          "doubling_days_mean": 9.087538731932975,
+          "doubling_days_sd": 1.871964996252421,
+          "attack_rate_at_horizon": 0.02210399999999999,
+          "loss": 66.85149154020893
+        },
+        {
+          "beta_scale": 1.1,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.0728292964544757,
+          "doubling_days_mean": 9.963424825012225,
+          "doubling_days_sd": 2.4033016495578425,
+          "attack_rate_at_horizon": 0.018968000000000006,
+          "loss": 99.31674397419056
+        },
+        {
+          "beta_scale": 1.1,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.060305392129229474,
+          "doubling_days_mean": 12.64002635817491,
+          "doubling_days_sd": 4.1513185999871975,
+          "attack_rate_at_horizon": 0.013678000000000013,
+          "loss": 239.04961101442956
+        },
+        {
+          "beta_scale": 1.2,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.11908047790354712,
+          "doubling_days_mean": 5.843411801159293,
+          "doubling_days_sd": 0.3968178337872183,
+          "attack_rate_at_horizon": 0.06370400000000001,
+          "loss": 15.51897386533906
+        },
+        {
+          "beta_scale": 1.2,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.1102925302871971,
+          "doubling_days_mean": 6.345788266792708,
+          "doubling_days_sd": 0.6967492463713347,
+          "attack_rate_at_horizon": 0.05147600000000001,
+          "loss": 11.57098423614768
+        },
+        {
+          "beta_scale": 1.2,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.10230887354406246,
+          "doubling_days_mean": 6.846897907023989,
+          "doubling_days_sd": 0.7467375836506152,
+          "attack_rate_at_horizon": 0.038846000000000026,
+          "loss": 14.00412751587836
+        },
+        {
+          "beta_scale": 1.2,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.09737345113128543,
+          "doubling_days_mean": 7.219350366472641,
+          "doubling_days_sd": 0.9256946232349222,
+          "attack_rate_at_horizon": 0.034646000000000024,
+          "loss": 19.721664196648984
+        },
+        {
+          "beta_scale": 1.2,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.0896741690370662,
+          "doubling_days_mean": 7.997287997500019,
+          "doubling_days_sd": 1.7412944309617269,
+          "attack_rate_at_horizon": 0.028590000000000004,
+          "loss": 36.70934135983069
+        },
+        {
+          "beta_scale": 1.2,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.07755250808586305,
+          "doubling_days_mean": 9.330964974232987,
+          "doubling_days_sd": 2.1420037408580934,
+          "attack_rate_at_horizon": 0.020950000000000024,
+          "loss": 80.59863043213176
+        },
+        {
+          "beta_scale": 1.3,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.13204623914266791,
+          "doubling_days_mean": 5.263501202651857,
+          "doubling_days_sd": 0.3060609353342986,
+          "attack_rate_at_horizon": 0.09658599999999999,
+          "loss": 12.951331535195907
+        },
+        {
+          "beta_scale": 1.3,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.1240473069774695,
+          "doubling_days_mean": 5.613901750088269,
+          "doubling_days_sd": 0.41661487249931195,
+          "attack_rate_at_horizon": 0.07768800000000002,
+          "loss": 5.833901435045757
+        },
+        {
+          "beta_scale": 1.3,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.11700868604420722,
+          "doubling_days_mean": 5.967189373730392,
+          "doubling_days_sd": 0.5503678141091096,
+          "attack_rate_at_horizon": 0.06050599999999999,
+          "loss": 4.101821138627951
+        },
+        {
+          "beta_scale": 1.3,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.11151949793482736,
+          "doubling_days_mean": 6.275122465830717,
+          "doubling_days_sd": 0.6789906397368454,
+          "attack_rate_at_horizon": 0.052454,
+          "loss": 6.523349211464829
+        },
+        {
+          "beta_scale": 1.3,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.10428413997580359,
+          "doubling_days_mean": 6.74087501047571,
+          "doubling_days_sd": 0.8980819255751041,
+          "attack_rate_at_horizon": 0.042876000000000025,
+          "loss": 12.896983208395213
+        },
+        {
+          "beta_scale": 1.3,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.09423037792580383,
+          "doubling_days_mean": 7.4865357208562555,
+          "doubling_days_sd": 1.0941035857591848,
+          "attack_rate_at_horizon": 0.032434000000000004,
+          "loss": 30.301039564376552
+        },
+        {
+          "beta_scale": 1.4,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.14072369383095668,
+          "doubling_days_mean": 4.9347032845591965,
+          "doubling_days_sd": 0.24133228689824174,
+          "attack_rate_at_horizon": 0.12881800000000004,
+          "loss": 12.690654644189436
+        },
+        {
+          "beta_scale": 1.4,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.1338705132271938,
+          "doubling_days_mean": 5.194944782640902,
+          "doubling_days_sd": 0.33034126005504577,
+          "attack_rate_at_horizon": 0.10494,
+          "loss": 4.478413873115633
+        },
+        {
+          "beta_scale": 1.4,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.12654937490225854,
+          "doubling_days_mean": 5.513104367789511,
+          "doubling_days_sd": 0.492121315557782,
+          "attack_rate_at_horizon": 0.08185000000000002,
+          "loss": 1.4131043689786962
+        },
+        {
+          "beta_scale": 1.4,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.12116467510644527,
+          "doubling_days_mean": 5.759941722203023,
+          "doubling_days_sd": 0.5305771008097085,
+          "attack_rate_at_horizon": 0.07137199999999999,
+          "loss": 2.329645684579587
+        },
+        {
+          "beta_scale": 1.4,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.11557307951836722,
+          "doubling_days_mean": 6.059294590665052,
+          "doubling_days_sd": 0.696485588956252,
+          "attack_rate_at_horizon": 0.05945,
+          "loss": 5.2628201192489605
+        },
+        {
+          "beta_scale": 1.4,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.10655384709396883,
+          "doubling_days_mean": 6.560261872916352,
+          "doubling_days_sd": 0.6717260459630466,
+          "attack_rate_at_horizon": 0.04524400000000002,
+          "loss": 15.307268448305772
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.14995937271004828,
+          "doubling_days_mean": 4.625590346403078,
+          "doubling_days_sd": 0.13961135767322416,
+          "attack_rate_at_horizon": 0.176552,
+          "loss": 13.234330354826277
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.1429858407027293,
+          "doubling_days_mean": 4.852165479284956,
+          "doubling_days_sd": 0.16381419494814203,
+          "attack_rate_at_horizon": 0.14285200000000003,
+          "loss": 4.413820182060186
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.13431135818422063,
+          "doubling_days_mean": 5.171214999841884,
+          "doubling_days_sd": 0.2598831212216907,
+          "attack_rate_at_horizon": 0.10934999999999999,
+          "loss": 0.4772583046834259
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.13040232710748043,
+          "doubling_days_mean": 5.331016717922798,
+          "doubling_days_sd": 0.3251027291601692,
+          "attack_rate_at_horizon": 0.09761,
+          "loss": 0.4578882701775233
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.12556212520362778,
+          "doubling_days_mean": 5.542798878158263,
+          "doubling_days_sd": 0.4025190594031311,
+          "attack_rate_at_horizon": 0.082752,
+          "loss": 1.9529224885194725
+        },
+        {
+          "beta_scale": 1.5,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.1160358442891958,
+          "doubling_days_mean": 5.991002022694017,
+          "doubling_days_sd": 0.35985380017105156,
+          "attack_rate_at_horizon": 0.06280000000000001,
+          "loss": 9.497940035934533
+        },
+        {
+          "beta_scale": 1.6,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.15979958449998613,
+          "doubling_days_mean": 4.342230799474056,
+          "doubling_days_sd": 0.16164464711121856,
+          "attack_rate_at_horizon": 0.23017200000000004,
+          "loss": 14.404241284642168
+        },
+        {
+          "beta_scale": 1.6,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.15084190759020824,
+          "doubling_days_mean": 4.598177855742018,
+          "doubling_days_sd": 0.13051197823786517,
+          "attack_rate_at_horizon": 0.187046,
+          "loss": 4.972244142464327
+        },
+        {
+          "beta_scale": 1.6,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.1435237893202545,
+          "doubling_days_mean": 4.835151504479832,
+          "doubling_days_sd": 0.18519257291247637,
+          "attack_rate_at_horizon": 0.14582399999999998,
+          "loss": 0.4687001059010522
+        },
+        {
+          "beta_scale": 1.6,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.13950673729521207,
+          "doubling_days_mean": 4.975532031545775,
+          "doubling_days_sd": 0.2094709844718334,
+          "attack_rate_at_horizon": 0.129796,
+          "loss": 0.02199472592110718
+        },
+        {
+          "beta_scale": 1.6,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.13505473292419243,
+          "doubling_days_mean": 5.145943797873926,
+          "doubling_days_sd": 0.29985052363124126,
+          "attack_rate_at_horizon": 0.11174200000000001,
+          "loss": 0.8595983685514589
+        },
+        {
+          "beta_scale": 1.6,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.125117166766349,
+          "doubling_days_mean": 5.555421734961297,
+          "doubling_days_sd": 0.3244883756066335,
+          "attack_rate_at_horizon": 0.08403400000000001,
+          "loss": 6.803573214669669
+        },
+        {
+          "beta_scale": 1.7,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.17303730444976725,
+          "doubling_days_mean": 4.008451592649294,
+          "doubling_days_sd": 0.11595846488913598,
+          "attack_rate_at_horizon": 0.29241799999999996,
+          "loss": 16.606272976478895
+        },
+        {
+          "beta_scale": 1.7,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.16338733736039854,
+          "doubling_days_mean": 4.24808091451361,
+          "doubling_days_sd": 0.17751263016186972,
+          "attack_rate_at_horizon": 0.24169600000000005,
+          "loss": 6.587929244474758
+        },
+        {
+          "beta_scale": 1.7,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.15032231481242353,
+          "doubling_days_mean": 4.6200559890491135,
+          "doubling_days_sd": 0.2283853695209225,
+          "attack_rate_at_horizon": 0.18732599999999996,
+          "loss": 0.9374298058297901
+        },
+        {
+          "beta_scale": 1.7,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.14755536360556293,
+          "doubling_days_mean": 4.707562556716299,
+          "doubling_days_sd": 0.2446097666276883,
+          "attack_rate_at_horizon": 0.167314,
+          "loss": 0.36167863293723057
+        },
+        {
+          "beta_scale": 1.7,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.14328341960951002,
+          "doubling_days_mean": 4.851279261048609,
+          "doubling_days_sd": 0.29005719852000167,
+          "attack_rate_at_horizon": 0.14375,
+          "loss": 0.8628714327769882
+        },
+        {
+          "beta_scale": 1.7,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.13376219324791694,
+          "doubling_days_mean": 5.196256767392196,
+          "doubling_days_sd": 0.3028597527335147,
+          "attack_rate_at_horizon": 0.10791799999999999,
+          "loss": 5.723666874988938
+        },
+        {
+          "beta_scale": 1.8,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.18254168980263244,
+          "doubling_days_mean": 3.7996142781088103,
+          "doubling_days_sd": 0.10537113208773417,
+          "attack_rate_at_horizon": 0.36399,
+          "loss": 18.43730352528094
+        },
+        {
+          "beta_scale": 1.8,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.17318356219418302,
+          "doubling_days_mean": 4.0043085435384445,
+          "doubling_days_sd": 0.09739040765666729,
+          "attack_rate_at_horizon": 0.302608,
+          "loss": 8.292005905882133
+        },
+        {
+          "beta_scale": 1.8,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.163583839844141,
+          "doubling_days_mean": 4.242964543147792,
+          "doubling_days_sd": 0.17277133366317898,
+          "attack_rate_at_horizon": 0.241336,
+          "loss": 2.652410731725724
+        },
+        {
+          "beta_scale": 1.8,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.15782366387314045,
+          "doubling_days_mean": 4.397245508588564,
+          "doubling_days_sd": 0.17047833544601096,
+          "attack_rate_at_horizon": 0.218628,
+          "loss": 1.4728519076666349
+        },
+        {
+          "beta_scale": 1.8,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.15213807383719397,
+          "doubling_days_mean": 4.568194579469436,
+          "doubling_days_sd": 0.26500656289059704,
+          "attack_rate_at_horizon": 0.191596,
+          "loss": 1.5202236847983062
+        },
+        {
+          "beta_scale": 1.8,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.14222913023184278,
+          "doubling_days_mean": 4.8819629350804306,
+          "doubling_days_sd": 0.22611839784942564,
+          "attack_rate_at_horizon": 0.14357400000000003,
+          "loss": 5.625330994779306
+        },
+        {
+          "beta_scale": 1.9,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.1938999718852142,
+          "doubling_days_mean": 3.576014521006866,
+          "doubling_days_sd": 0.073674841268149,
+          "attack_rate_at_horizon": 0.42442399999999997,
+          "loss": 20.78453857753323
+        },
+        {
+          "beta_scale": 1.9,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.18212613666760752,
+          "doubling_days_mean": 3.8097555323996675,
+          "doubling_days_sd": 0.13496903127206467,
+          "attack_rate_at_horizon": 0.360966,
+          "loss": 9.993127570612796
+        },
+        {
+          "beta_scale": 1.9,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.17328807035427918,
+          "doubling_days_mean": 4.004947221668945,
+          "doubling_days_sd": 0.15610795904705138,
+          "attack_rate_at_horizon": 0.29769799999999996,
+          "loss": 4.320520126657407
+        },
+        {
+          "beta_scale": 1.9,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.1697189589793667,
+          "doubling_days_mean": 4.0900499187158434,
+          "doubling_days_sd": 0.17126227759525617,
+          "attack_rate_at_horizon": 0.271204,
+          "loss": 3.331636601716172
+        },
+        {
+          "beta_scale": 1.9,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.16355384574993134,
+          "doubling_days_mean": 4.245253241164323,
+          "doubling_days_sd": 0.19384596062426854,
+          "attack_rate_at_horizon": 0.23853399999999997,
+          "loss": 3.052970679891835
+        },
+        {
+          "beta_scale": 1.9,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.14928731314260874,
+          "doubling_days_mean": 4.650815902788651,
+          "doubling_days_sd": 0.2108343016947198,
+          "attack_rate_at_horizon": 0.18170599999999998,
+          "loss": 6.0573181349812195
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 0.6,
+          "asym_share": 0.22199999999999998,
+          "growth_mean": 0.20073964178411546,
+          "doubling_days_mean": 3.4538749615416733,
+          "doubling_days_sd": 0.06261382437796519,
+          "attack_rate_at_horizon": 0.48725199999999996,
+          "loss": 22.235610538191057
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 0.8,
+          "asym_share": 0.29600000000000004,
+          "growth_mean": 0.1895365992277646,
+          "doubling_days_mean": 3.659367366595742,
+          "doubling_days_sd": 0.10181482653966124,
+          "attack_rate_at_horizon": 0.419492,
+          "loss": 11.515583430993743
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.0,
+          "asym_share": 0.37,
+          "growth_mean": 0.18103204137139753,
+          "doubling_days_mean": 3.833930466370451,
+          "doubling_days_sd": 0.1529314896878528,
+          "attack_rate_at_horizon": 0.3522,
+          "loss": 5.798872629036134
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.1,
+          "asym_share": 0.4069999999999999,
+          "growth_mean": 0.17712385450344967,
+          "doubling_days_mean": 3.9185119110889,
+          "doubling_days_sd": 0.15589988601316507,
+          "attack_rate_at_horizon": 0.321716,
+          "loss": 4.698065945826333
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.2,
+          "asym_share": 0.44399999999999995,
+          "growth_mean": 0.17139107033451673,
+          "doubling_days_mean": 4.049656721215694,
+          "doubling_days_sd": 0.16139045017761128,
+          "attack_rate_at_horizon": 0.284014,
+          "loss": 4.387009390122018
+        },
+        {
+          "beta_scale": 2.0,
+          "asym_scale": 1.4,
+          "asym_share": 0.518,
+          "growth_mean": 0.15920405152765246,
+          "doubling_days_mean": 4.367368121604924,
+          "doubling_days_sd": 0.2685947783207166,
+          "attack_rate_at_horizon": 0.22042799999999999,
+          "loss": 7.170492374246727
+        }
+      ]
+    ]
+  ],
+  "best": {
+    "beta_scale": 1.6,
+    "asym_scale": 1.1,
+    "asym_share": 0.4069999999999999,
+    "growth_mean": 0.13950673729521207,
+    "doubling_days_mean": 4.975532031545775,
+    "doubling_days_sd": 0.2094709844718334,
+    "attack_rate_at_horizon": 0.129796,
+    "loss": 0.02199472592110718
+  },
+  "default_doubling_days": 12.13392974485202
+}

@@ -1,0 +1,105 @@
+{
+  "city": "bengaluru_calibrated",
+  "scenario": "closures",
+  "description": "Colleges and markets close once 0.5% of the population is infectious, for 30 days.",
+  "backend": "sequential",
+  "runs": 20,
+  "agents": 1000000,
+  "days": 120,
+  "base_seed": 42,
+  "hospital_capacity": 1200,
+  "interventions": [
+    {
+      "kind": "college_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    },
+    {
+      "kind": "market_closure",
+      "start_day": null,
+      "trigger": {
+        "metric": "infectious",
+        "above": 0.005
+      },
+      "duration_days": 30
+    }
+  ],
+  "metrics": {
+    "attack_rate": {
+      "mean": 0.67819145,
+      "p05": 0.6759209,
+      "p95": 0.68051565
+    },
+    "days_over_capacity": {
+      "mean": 65.6625,
+      "p05": 63.9875,
+      "p95": 66.7625
+    },
+    "deaths": {
+      "mean": 6751.35,
+      "p05": 6630.35,
+      "p95": 6871.45
+    },
+    "peak_day": {
+      "mean": 74.6,
+      "p05": 73.8,
+      "p95": 76.0
+    },
+    "peak_hospital_load": {
+      "mean": 7661.4,
+      "p05": 7466.85,
+      "p95": 7812.65
+    },
+    "peak_hospital_ratio": {
+      "mean": 6.3845,
+      "p05": 6.2223749999999995,
+      "p95": 6.510541666666667
+    },
+    "peak_infections": {
+      "mean": 79798.65,
+      "p05": 78310.0,
+      "p95": 81079.35
+    },
+    "r_initial": {
+      "mean": 1.9565725122934718,
+      "p05": 1.7923871236782594,
+      "p95": 2.1876016502429776
+    },
+    "r_max": {
+      "mean": 2.440203053489889,
+      "p05": 2.3513156257195664,
+      "p95": 2.5468229548492762
+    },
+    "vaccine_doses": {
+      "mean": 0.0,
+      "p05": 0.0,
+      "p95": 0.0
+    }
+  },
+  "run_hashes": [
+    "7cc5f84c86c9b1f4",
+    "fb6ef07698fdd7f2",
+    "729ed7e0d1c05fcb",
+    "d9f8e2664ec6f626",
+    "b027b9d6139123ac",
+    "6b4d4d24481550f2",
+    "be2d1467fc1b0127",
+    "30050434bac4a679",
+    "6e8c604dcc63de5e",
+    "8b76db905cc7a400",
+    "05287d565f1d9505",
+    "ef6f59f0bfb8649e",
+    "6c03010174fd965e",
+    "a07589ab4292c361",
+    "07d2a43e9b4d4dac",
+    "0d093b781ebe0166",
+    "c02ac46ae31a1b94",
+    "b73b9d25e2e64e4a",
+    "85d9fa028545be44",
+    "93f7803bc627be26"
+  ]
+}

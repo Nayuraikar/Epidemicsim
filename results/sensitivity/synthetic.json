@@ -1,0 +1,230 @@
+{
+  "city": "synthetic",
+  "params": "calibrated",
+  "note": "One-at-a-time +-delta relative change of each parameter, paired seeds. Each parameter is exercised in the scenario named in its row; effects are relative to that scenario's own central run.",
+  "agents": 100000,
+  "days": 120,
+  "runs": 10,
+  "base_seed": 42,
+  "backend": "sequential",
+  "delta": 0.2,
+  "rows": [
+    {
+      "parameter": "beta (home/work/market)",
+      "scenario": "baseline",
+      "base_value": 0.037333333333333336,
+      "low_value": 0.02986666666666667,
+      "high_value": 0.0448,
+      "base": {
+        "attack_rate": 0.7128249999999999,
+        "attack_rate_p05": 0.7077045,
+        "attack_rate_p95": 0.716026,
+        "peak_infections": 11418.8,
+        "peak_infections_p05": 11306.05,
+        "peak_infections_p95": 11559.7
+      },
+      "low": {
+        "attack_rate": 0.5633570000000001,
+        "attack_rate_p05": 0.559718,
+        "attack_rate_p95": 0.566614,
+        "peak_infections": 7018.3,
+        "peak_infections_p05": 6850.35,
+        "peak_infections_p95": 7277.05
+      },
+      "high": {
+        "attack_rate": 0.8032620000000001,
+        "attack_rate_p05": 0.80012,
+        "attack_rate_p95": 0.805705,
+        "peak_infections": 15574.4,
+        "peak_infections_p05": 15376.5,
+        "peak_infections_p95": 15839.75
+      }
+    },
+    {
+      "parameter": "asymptomatic fraction",
+      "scenario": "baseline",
+      "base_value": 0.4069999999999999,
+      "low_value": 0.32559999999999995,
+      "high_value": 0.4883999999999999,
+      "base": {
+        "attack_rate": 0.7128249999999999,
+        "attack_rate_p05": 0.7077045,
+        "attack_rate_p95": 0.716026,
+        "peak_infections": 11418.8,
+        "peak_infections_p05": 11306.05,
+        "peak_infections_p95": 11559.7
+      },
+      "low": {
+        "attack_rate": 0.740886,
+        "attack_rate_p05": 0.737333,
+        "attack_rate_p95": 0.743501,
+        "peak_infections": 12591.5,
+        "peak_infections_p05": 12452.65,
+        "peak_infections_p95": 12758.35
+      },
+      "high": {
+        "attack_rate": 0.6803239999999999,
+        "attack_rate_p05": 0.6745135,
+        "attack_rate_p95": 0.6841685,
+        "peak_infections": 10155.9,
+        "peak_infections_p05": 10013.6,
+        "peak_infections_p95": 10283.4
+      }
+    },
+    {
+      "parameter": "hospitalisation rate",
+      "scenario": "baseline",
+      "base_value": 0.12,
+      "low_value": 0.096,
+      "high_value": 0.144,
+      "base": {
+        "attack_rate": 0.7128249999999999,
+        "attack_rate_p05": 0.7077045,
+        "attack_rate_p95": 0.716026,
+        "peak_infections": 11418.8,
+        "peak_infections_p05": 11306.05,
+        "peak_infections_p95": 11559.7
+      },
+      "low": {
+        "attack_rate": 0.7125420000000001,
+        "attack_rate_p05": 0.707369,
+        "attack_rate_p95": 0.715747,
+        "peak_infections": 11415.0,
+        "peak_infections_p05": 11301.1,
+        "peak_infections_p95": 11559.25
+      },
+      "high": {
+        "attack_rate": 0.713147,
+        "attack_rate_p05": 0.7080435,
+        "attack_rate_p95": 0.7162295,
+        "peak_infections": 11422.6,
+        "peak_infections_p05": 11311.4,
+        "peak_infections_p95": 11563.35
+      }
+    },
+    {
+      "parameter": "fatality rate (given hospitalised)",
+      "scenario": "baseline",
+      "base_value": 0.168,
+      "low_value": 0.13440000000000002,
+      "high_value": 0.2016,
+      "base": {
+        "attack_rate": 0.7128249999999999,
+        "attack_rate_p05": 0.7077045,
+        "attack_rate_p95": 0.716026,
+        "peak_infections": 11418.8,
+        "peak_infections_p05": 11306.05,
+        "peak_infections_p95": 11559.7
+      },
+      "low": {
+        "attack_rate": 0.712779,
+        "attack_rate_p05": 0.707646,
+        "attack_rate_p95": 0.7159960000000001,
+        "peak_infections": 11418.0,
+        "peak_infections_p05": 11305.5,
+        "peak_infections_p95": 11559.7
+      },
+      "high": {
+        "attack_rate": 0.712871,
+        "attack_rate_p05": 0.7077644999999999,
+        "attack_rate_p95": 0.7160595,
+        "peak_infections": 11419.0,
+        "peak_infections_p05": 11306.05,
+        "peak_infections_p95": 11559.7
+      }
+    },
+    {
+      "parameter": "vaccine efficacy (infection)",
+      "scenario": "vax_random",
+      "base_value": 0.7,
+      "low_value": 0.5599999999999999,
+      "high_value": 0.84,
+      "base": {
+        "attack_rate": 0.49607900000000005,
+        "attack_rate_p05": 0.4834585,
+        "attack_rate_p95": 0.5069455,
+        "peak_infections": 6740.4,
+        "peak_infections_p05": 6165.1,
+        "peak_infections_p95": 7060.95
+      },
+      "low": {
+        "attack_rate": 0.555294,
+        "attack_rate_p05": 0.547241,
+        "attack_rate_p95": 0.5636795,
+        "peak_infections": 7753.4,
+        "peak_infections_p05": 7379.9,
+        "peak_infections_p95": 8008.55
+      },
+      "high": {
+        "attack_rate": 0.429441,
+        "attack_rate_p05": 0.4156505,
+        "attack_rate_p95": 0.44040599999999996,
+        "peak_infections": 5771.2,
+        "peak_infections_p05": 5237.95,
+        "peak_infections_p95": 6107.55
+      }
+    },
+    {
+      "parameter": "mask efficacy",
+      "scenario": "masks",
+      "base_value": 0.35,
+      "low_value": 0.27999999999999997,
+      "high_value": 0.42,
+      "base": {
+        "attack_rate": 0.558179,
+        "attack_rate_p05": 0.554394,
+        "attack_rate_p95": 0.5615795,
+        "peak_infections": 6905.7,
+        "peak_infections_p05": 6736.65,
+        "peak_infections_p95": 7077.9
+      },
+      "low": {
+        "attack_rate": 0.595739,
+        "attack_rate_p05": 0.5904695,
+        "attack_rate_p95": 0.5991829999999999,
+        "peak_infections": 7816.0,
+        "peak_infections_p05": 7672.25,
+        "peak_infections_p95": 8045.9
+      },
+      "high": {
+        "attack_rate": 0.516618,
+        "attack_rate_p05": 0.513073,
+        "attack_rate_p95": 0.5209769999999999,
+        "peak_infections": 5997.1,
+        "peak_infections_p05": 5866.5,
+        "peak_infections_p95": 6091.3
+      }
+    },
+    {
+      "parameter": "isolation compliance",
+      "scenario": "isolation",
+      "base_value": 0.6,
+      "low_value": 0.48,
+      "high_value": 0.72,
+      "base": {
+        "attack_rate": 0.443318,
+        "attack_rate_p05": 0.43165400000000004,
+        "attack_rate_p95": 0.4527495,
+        "peak_infections": 4505.1,
+        "peak_infections_p05": 4335.3,
+        "peak_infections_p95": 4738.75
+      },
+      "low": {
+        "attack_rate": 0.5257529999999999,
+        "attack_rate_p05": 0.5228995,
+        "attack_rate_p95": 0.5291085,
+        "peak_infections": 5997.1,
+        "peak_infections_p05": 5883.7,
+        "peak_infections_p95": 6108.3
+      },
+      "high": {
+        "attack_rate": 0.322086,
+        "attack_rate_p05": 0.292051,
+        "attack_rate_p95": 0.3441825,
+        "peak_infections": 2932.2,
+        "peak_infections_p05": 2736.3,
+        "peak_infections_p95": 3068.15
+      }
+    }
+  ]
+}
