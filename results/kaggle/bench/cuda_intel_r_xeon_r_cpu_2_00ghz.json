@@ -1,0 +1,45 @@
+{
+  "backend": "cuda",
+  "machine": {
+    "os": "linux",
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "logical_cores": 4,
+    "memory_gb": 33.7
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.011608234,
+        "min": 0.011302308,
+        "max": 0.012118703
+      },
+      "agents_per_sec": 689165983.3873093,
+      "contacts_per_sec": 689165983.3873093,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.039700395,
+        "min": 0.039063367,
+        "max": 0.041092365
+      },
+      "agents_per_sec": 2015093300.708973,
+      "contacts_per_sec": 2015091739.0116649,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

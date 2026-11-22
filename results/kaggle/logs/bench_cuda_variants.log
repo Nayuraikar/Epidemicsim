@@ -1,0 +1,8 @@
+n=1000000 soa_atomic_branch_b256 prev=0.0005: total 0.040s kernel 0.026 (update 0.008) h2d 0.0010 d2h 0.0252 cpu 0.003 ok=Some(true)
+n=1000000 soa_segmented_branch_b256 prev=0.0005: total 0.038s kernel 0.025 (update 0.007) h2d 0.0010 d2h 0.0233 cpu 0.003 ok=Some(true)
+n=1000000 soa_atomic_pred_b256 prev=0.0005: total 0.043s kernel 0.029 (update 0.010) h2d 0.0010 d2h 0.0270 cpu 0.003 ok=Some(true)
+n=1000000 soa_atomic_smem_b256 prev=0.0005: total 0.041s kernel 0.027 (update 0.009) h2d 0.0010 d2h 0.0262 cpu 0.003 ok=Some(true)
+n=1000000 soa_atomic_pairs_b256 prev=0.0005: total 0.040s kernel 0.026 (update 0.008) h2d 0.0009 d2h 0.0234 cpu 0.003 ok=Some(true)
+n=1000000 aos_atomic_branch_b256 prev=0.0005: total 0.064s kernel 0.042 (update 0.009) h2d 0.0010 d2h 0.0413 cpu 0.003 ok=Some(true)
+n=1000000 aos_atomic_pred_b256 prev=0.0005: total 0.075s kernel 0.053 (update 0.020) h2d 0.0010 d2h 0.0520 cpu 0.003 ok=Some(true)
+wrote results/kaggle/gpu/cuda_variants.json

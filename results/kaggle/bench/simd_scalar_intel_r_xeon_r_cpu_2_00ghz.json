@@ -1,0 +1,45 @@
+{
+  "backend": "simd_scalar",
+  "machine": {
+    "os": "linux",
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "logical_cores": 4,
+    "memory_gb": 33.7
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.174968815,
+        "min": 0.17103781,
+        "max": 0.182177637
+      },
+      "agents_per_sec": 45722433.45192685,
+      "contacts_per_sec": 45722433.45192685,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.766209542,
+        "min": 1.734093779,
+        "max": 1.844039257
+      },
+      "agents_per_sec": 45294738.87306176,
+      "contacts_per_sec": 45294703.769639134,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

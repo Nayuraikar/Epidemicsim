@@ -1,0 +1,45 @@
+{
+  "backend": "sequential",
+  "machine": {
+    "os": "linux",
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "logical_cores": 4,
+    "memory_gb": 33.7
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.238920781,
+        "min": 0.234312608,
+        "max": 0.243340012
+      },
+      "agents_per_sec": 33483901.929819994,
+      "contacts_per_sec": 33483901.929819994,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 2.510900036,
+        "min": 2.472324537,
+        "max": 2.529546191
+      },
+      "agents_per_sec": 31861085.209686145,
+      "contacts_per_sec": 31861060.517345108,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

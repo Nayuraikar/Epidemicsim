@@ -1,0 +1,4 @@
+==PROF== Connected to process 7627 (/kaggle/working/Epidemicsim/target/release/epidemicsim)
+==ERROR== ERR_NVGPUCTRPERM - The user does not have permission to access NVIDIA GPU Performance Counters on the target device 0. For instructions on enabling permissions and to get more information see https://developer.nvidia.com/ERR_NVGPUCTRPERM
+agents=500000 days=6 seed=42 peak_inf=253@d5 peak_hosp=3@d5 attack=0.1% deaths=0 hash=8b68f2faf8fdf1ac
+==PROF== Disconnected from process 7627

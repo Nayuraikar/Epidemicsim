@@ -1,0 +1,45 @@
+{
+  "backend": "simd_avx2",
+  "machine": {
+    "os": "linux",
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "logical_cores": 4,
+    "memory_gb": 33.7
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.169244004,
+        "min": 0.167148442,
+        "max": 0.174992761
+      },
+      "agents_per_sec": 47269030.5767051,
+      "contacts_per_sec": 47269030.5767051,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.7242402380000001,
+        "min": 1.696700493,
+        "max": 1.743231472
+      },
+      "agents_per_sec": 46397246.87830884,
+      "contacts_per_sec": 46397210.92044251,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    }
+  ],
+  "amdahl": []
+}

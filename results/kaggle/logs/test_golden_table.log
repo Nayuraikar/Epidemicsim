@@ -1,0 +1,28 @@
+    Finished `release` profile [optimized] target(s) in 0.09s
+     Running tests/golden_table.rs (target/release/build/epidemicsim-backends/c46433b85bb7fa7f/out/golden_table-c46433b85bb7fa7f)
+
+running 1 test
+
+variant                novax  vax   
+sequential             PASS   PASS  
+ilp optimised          PASS   PASS  
+rayon static (4t)      PASS   PASS  
+rayon dynamic (4t)     PASS   PASS  
+rayon guided (4t)      PASS   PASS  
+openmp static (4t)     PASS   PASS  
+openmp dynamic (4t)    PASS   PASS  
+openmp guided (4t)     PASS   PASS  
+
+thread 'golden_table' (7138) panicked at crates/backends/tests/golden_table.rs:99:68:
+called `Result::unwrap()` on an `Err` value: "--simd neon needs an aarch64 build"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test golden_table ... FAILED
+
+failures:
+
+failures:
+    golden_table
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.95s
+
+error: test failed, to rerun pass `-p epidemicsim-backends --test golden_table`

@@ -1,0 +1,3 @@
+sequential agents=100000 threads=1: median 0.239s  33.48M agents/s  speedup 1.00
+sequential agents=1000000 threads=1: median 2.511s  31.86M agents/s  speedup 1.00
+wrote results/kaggle/bench/sequential_intel_r_xeon_r_cpu_2_00ghz.json

@@ -1,0 +1,24 @@
+{
+  "backend": "cuda",
+  "agents": 500000,
+  "days": 6,
+  "seed": 42,
+  "steps": 24,
+  "peak_infectious": 253,
+  "peak_infectious_day": 5,
+  "peak_hospital_load": 3,
+  "peak_hospital_day": 5,
+  "attack_rate": 0.0008700000000000374,
+  "total_deaths": 0,
+  "max_r_t": 2.7164225,
+  "final_counts": {
+    "S": 499565,
+    "E": 154,
+    "A": 97,
+    "I": 156,
+    "H": 3,
+    "R": 25,
+    "D": 0
+  },
+  "hash": "8b68f2faf8fdf1ac"
+}

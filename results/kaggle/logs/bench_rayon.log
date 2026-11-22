@@ -1,0 +1,5 @@
+rayon_guided_c64 agents=100000 threads=1: median 0.190s  42.11M agents/s  speedup 1.00
+rayon_guided_c64 agents=100000 threads=4: median 0.115s  69.80M agents/s  speedup 1.66
+rayon_guided_c64 agents=1000000 threads=1: median 1.819s  43.97M agents/s  speedup 1.00
+rayon_guided_c64 agents=1000000 threads=4: median 1.063s  75.28M agents/s  speedup 1.71
+wrote results/kaggle/bench/rayon_guided_c64_intel_r_xeon_r_cpu_2_00ghz.json

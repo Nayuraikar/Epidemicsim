@@ -1,0 +1,9 @@
+n=100000 soa_atomic_branch_b64 prev=0.0005: total 0.012s kernel 0.005 (update 0.001) h2d 0.0006 d2h 0.0041 cpu 0.000 ok=Some(true)
+n=100000 soa_atomic_branch_b128 prev=0.0005: total 0.011s kernel 0.005 (update 0.001) h2d 0.0006 d2h 0.0035 cpu 0.000 ok=Some(true)
+n=100000 soa_atomic_branch_b256 prev=0.0005: total 0.011s kernel 0.005 (update 0.001) h2d 0.0006 d2h 0.0035 cpu 0.000 ok=Some(true)
+n=100000 soa_atomic_branch_b512 prev=0.0005: total 0.012s kernel 0.005 (update 0.001) h2d 0.0006 d2h 0.0035 cpu 0.000 ok=Some(true)
+n=1000000 soa_atomic_branch_b64 prev=0.0005: total 0.042s kernel 0.028 (update 0.008) h2d 0.0010 d2h 0.0266 cpu 0.003 ok=Some(true)
+n=1000000 soa_atomic_branch_b128 prev=0.0005: total 0.041s kernel 0.027 (update 0.007) h2d 0.0010 d2h 0.0252 cpu 0.003 ok=Some(true)
+n=1000000 soa_atomic_branch_b256 prev=0.0005: total 0.040s kernel 0.026 (update 0.007) h2d 0.0010 d2h 0.0246 cpu 0.003 ok=Some(true)
+n=1000000 soa_atomic_branch_b512 prev=0.0005: total 0.040s kernel 0.026 (update 0.007) h2d 0.0010 d2h 0.0252 cpu 0.003 ok=Some(true)
+wrote results/kaggle/gpu/cuda_breakdown.json

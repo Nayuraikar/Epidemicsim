@@ -1,0 +1,2 @@
+nvcc: Build cuda_13.0.r13.0/compiler.36424714_0  arch=sm_75
+wrote results/kaggle/ptx/summary.json

@@ -1,0 +1,84 @@
+Sun Nov 22 05:41:11 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |
+| N/A   43C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |
+| N/A   40C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+==============NVSMI LOG==============
+
+Timestamp                                              : Sun Nov 22 05:41:11 2026
+Driver Version                                         : 580.178.04
+CUDA Version                                           : 13.0
+
+Attached GPUs                                          : 2
+GPU 00000000:00:04.0
+    Product Name                                       : Tesla T4
+    Product Brand                                      : NVIDIA
+    Product Architecture                               : Turing
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : Yes
+    Display Active                                     : Disabled
+    Persistence Mode                                   : Disabled
+    Addressing Mode                                    : None
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 1562121016454
+    GPU UUID                                           : GPU-4e066105-4694-514f-77aa-776d424e582c
+    GPU PDI                                            : 0xba312b38a4e895f7
+    Minor Number                                       : 0
+    VBIOS Version                                      : 90.04.A7.00.01
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x4
+    Board Part Number                                  : 900-2G183-6300-T00
+    GPU Part Number                                    : 1EB8-895-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : N/A
+        Slot Number                                    : N/A
+        Tray Index                                     : N/A
+        Host ID                                        : N/A
+        Peer Type                                      : N/A
+        Module Id                                      : 1
+        GPU Fabric GUID                                : N/A
+    Inforom Version
+        Image Version                                  : G183.0200.00.02
+        OEM Object                                     : 1.1
+        ECC Object                                     : 5.0
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : N/A
+    GPU Virtualization Mode
+        Virtualization Mode                            : Pass-Through
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None

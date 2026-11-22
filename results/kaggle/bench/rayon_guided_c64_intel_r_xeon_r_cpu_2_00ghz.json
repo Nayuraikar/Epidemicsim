@@ -1,0 +1,84 @@
+{
+  "backend": "rayon_guided_c64",
+  "machine": {
+    "os": "linux",
+    "arch": "x86_64",
+    "cpu": "Intel(R) Xeon(R) CPU @ 2.00GHz",
+    "logical_cores": 4,
+    "memory_gb": 33.7
+  },
+  "days": 20,
+  "warmup": 1,
+  "reps": 5,
+  "seed": 42,
+  "points": [
+    {
+      "agents": 100000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.189958965,
+        "min": 0.181667138,
+        "max": 0.195150216
+      },
+      "agents_per_sec": 42114358.75111238,
+      "contacts_per_sec": 42114358.75111238,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 100000,
+      "threads": 4,
+      "steps": 80,
+      "wall_s": {
+        "median": 0.114616331,
+        "min": 0.112478934,
+        "max": 0.117314721
+      },
+      "agents_per_sec": 69798081.39208364,
+      "contacts_per_sec": 69798081.39208364,
+      "speedup": 1.6573464125282462,
+      "efficiency": 0.41433660313206155
+    },
+    {
+      "agents": 1000000,
+      "threads": 1,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.819386067,
+        "min": 1.796393019,
+        "max": 1.849833472
+      },
+      "agents_per_sec": 43970876.46818832,
+      "contacts_per_sec": 43970842.39075906,
+      "speedup": 1.0,
+      "efficiency": 1.0
+    },
+    {
+      "agents": 1000000,
+      "threads": 4,
+      "steps": 80,
+      "wall_s": {
+        "median": 1.062756618,
+        "min": 1.048972127,
+        "max": 1.086692885
+      },
+      "agents_per_sec": 75275936.79026142,
+      "contacts_per_sec": 75275878.4514104,
+      "speedup": 1.7119498822071788,
+      "efficiency": 0.4279874705517947
+    }
+  ],
+  "amdahl": [
+    {
+      "agents": 100000,
+      "serial_fraction": 0.47116554707837377,
+      "max_speedup": 2.122396270696889
+    },
+    {
+      "agents": 1000000,
+      "serial_fraction": 0.4455056660971269,
+      "max_speedup": 2.2446403628500318
+    }
+  ]
+}

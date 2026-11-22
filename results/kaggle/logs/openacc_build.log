@@ -1,0 +1,4 @@
+lto-wrapper: fatal error: could not find accel/nvptx-none/mkoffload in /usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/13/:/usr/libexec/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/13/:/usr/lib/gcc/x86_64-linux-gnu/ (consider using ‘-B’)
+compilation terminated.
+/usr/bin/ld: error: lto-wrapper failed
+collect2: error: ld returned 1 exit status
